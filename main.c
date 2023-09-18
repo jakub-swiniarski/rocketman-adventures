@@ -14,8 +14,8 @@ char*pathToFile(char *str);
 typedef struct{
     Image img;
     Texture tx;
-    int x,y;
-    u_int8_t speed;
+    float x,y;
+    float speedX, speedY; //used for gravity and rocket jumping
 } Soldier;
 
 //function implementations
@@ -38,27 +38,43 @@ int main(void){
     ToggleFullscreen();
     
     SetTargetFPS(60);
-  
+ 
+    //player
     Soldier redSoldier = {
         .img=LoadImage(pathToFile("soldier.png")), 
         .x=100,
         .y=100,
-        .speed=5
+        .speedX=0,
+        .speedY=0
     };
     free(path);
     ImageResizeNN(&redSoldier.img,12*5,20*5); 
     redSoldier.tx=LoadTextureFromImage(redSoldier.img);
-       
+      
+    //game loop
     while(!WindowShouldClose()){
         ClearBackground(BLACK);
 
-        //INPUT
-        if(IsKeyDown(KEY_D)){
-            redSoldier.x+=redSoldier.speed;
+        //input
+        if(IsKeyDown(KEY_D) && redSoldier.speedX==0){
+            redSoldier.x+=5;
         }
-        if(IsKeyDown(KEY_A)){
-            redSoldier.x-=redSoldier.speed;
+        if(IsKeyDown(KEY_A) && redSoldier.speedX==0){
+            redSoldier.x-=5;
         }
+        
+        //gravity
+        if(redSoldier.y+redSoldier.tx.height>=screenHeight){
+            redSoldier.y=screenHeight-redSoldier.tx.height;
+            redSoldier.speedY=0;
+        }
+        else{
+            redSoldier.speedY+=0.5;
+        }
+        
+        //update player position
+        redSoldier.x+=redSoldier.speedX;
+        redSoldier.y+=redSoldier.speedY;
 
         BeginDrawing();
 
@@ -66,10 +82,12 @@ int main(void){
 
         EndDrawing();
     }
+    
+    //unload images
+    UnloadImage(redSoldier.img); 
 
+    //unload textuers
     UnloadTexture(redSoldier.tx);
-
-    UnloadImage(redSoldier.img);
 
     CloseWindow();
 
