@@ -20,7 +20,7 @@ typedef struct{
 
 //function implementations
 char *pathToFile(char *str){
-    path=malloc(sizeof(char)*strlen(directory)+strlen("soldier.png")+1);
+    path=malloc(sizeof(char)*strlen(directory)+strlen(str)+1);
     strcpy(path,directory);
     strcat(path,str);
     
