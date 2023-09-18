@@ -3,6 +3,8 @@
 #include <string.h>
 #include <sys/types.h>
 
+#include <stdio.h>
+
 //global variables
 const char *directory="assets/";
 char *path;
@@ -15,7 +17,7 @@ typedef struct{
     Image img;
     Texture tx;
     float x,y;
-    float speedX, speedY; //used for gravity and rocket jumping
+    float speedX, speedY; //used for gravity and jumping
 } Soldier;
 
 //function implementations
@@ -55,14 +57,6 @@ int main(void){
     while(!WindowShouldClose()){
         ClearBackground(BLACK);
 
-        //input
-        if(IsKeyDown(KEY_D) && redSoldier.speedX==0){
-            redSoldier.x+=5;
-        }
-        if(IsKeyDown(KEY_A) && redSoldier.speedX==0){
-            redSoldier.x-=5;
-        }
-        
         //gravity
         if(redSoldier.y+redSoldier.tx.height>=screenHeight){
             redSoldier.y=screenHeight-redSoldier.tx.height;
@@ -70,6 +64,18 @@ int main(void){
         }
         else{
             redSoldier.speedY+=0.5;
+        }
+ 
+
+        //input
+        if(IsKeyDown(KEY_D) && redSoldier.speedX==0){
+            redSoldier.x+=5;
+        }
+        if(IsKeyDown(KEY_A) && redSoldier.speedX==0){
+            redSoldier.x-=5;
+        }
+        if(IsKeyDown(KEY_SPACE) && redSoldier.y+redSoldier.tx.height>=screenHeight){
+            redSoldier.speedY=-10;
         }
         
         //update player position
