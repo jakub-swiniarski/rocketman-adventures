@@ -8,7 +8,7 @@ const char *directory="assets/";
 char *path;
 
 //function declarations
-char*pathToFile(char *str);
+char *pathToFile(char *str);
 
 //structs
 typedef struct{
@@ -17,6 +17,12 @@ typedef struct{
     float x,y;
     float speedX, speedY; //used for gravity and jumping
 } Soldier;
+
+typedef struct{
+    Image img;
+    Texture tx;
+    float x,y;
+} Rocket;
 
 //function implementations
 char *pathToFile(char *str){
@@ -51,7 +57,10 @@ int main(void){
     free(path);
     ImageResizeNN(&redSoldier.img,12*5,20*5); 
     redSoldier.tx=LoadTextureFromImage(redSoldier.img);
-      
+     
+    int numRockets=0;
+    Rocket* rockets=malloc(numRockets*sizeof(Rocket));
+
     //game loop
     while(!WindowShouldClose()){
         ClearBackground(BLACK);
@@ -69,6 +78,18 @@ int main(void){
  
 
         //input
+        if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
+            numRockets++;
+            rockets=realloc(rockets,numRockets*sizeof(Rocket));
+            
+            Rocket* newRocket=malloc(sizeof(Rocket));
+            newRocket->img=LoadImage(pathToFile("rocket.png"));
+            ImageResizeNN(&newRocket->img,20*2,6*2);
+            newRocket->tx=LoadTextureFromImage(newRocket->img);
+            newRocket->x=100*numRockets;
+            newRocket->y=100;
+            rockets[numRockets-1]=*newRocket;
+        }
         if(IsKeyDown(KEY_D) && redSoldier.speedX==0){
             redSoldier.x+=150*dt;
         }
@@ -86,6 +107,9 @@ int main(void){
         BeginDrawing();
 
         DrawTexture(redSoldier.tx,redSoldier.x,redSoldier.y,WHITE);
+        for(int i=0; i<numRockets; i++){
+            DrawTexture(rockets[i].tx,rockets[i].x,rockets[i].y,WHITE);
+        }
 
         EndDrawing();
     }
