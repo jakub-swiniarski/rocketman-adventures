@@ -3,8 +3,6 @@
 #include <string.h>
 #include <sys/types.h>
 
-#include <stdio.h>
-
 //global variables
 const char *directory="assets/";
 char *path;
