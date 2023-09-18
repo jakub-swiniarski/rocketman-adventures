@@ -40,6 +40,7 @@ int main(void){
     ToggleFullscreen();
     
     SetTargetFPS(60);
+    float dt=1.f;
  
     //player
     Soldier redSoldier = {
@@ -57,30 +58,32 @@ int main(void){
     while(!WindowShouldClose()){
         ClearBackground(BLACK);
 
+        dt=GetFrameTime();
+
         //gravity
         if(redSoldier.y+redSoldier.tx.height>=screenHeight){
             redSoldier.y=screenHeight-redSoldier.tx.height;
             redSoldier.speedY=0;
         }
         else{
-            redSoldier.speedY+=0.5;
+            redSoldier.speedY+=15;
         }
  
 
         //input
         if(IsKeyDown(KEY_D) && redSoldier.speedX==0){
-            redSoldier.x+=5;
+            redSoldier.x+=150*dt;
         }
         if(IsKeyDown(KEY_A) && redSoldier.speedX==0){
-            redSoldier.x-=5;
+            redSoldier.x-=150*dt;
         }
         if(IsKeyDown(KEY_SPACE) && redSoldier.y+redSoldier.tx.height>=screenHeight){
-            redSoldier.speedY=-10;
+            redSoldier.speedY=-300;
         }
         
         //update player position
-        redSoldier.x+=redSoldier.speedX;
-        redSoldier.y+=redSoldier.speedY;
+        redSoldier.x+=redSoldier.speedX*dt;
+        redSoldier.y+=redSoldier.speedY*dt;
 
         BeginDrawing();
 
