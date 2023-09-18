@@ -1,6 +1,7 @@
 #include "raylib.h"
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
 
 //global variables
 const char *directory="assets/";
@@ -14,6 +15,7 @@ typedef struct{
     Image img;
     Texture tx;
     int x,y;
+    u_int8_t speed;
 } Soldier;
 
 //function implementations
@@ -40,13 +42,24 @@ int main(void){
     Soldier redSoldier = {
         .img=LoadImage(pathToFile("soldier.png")), 
         .x=100,
-        .y=100
+        .y=100,
+        .speed=5
     };
     free(path);
     ImageResizeNN(&redSoldier.img,12*5,20*5); 
     redSoldier.tx=LoadTextureFromImage(redSoldier.img);
-        
+       
     while(!WindowShouldClose()){
+        ClearBackground(BLACK);
+
+        //INPUT
+        if(IsKeyDown(KEY_D)){
+            redSoldier.x+=redSoldier.speed;
+        }
+        if(IsKeyDown(KEY_A)){
+            redSoldier.x-=redSoldier.speed;
+        }
+
         BeginDrawing();
 
         DrawTexture(redSoldier.tx,redSoldier.x,redSoldier.y,WHITE);
@@ -55,6 +68,8 @@ int main(void){
     }
 
     UnloadTexture(redSoldier.tx);
+
+    UnloadImage(redSoldier.img);
 
     CloseWindow();
 
