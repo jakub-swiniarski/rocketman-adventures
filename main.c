@@ -89,6 +89,8 @@ int main(void){
             newRocket->x=100*numRockets;
             newRocket->y=100;
             rockets[numRockets-1]=*newRocket;
+
+            //REMOVE ROCKETS: ADD ID VARIABLE TO STRUCT, FREE THAT ARRAY INDEX
         }
         if(IsKeyDown(KEY_D) && redSoldier.speedX==0){
             redSoldier.x+=150*dt;
