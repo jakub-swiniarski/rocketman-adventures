@@ -8,8 +8,8 @@ typedef struct{
 } Soldier;
 
 int main(void){
-    //const char *directory="assets/";
-    //char *path;
+    const char *directory="assets/";
+    char *path;
 
     const int screenWidth=1280;
     const int screenHeight=720;
@@ -21,15 +21,16 @@ int main(void){
     ToggleFullscreen();
     
     SetTargetFPS(60);
-   
-    //strcat(path,directory);
-    //strcat(path,"soldier.png");
+  
+    path=malloc(sizeof(char)*strlen(directory)+strlen("soldier.png")+1);
+    strcpy(path,directory);
+    strcat(path,"soldier.png");
     Soldier redSoldier = {
-        .img=LoadTexture("assets/soldier.png"),
+        .img=LoadTexture(path),
         .x=100,
         .y=100
     };
-    //free(path);
+    free(path);
 
     while(!WindowShouldClose()){
         BeginDrawing();
@@ -38,6 +39,8 @@ int main(void){
 
         EndDrawing();
     }
+
+    UnloadTexture(redSoldier.img);
 
     CloseWindow();
 
