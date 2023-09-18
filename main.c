@@ -9,6 +9,13 @@ char *path;
 //function declarations
 char*pathToFile(char *str);
 
+//structs
+typedef struct{
+    Image img;
+    Texture tx;
+    int x,y;
+} Soldier;
+
 //function implementations
 char *pathToFile(char *str){
     path=malloc(sizeof(char)*strlen(directory)+strlen("soldier.png")+1);
@@ -17,12 +24,6 @@ char *pathToFile(char *str){
     
     return path;
 }
-
-//structs
-typedef struct{
-    Texture img;
-    int x,y;
-} Soldier;
 
 int main(void){
     const int screenWidth=1280;
@@ -37,21 +38,23 @@ int main(void){
     SetTargetFPS(60);
   
     Soldier redSoldier = {
-        .img=LoadTexture(pathToFile("soldier.png")),
+        .img=LoadImage(pathToFile("soldier.png")), 
         .x=100,
         .y=100
     };
     free(path);
-
+    ImageResizeNN(&redSoldier.img,12*5,20*5); 
+    redSoldier.tx=LoadTextureFromImage(redSoldier.img);
+        
     while(!WindowShouldClose()){
         BeginDrawing();
 
-        DrawTexture(redSoldier.img,redSoldier.x,redSoldier.y,WHITE);
+        DrawTexture(redSoldier.tx,redSoldier.x,redSoldier.y,WHITE);
 
         EndDrawing();
     }
 
-    UnloadTexture(redSoldier.img);
+    UnloadTexture(redSoldier.tx);
 
     CloseWindow();
 
