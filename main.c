@@ -105,10 +105,10 @@ int main(void){
             }*/
             newRocket->speedX=-cos(newRocket->angle*PI/180)*800;
             newRocket->speedY=-sin(newRocket->angle*PI/180)*800;
-            if(newRocket->angle>=320){
+            /*if(newRocket->angle>=320){
                 newRocket->speedX*=1;
                 newRocket->speedY*=1;
-            }
+            }*/
             
             rockets[numRockets-1]=*newRocket;
             
