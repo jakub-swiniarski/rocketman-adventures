@@ -94,8 +94,8 @@ int main(void){
             newRocket->img=LoadImage(pathToFile("rocket.png"));
             ImageResizeNN(&newRocket->img,20*3,6*3);
             newRocket->tx=LoadTextureFromImage(newRocket->img);
-            newRocket->x=redSoldier.x+redSoldier.tx.width/2-newRocket->x/2;
-            newRocket->y=redSoldier.y+redSoldier.tx.height/2-newRocket->y/2;
+            newRocket->x=redSoldier.x+redSoldier.tx.width/2;
+            newRocket->y=redSoldier.y+redSoldier.tx.height/2;
             newRocket->id=numRockets-1;
 
             //calculate angle
