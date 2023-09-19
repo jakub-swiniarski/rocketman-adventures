@@ -22,6 +22,7 @@ typedef struct{
     float x,y;
     unsigned short id;
     unsigned short angle;
+    short speedX,speedY;
 } Rocket;
 
 //function declarations
@@ -101,9 +102,15 @@ int main(void){
             newRocket->angle=90-atan((redSoldier.x+redSoldier.tx.width/2-GetMouseX())/(redSoldier.y+redSoldier.tx.height/2-GetMouseY()))*180/PI;
             if(GetMouseY()>redSoldier.y+redSoldier.tx.height){
                 newRocket->angle*=360-newRocket->angle;
-            } 
+            }
+            //newRocket->speedX=-100*(redSoldier.x+redSoldier.tx.width/2-GetMouseX())/newRocket->angle;
+            //newRocket->speedY=-100*(redSoldier.y+redSoldier.tx.height/2-GetMouseY())/newRocket->angle;
+            newRocket->speedX=0;
+            newRocket->speedY=0;
 
             rockets[numRockets-1]=*newRocket;
+            
+            //free(newRocket);
 
             //REMOVE ROCKETS: ADD ID VARIABLE TO STRUCT, FREE THAT ARRAY INDEX
         }
@@ -120,6 +127,12 @@ int main(void){
         //update player position
         redSoldier.x+=redSoldier.speedX*dt;
         redSoldier.y+=redSoldier.speedY*dt;
+
+        //update rocket position
+        for(int i=0; i<numRockets; i++){
+            rockets[i].x+=rockets[i].speedX*dt;
+            rockets[i].y+=rockets[i].speedY*dt;
+        }  
 
         BeginDrawing();
 
