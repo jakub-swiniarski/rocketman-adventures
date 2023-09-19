@@ -1,6 +1,6 @@
 SOURCES=main.c
 OBJECTS=main.o
-FLAGS=-lraylib
+FLAGS=-lraylib -lm
 
 main: $(OBJECTS)
 	gcc -o main $(OBJECTS) $(FLAGS)

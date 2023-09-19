@@ -2,13 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
+#include <math.h>
 
 //global variables
 const char *directory="assets/";
 char *path;
-
-//function declarations
-char *pathToFile(char *str);
 
 //structs
 typedef struct{
@@ -23,7 +21,12 @@ typedef struct{
     Texture tx;
     float x,y;
     unsigned short id;
+    unsigned short angle;
 } Rocket;
+
+//function declarations
+char *pathToFile(char *str);
+bool rocketBorderCheck(Rocket *r);
 
 //function implementations
 char *pathToFile(char *str){
@@ -33,6 +36,10 @@ char *pathToFile(char *str){
     
     return path;
 }
+
+/*bool rocketBorderCheck(Rocket *r){
+
+}*/
 
 int main(void){
     const int screenWidth=1280;
@@ -46,7 +53,7 @@ int main(void){
     
     SetTargetFPS(60);
     float dt=1.f;
- 
+     
     //player
     Soldier redSoldier = {
         .img=LoadImage(pathToFile("soldier.png")), 
@@ -89,6 +96,10 @@ int main(void){
             newRocket->x=100*numRockets;
             newRocket->y=100;
             newRocket->id=numRockets-1;
+
+            //calculate angle
+            //newRocket->angle=atan((redSoldier.x+redSoldier.tx.width/2-GetMouseX())/(redSoldier.y+redSoldier.tx.height/2-GetMouseY()))*180/PI;
+
             rockets[numRockets-1]=*newRocket;
 
             //REMOVE ROCKETS: ADD ID VARIABLE TO STRUCT, FREE THAT ARRAY INDEX
@@ -111,7 +122,28 @@ int main(void){
 
         DrawTexture(redSoldier.tx,redSoldier.x,redSoldier.y,WHITE);
         for(int i=0; i<numRockets; i++){
-            DrawTexture(rockets[i].tx,rockets[i].x,rockets[i].y,WHITE);
+            //DrawTexture(rockets[i].tx,rockets[i].x,rockets[i].y,WHITE);
+            DrawTexturePro(
+                rockets[i].tx,
+                (Rectangle){ //src
+                    .x=0,
+                    .y=0,
+                    .width=rockets[i].tx.width,
+                    .height=rockets[i].tx.height
+                },
+                (Rectangle){ //dest
+                    .x=rockets[i].x,
+                    .y=rockets[i].y,
+                    .width=rockets[i].tx.width,
+                    .height=rockets[i].tx.height
+                },
+                (Vector2){ //origin
+                    .x=rockets[i].tx.width/2,
+                    .y=rockets[i].tx.height/2
+                },
+                0,
+                WHITE
+            );
         }
 
         EndDrawing();
@@ -119,6 +151,7 @@ int main(void){
     
     //unload images
     UnloadImage(redSoldier.img); 
+    //TODO: UNLOAD ROCKETS
 
     //unload textuers
     UnloadTexture(redSoldier.tx);
