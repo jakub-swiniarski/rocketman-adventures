@@ -103,14 +103,18 @@ int main(void){
             if(GetMouseY()>redSoldier.y+redSoldier.tx.height){
                 newRocket->angle=newRocket->angle+180;
             }
-            newRocket->speedX=0;
-            newRocket->speedY=0;
+            newRocket->speedX=-cos(newRocket->angle*PI/180)*800;
+            newRocket->speedY=-sin(newRocket->angle*PI/180)*800;
+            if(newRocket->angle>=320){
+                newRocket->speedX*=1;
+                newRocket->speedY*=1;
+            }
             
             rockets[numRockets-1]=*newRocket;
             
             free(newRocket);
 
-            //REMOVE ROCKETS: ADD ID VARIABLE TO STRUCT, FREE THAT ARRAY INDEX
+            //TODO: REMOVE ROCKETS: ADD ID VARIABLE TO STRUCT, FREE THAT ARRAY INDEX
         }
         if(IsKeyDown(KEY_D) && redSoldier.speedX==0){
             redSoldier.x+=150*dt;
@@ -124,7 +128,7 @@ int main(void){
         
         //update player position
         redSoldier.x+=redSoldier.speedX*dt;
-        //redSoldier.y+=redSoldier.speedY*dt;
+        redSoldier.y+=redSoldier.speedY*dt;
 
         //update rocket position
         for(int i=0; i<numRockets; i++){
