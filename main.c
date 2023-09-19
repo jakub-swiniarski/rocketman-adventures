@@ -98,7 +98,10 @@ int main(void){
             newRocket->id=numRockets-1;
 
             //calculate angle
-            newRocket->angle=atan((redSoldier.x+redSoldier.tx.width/2-GetMouseX())/(redSoldier.y+redSoldier.tx.height/2-GetMouseY()))*180/PI;
+            newRocket->angle=90-atan((redSoldier.x+redSoldier.tx.width/2-GetMouseX())/(redSoldier.y+redSoldier.tx.height/2-GetMouseY()))*180/PI;
+            if(GetMouseY()>redSoldier.y+redSoldier.tx.height){
+                newRocket->angle*=360-newRocket->angle;
+            } 
 
             rockets[numRockets-1]=*newRocket;
 
@@ -141,7 +144,7 @@ int main(void){
                     .x=rockets[i].tx.width/2,
                     .y=rockets[i].tx.height/2
                 },
-                90-rockets[i].angle,
+                rockets[i].angle,
                 WHITE
             );
         }
