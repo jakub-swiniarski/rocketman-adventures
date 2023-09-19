@@ -168,11 +168,16 @@ int main(void){
     }
     
     //unload images
-    UnloadImage(redSoldier.img); 
-    //TODO: UNLOAD ROCKETS
+    UnloadImage(redSoldier.img);
+    for(int i=0; i<numRockets; i++){
+        UnloadImage(rockets[i].img);
+    } 
 
     //unload textuers
     UnloadTexture(redSoldier.tx);
+    for(int i=0; i<numRockets; i++){
+        UnloadTexture(rockets[i].tx);
+    } 
 
     CloseWindow();
 
