@@ -101,13 +101,11 @@ int main(void){
             //calculate angle
             newRocket->angle=90-atan((redSoldier.x+redSoldier.tx.width/2-GetMouseX())/(redSoldier.y+redSoldier.tx.height/2-GetMouseY()))*180/PI;
             if(GetMouseY()>redSoldier.y+redSoldier.tx.height){
-                newRocket->angle*=360-newRocket->angle;
+                newRocket->angle=newRocket->angle+180;
             }
-            //newRocket->speedX=-100*(redSoldier.x+redSoldier.tx.width/2-GetMouseX())/newRocket->angle;
-            //newRocket->speedY=-100*(redSoldier.y+redSoldier.tx.height/2-GetMouseY())/newRocket->angle;
             newRocket->speedX=0;
             newRocket->speedY=0;
-
+            
             rockets[numRockets-1]=*newRocket;
             
             //free(newRocket);
@@ -126,7 +124,7 @@ int main(void){
         
         //update player position
         redSoldier.x+=redSoldier.speedX*dt;
-        redSoldier.y+=redSoldier.speedY*dt;
+        //redSoldier.y+=redSoldier.speedY*dt;
 
         //update rocket position
         for(int i=0; i<numRockets; i++){
