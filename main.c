@@ -99,10 +99,10 @@ int main(void){
             newRocket->id=numRockets-1;
 
             //calculate angle
-            newRocket->angle=90-atan((redSoldier.x+redSoldier.tx.width/2-GetMouseX())/(redSoldier.y+redSoldier.tx.height/2-GetMouseY()))*180/PI;
-            if(GetMouseY()>redSoldier.y+redSoldier.tx.height){
+            newRocket->angle=90-atan2((redSoldier.x+redSoldier.tx.width/2-GetMouseX()),(redSoldier.y+redSoldier.tx.height/2-GetMouseY()))*180/PI;
+            /*if(GetMouseY()>redSoldier.y+redSoldier.tx.height){
                 newRocket->angle=newRocket->angle+180;
-            }
+            }*/
             newRocket->speedX=-cos(newRocket->angle*PI/180)*800;
             newRocket->speedY=-sin(newRocket->angle*PI/180)*800;
             if(newRocket->angle>=320){
