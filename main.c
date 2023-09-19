@@ -108,7 +108,7 @@ int main(void){
             
             rockets[numRockets-1]=*newRocket;
             
-            //free(newRocket);
+            free(newRocket);
 
             //REMOVE ROCKETS: ADD ID VARIABLE TO STRUCT, FREE THAT ARRAY INDEX
         }
