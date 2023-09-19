@@ -22,6 +22,7 @@ typedef struct{
     Image img;
     Texture tx;
     float x,y;
+    unsigned short id;
 } Rocket;
 
 //function implementations
@@ -75,7 +76,6 @@ int main(void){
         else{
             redSoldier.speedY+=15;
         }
- 
 
         //input
         if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
@@ -88,6 +88,7 @@ int main(void){
             newRocket->tx=LoadTextureFromImage(newRocket->img);
             newRocket->x=100*numRockets;
             newRocket->y=100;
+            newRocket->id=numRockets-1;
             rockets[numRockets-1]=*newRocket;
 
             //REMOVE ROCKETS: ADD ID VARIABLE TO STRUCT, FREE THAT ARRAY INDEX
