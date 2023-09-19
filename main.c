@@ -91,14 +91,14 @@ int main(void){
             
             Rocket* newRocket=malloc(sizeof(Rocket));
             newRocket->img=LoadImage(pathToFile("rocket.png"));
-            ImageResizeNN(&newRocket->img,20*2,6*2);
+            ImageResizeNN(&newRocket->img,20*3,6*3);
             newRocket->tx=LoadTextureFromImage(newRocket->img);
-            newRocket->x=100*numRockets;
-            newRocket->y=100;
+            newRocket->x=redSoldier.x+redSoldier.tx.width/2-newRocket->x/2;
+            newRocket->y=redSoldier.y+redSoldier.tx.height/2-newRocket->y/2;
             newRocket->id=numRockets-1;
 
             //calculate angle
-            //newRocket->angle=atan((redSoldier.x+redSoldier.tx.width/2-GetMouseX())/(redSoldier.y+redSoldier.tx.height/2-GetMouseY()))*180/PI;
+            newRocket->angle=atan((redSoldier.x+redSoldier.tx.width/2-GetMouseX())/(redSoldier.y+redSoldier.tx.height/2-GetMouseY()))*180/PI;
 
             rockets[numRockets-1]=*newRocket;
 
@@ -141,7 +141,7 @@ int main(void){
                     .x=rockets[i].tx.width/2,
                     .y=rockets[i].tx.height/2
                 },
-                0,
+                90-rockets[i].angle,
                 WHITE
             );
         }
