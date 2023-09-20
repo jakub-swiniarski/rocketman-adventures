@@ -8,12 +8,16 @@
 const char *directory="assets/";
 char *path;
 
+const int screenWidth=1280;
+const int screenHeight=720;
+
 //structs
 typedef struct{
     Image img;
     Texture tx;
     float x,y;
     float speedX, speedY; //used for gravity and jumping
+    float cooldown;
 } Soldier;
 
 typedef struct{
@@ -38,7 +42,10 @@ char *pathToFile(char *str){
 }
 
 bool rocketBorderCheck(Rocket *r){
-    if(r->x<=0){
+    if(r->x<=0 ||
+    r->x+r->tx.width>=screenWidth ||
+    r->y<=0 ||
+    r->y+r->tx.height>=screenHeight){
         return true;
     }
     else{
@@ -47,9 +54,6 @@ bool rocketBorderCheck(Rocket *r){
 }
 
 int main(void){
-    const int screenWidth=1280;
-    const int screenHeight=720;
-
     InitWindow(screenWidth,screenHeight,"Rocketman Adventures");
     
     int display=GetCurrentMonitor();
@@ -65,7 +69,8 @@ int main(void){
         .x=100,
         .y=100,
         .speedX=0,
-        .speedY=0
+        .speedY=0,
+        .cooldown=0
     };
     free(path);
     ImageResizeNN(&redSoldier.img,12*5,20*5); 
@@ -83,14 +88,21 @@ int main(void){
         //delete rockets
         for(int i=0; i<numRockets; i++){
             if(rocketBorderCheck(&rockets[i])){
+                numRockets--; 
+
                 //shift elements in array
-                for(int j=i; j<numRockets-1; j++){
+                for(int j=i; j<numRockets; j++){
                     rockets[j]=rockets[j+1];
                 }
+               
+                //TEMPORARY SOLUTION 
+                Rocket* buffer=malloc(sizeof(Rocket)*numRockets);
+                for(int j=0; j<numRockets; j++){
+                    buffer[j]=rockets[j];
+                }
+                rockets=buffer;
 
-                numRockets--;
-                rockets=realloc(rockets,numRockets);
-                //add cooldown and add more border checks
+                //rockets=realloc(rockets,numRockets);
 
                 break;
             }
@@ -106,7 +118,8 @@ int main(void){
         }
 
         //input
-        if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON)){
+        if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && redSoldier.cooldown<=0){
+            redSoldier.cooldown=0.5;
             numRockets++;
             rockets=realloc(rockets,numRockets*sizeof(Rocket));
             
@@ -148,6 +161,11 @@ int main(void){
         //update player position
         redSoldier.x+=redSoldier.speedX*dt;
         redSoldier.y+=redSoldier.speedY*dt;
+
+        //update cooldown
+        if(redSoldier.cooldown>0){
+            redSoldier.cooldown-=GetFrameTime();
+        }
 
         //update rocket position
         for(int i=0; i<numRockets; i++){
