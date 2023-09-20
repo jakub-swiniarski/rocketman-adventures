@@ -3,6 +3,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <math.h>
+#include <time.h>
 
 //global variables
 const char *directory="assets/";
@@ -88,7 +89,7 @@ int main(void){
     ImageResizeNN(&Images.particleFire,12*5,12*5);
 
     Images.particleSmoke=LoadImage(pathToFile("particle_smoke.png"));
-    ImageResizeNN(&Images.particleSmoke,12*5,12*5);
+    ImageResizeNN(&Images.particleSmoke,12*10,12*10);
 
     free(path);
 
@@ -110,13 +111,31 @@ int main(void){
 
     //game loop
     while(!WindowShouldClose()){
-        ClearBackground(BLACK);
-
         dt=GetFrameTime();
 
         //delete rockets
         for(int i=0; i<numRockets; i++){
             if(rocketBorderCheck(&rockets[i])){
+                //smoke particles
+                //for(int j=0; j<3; j++){
+                    numParticles++;
+
+                    Particle* newParticle=malloc(sizeof(Particle));
+
+                    newParticle->tx=LoadTextureFromImage(Images.particleSmoke);
+
+                    //srand(time(NULL));
+                    newParticle->x=rockets[i].x;//+rand()%(50-(-50)+1)-50;
+                    newParticle->y=rockets[i].y;//+rand()%(50-(-50)+1)-50;
+
+                    newParticle->alpha=255;
+                    newParticle->cooldownAlpha=0;
+
+                    particles[numParticles-1]=*newParticle;
+
+                    free(newParticle);
+                //}
+
                 numRockets--; 
 
                 //shift elements in array
@@ -135,7 +154,25 @@ int main(void){
             }
         }
 
-        //TODO: delete particles
+        //delete particles
+        for(int i=0; i<numParticles; i++){
+            if(particles[i].alpha<10){
+                numParticles--;
+
+                //shift elements in array
+                for(int j=i; j<numParticles; j++){
+                    particles[j]=particles[j+1];
+                }
+
+                Particle* buffer=malloc(sizeof(Particle)*numParticles);
+                for(int j=0; j<numParticles; j++){
+                    buffer[j]=particles[j];
+                }
+                particles=buffer;
+
+                break;
+            }
+        }
 
         //gravity
         if(redSoldier.y+redSoldier.tx.height>=screenHeight){
@@ -174,8 +211,6 @@ int main(void){
             rockets[numRockets-1]=*newRocket;
             
             free(newRocket);
-
-            //TODO: REMOVE ROCKETS: ADD ID VARIABLE TO STRUCT, FREE THAT ARRAY INDEX
         }
         if(IsKeyDown(KEY_D) && redSoldier.speedX==0){
             redSoldier.x+=150*dt;
@@ -228,12 +263,20 @@ int main(void){
             }*/
         }  
 
+        ClearBackground(BLACK); 
         BeginDrawing();
 
         DrawTexture(redSoldier.tx,redSoldier.x,redSoldier.y,WHITE);
 
         //draw particles
-        for(int i; i<numParticles; i++){
+        for(int i=0; i<numParticles; i++){
+            particles[i].cooldownAlpha-=GetFrameTime();
+
+            if(particles[i].cooldownAlpha<=0){
+                particles->cooldownAlpha=0.01;
+                particles->alpha--;
+            }
+
             DrawTexturePro(
                 particles[i].tx,
                 (Rectangle){ //src
@@ -259,7 +302,7 @@ int main(void){
                     255,
                     particles[i].alpha
                 }
-            ); 
+            );
         }
 
         //draw rockets
