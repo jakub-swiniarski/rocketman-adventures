@@ -31,6 +31,13 @@ typedef struct{
     short speedX,speedY;
 } Rocket;
 
+typedef struct{
+    Texture tx;
+    float x,y;
+    //rotation?
+    u_int8_t alpha;
+} Particle;
+
 //function declarations
 char *pathToFile(char *str);
 bool rocketBorderCheck(Rocket *r);
