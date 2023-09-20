@@ -15,6 +15,8 @@ const int screenHeight=720;
 static struct{
     Image redSoldier;
     Image rocket;
+    Image particleFire;
+    Image particleSmoke;
 } Images;
 
 typedef struct{
@@ -29,7 +31,7 @@ typedef struct{
     float x,y;
     unsigned short angle;
     short speedX,speedY;
-    float particleCooldown;
+    float cooldownParticle;
 } Rocket;
 
 typedef struct{
@@ -37,6 +39,7 @@ typedef struct{
     float x,y;
     //rotation?
     u_int8_t alpha; //TODO: delete particle if alpha==0
+    float cooldownAlpha;
 } Particle;
 
 //function declarations
@@ -81,6 +84,12 @@ int main(void){
     Images.rocket=LoadImage(pathToFile("rocket.png"));
     ImageResizeNN(&Images.rocket,20*3,6*3);
 
+    Images.particleFire=LoadImage(pathToFile("particle_fire.png"));
+    ImageResizeNN(&Images.particleFire,12*5,12*5);
+
+    Images.particleSmoke=LoadImage(pathToFile("particle_smoke.png"));
+    ImageResizeNN(&Images.particleSmoke,12*5,12*5);
+
     free(path);
 
     //player
@@ -96,7 +105,7 @@ int main(void){
     u_int8_t numRockets=0;
     Rocket* rockets=malloc(numRockets*sizeof(Rocket));
 
-    u_int8_t numParticles=0;
+    int numParticles=0;
     Particle* particles=malloc(numParticles*sizeof(Particle));
 
     //game loop
@@ -122,11 +131,11 @@ int main(void){
                 }
                 rockets=buffer;
 
-                //rockets=realloc(rockets,numRockets);
-
                 break;
             }
         }
+
+        //TODO: delete particles
 
         //gravity
         if(redSoldier.y+redSoldier.tx.height>=screenHeight){
@@ -148,7 +157,7 @@ int main(void){
             newRocket->tx=LoadTextureFromImage(Images.rocket);
             newRocket->x=redSoldier.x+redSoldier.tx.width/2;
             newRocket->y=redSoldier.y+redSoldier.tx.height/2;
-            newRocket->particleCooldown=0.f;
+            newRocket->cooldownParticle=0.f;
 
             //calculate angle
             newRocket->angle=90-atan2((redSoldier.x+redSoldier.tx.width/2-GetMouseX()),(redSoldier.y+redSoldier.tx.height/2-GetMouseY()))*180/PI;
@@ -182,20 +191,78 @@ int main(void){
         redSoldier.x+=redSoldier.speedX*dt;
         redSoldier.y+=redSoldier.speedY*dt;
 
-        //update cooldown
+        //update cooldowns
         if(redSoldier.cooldown>0.f){
             redSoldier.cooldown-=GetFrameTime();
         }
 
-        //update rocket position
+        //update rockets
         for(int i=0; i<numRockets; i++){
+            //position
             rockets[i].x+=rockets[i].speedX*dt;
             rockets[i].y+=rockets[i].speedY*dt;
+
+            //particle cooldown
+            /*if(rockets[i].cooldownParticle>0.f){
+                rockets[i].cooldownParticle-=GetFrameTime();
+            }
+
+            //spawn fire particle
+            if(rockets[i].cooldownParticle<=0){
+                rockets[i].cooldownParticle=0.2;
+
+                numParticles++;
+                particles=realloc(particles,sizeof(Particle)*numParticles);
+
+                Particle* newParticle=malloc(sizeof(Particle));
+
+                newParticle->tx=LoadTextureFromImage(Images.particleFire);
+                newParticle->x=rockets[i].x;
+                newParticle->y=rockets[i].y;
+                newParticle->alpha=255;
+                newParticle->cooldownAlpha=0;
+
+                particles[numParticles-1]=*newParticle;
+                
+                free(newParticle);
+            }*/
         }  
 
         BeginDrawing();
 
         DrawTexture(redSoldier.tx,redSoldier.x,redSoldier.y,WHITE);
+
+        //draw particles
+        for(int i; i<numParticles; i++){
+            DrawTexturePro(
+                particles[i].tx,
+                (Rectangle){ //src
+                    .x=0,
+                    .y=0,
+                    .width=particles[i].tx.width,
+                    .height=particles[i].tx.height
+                },
+                (Rectangle){ //dest
+                    .x=particles[i].x,
+                    .y=particles[i].y,
+                    .width=particles[i].tx.width,
+                    .height=particles[i].tx.height
+                },
+                (Vector2){ //origin
+                    .x=particles[i].tx.width/2,
+                    .y=particles[i].tx.height/2
+                },
+                0, //angle
+                (Color){
+                    255,
+                    255,
+                    255,
+                    particles[i].alpha
+                }
+            ); 
+        }
+
+        //draw rockets
         for(int i=0; i<numRockets; i++){
             DrawTexturePro(
                 rockets[i].tx,
@@ -226,12 +293,17 @@ int main(void){
     //unload images
     UnloadImage(Images.redSoldier);
     UnloadImage(Images.rocket);
+    UnloadImage(Images.particleFire);
+    UnloadImage(Images.particleSmoke);
 
     //unload textures
     UnloadTexture(redSoldier.tx); 
     for(int i=0; i<numRockets; i++){
         UnloadTexture(rockets[i].tx); 
     } 
+    for(int i=0; i<numParticles; i++){
+        UnloadTexture(particles[i].tx);
+    }
 
     CloseWindow();
 
