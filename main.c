@@ -37,9 +37,14 @@ char *pathToFile(char *str){
     return path;
 }
 
-/*bool rocketBorderCheck(Rocket *r){
-
-}*/
+bool rocketBorderCheck(Rocket *r){
+    if(r->x<=0){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
 
 int main(void){
     const int screenWidth=1280;
@@ -138,7 +143,6 @@ int main(void){
 
         DrawTexture(redSoldier.tx,redSoldier.x,redSoldier.y,WHITE);
         for(int i=0; i<numRockets; i++){
-            //DrawTexture(rockets[i].tx,rockets[i].x,rockets[i].y,WHITE);
             DrawTexturePro(
                 rockets[i].tx,
                 (Rectangle){ //src
