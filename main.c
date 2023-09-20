@@ -20,7 +20,6 @@ typedef struct{
     Image img;
     Texture tx;
     float x,y;
-    unsigned short id;
     unsigned short angle;
     short speedX,speedY;
 } Rocket;
@@ -96,7 +95,6 @@ int main(void){
             newRocket->tx=LoadTextureFromImage(newRocket->img);
             newRocket->x=redSoldier.x+redSoldier.tx.width/2;
             newRocket->y=redSoldier.y+redSoldier.tx.height/2;
-            newRocket->id=numRockets-1;
 
             //calculate angle
             newRocket->angle=90-atan2((redSoldier.x+redSoldier.tx.width/2-GetMouseX()),(redSoldier.y+redSoldier.tx.height/2-GetMouseY()))*180/PI;
