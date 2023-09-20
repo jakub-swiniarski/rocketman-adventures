@@ -38,7 +38,7 @@ typedef struct{
 typedef struct{
     Texture tx;
     float x,y;
-    //rotation?
+    //TODO: rotation?
     u_int8_t alpha; //TODO: delete particle if alpha==0
     float cooldownAlpha;
 } Particle;
@@ -154,7 +154,7 @@ int main(void){
             }
         }
 
-        //FIXME: if there are 2 rockets at the same time, the game crashes
+        //FIXME: if there are 2 rockets at the same time, the game crashes, reduce the amount of particles?
         //delete particles
         for(int i=0; i<numParticles; i++){
             if(particles[i].alpha<20){
