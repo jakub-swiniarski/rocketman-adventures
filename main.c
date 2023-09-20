@@ -154,6 +154,7 @@ int main(void){
             }
         }
 
+        //FIXME: if there are 2 rockets at the same time, the game crashes
         //delete particles
         for(int i=0; i<numParticles; i++){
             if(particles[i].alpha<20){
