@@ -12,8 +12,12 @@ const int screenWidth=1280;
 const int screenHeight=720;
 
 //structs
+static struct{
+    Image redSoldier;
+    Image rocket;
+} Images;
+
 typedef struct{
-    Image img;
     Texture tx;
     float x,y;
     float speedX, speedY; //used for gravity and jumping
@@ -21,7 +25,6 @@ typedef struct{
 } Soldier;
 
 typedef struct{
-    Image img;
     Texture tx;
     float x,y;
     unsigned short angle;
@@ -41,7 +44,7 @@ char *pathToFile(char *str){
     return path;
 }
 
-bool rocketBorderCheck(Rocket *r){
+bool rocketBorderCheck(Rocket *r){ //extend borders so that rockets disappear before they get deleted
     if(r->x<=0 ||
     r->x+r->tx.width>=screenWidth ||
     r->y<=0 ||
@@ -62,19 +65,25 @@ int main(void){
     
     SetTargetFPS(60);
     float dt=1.f;
-     
+    
+    //load and resize images
+    Images.redSoldier=LoadImage(pathToFile("soldier.png"));
+    ImageResizeNN(&Images.redSoldier,12*5,20*5);
+
+    Images.rocket=LoadImage(pathToFile("rocket.png"));
+    ImageResizeNN(&Images.rocket,20*3,6*3);
+
+    free(path);
+
     //player
     Soldier redSoldier = {
-        .img=LoadImage(pathToFile("soldier.png")), 
         .x=100,
         .y=100,
         .speedX=0,
         .speedY=0,
         .cooldown=0
     };
-    free(path);
-    ImageResizeNN(&redSoldier.img,12*5,20*5); 
-    redSoldier.tx=LoadTextureFromImage(redSoldier.img);
+    redSoldier.tx=LoadTextureFromImage(Images.redSoldier);
      
     int numRockets=0;
     Rocket* rockets=malloc(numRockets*sizeof(Rocket));
@@ -124,9 +133,8 @@ int main(void){
             rockets=realloc(rockets,numRockets*sizeof(Rocket));
             
             Rocket* newRocket=malloc(sizeof(Rocket));
-            newRocket->img=LoadImage(pathToFile("rocket.png"));
-            ImageResizeNN(&newRocket->img,20*3,6*3);
-            newRocket->tx=LoadTextureFromImage(newRocket->img);
+            
+            newRocket->tx=LoadTextureFromImage(Images.rocket);
             newRocket->x=redSoldier.x+redSoldier.tx.width/2;
             newRocket->y=redSoldier.y+redSoldier.tx.height/2;
 
@@ -203,12 +211,13 @@ int main(void){
         EndDrawing();
     }
     
-    //unload everything
-    UnloadImage(redSoldier.img);
-    UnloadTexture(redSoldier.tx); 
+    //unload images
+    UnloadImage(Images.redSoldier);
+    UnloadImage(Images.rocket);
 
+    //unload textures
+    UnloadTexture(redSoldier.tx); 
     for(int i=0; i<numRockets; i++){
-        UnloadImage(rockets[i].img);
         UnloadTexture(rockets[i].tx); 
     } 
 
