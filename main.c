@@ -29,13 +29,14 @@ typedef struct{
     float x,y;
     unsigned short angle;
     short speedX,speedY;
+    float particleCooldown;
 } Rocket;
 
 typedef struct{
     Texture tx;
     float x,y;
     //rotation?
-    u_int8_t alpha; //delete particle if alpha==0
+    u_int8_t alpha; //TODO: delete particle if alpha==0
 } Particle;
 
 //function declarations
@@ -51,7 +52,7 @@ char *pathToFile(char *str){
     return path;
 }
 
-bool rocketBorderCheck(Rocket *r){ //extend borders so that rockets disappear before they get deleted
+bool rocketBorderCheck(Rocket *r){ //TODO: extend borders so that rockets disappear before they get deleted
     if(r->x<=0 ||
     r->x+r->tx.width>=screenWidth ||
     r->y<=0 ||
@@ -88,12 +89,15 @@ int main(void){
         .y=100,
         .speedX=0,
         .speedY=0,
-        .cooldown=0
+        .cooldown=0.f
     };
     redSoldier.tx=LoadTextureFromImage(Images.redSoldier);
      
-    int numRockets=0;
+    u_int8_t numRockets=0;
     Rocket* rockets=malloc(numRockets*sizeof(Rocket));
+
+    u_int8_t numParticles=0;
+    Particle* particles=malloc(numParticles*sizeof(Particle));
 
     //game loop
     while(!WindowShouldClose()){
@@ -144,6 +148,7 @@ int main(void){
             newRocket->tx=LoadTextureFromImage(Images.rocket);
             newRocket->x=redSoldier.x+redSoldier.tx.width/2;
             newRocket->y=redSoldier.y+redSoldier.tx.height/2;
+            newRocket->particleCooldown=0.f;
 
             //calculate angle
             newRocket->angle=90-atan2((redSoldier.x+redSoldier.tx.width/2-GetMouseX()),(redSoldier.y+redSoldier.tx.height/2-GetMouseY()))*180/PI;
@@ -178,7 +183,7 @@ int main(void){
         redSoldier.y+=redSoldier.speedY*dt;
 
         //update cooldown
-        if(redSoldier.cooldown>0){
+        if(redSoldier.cooldown>0.f){
             redSoldier.cooldown-=GetFrameTime();
         }
 
