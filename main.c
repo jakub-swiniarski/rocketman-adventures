@@ -35,7 +35,7 @@ typedef struct{
     Texture tx;
     float x,y;
     //rotation?
-    u_int8_t alpha;
+    u_int8_t alpha; //delete particle if alpha==0
 } Particle;
 
 //function declarations
