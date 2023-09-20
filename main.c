@@ -80,6 +80,22 @@ int main(void){
 
         dt=GetFrameTime();
 
+        //delete rockets
+        for(int i=0; i<numRockets; i++){
+            if(rocketBorderCheck(&rockets[i])){
+                //shift elements in array
+                for(int j=i; j<numRockets-1; j++){
+                    rockets[j]=rockets[j+1];
+                }
+
+                numRockets--;
+                rockets=realloc(rockets,numRockets);
+                //add cooldown and add more border checks
+
+                break;
+            }
+        }
+
         //gravity
         if(redSoldier.y+redSoldier.tx.height>=screenHeight){
             redSoldier.y=screenHeight-redSoldier.tx.height;
