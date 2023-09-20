@@ -156,7 +156,7 @@ int main(void){
 
         //delete particles
         for(int i=0; i<numParticles; i++){
-            if(particles[i].alpha<10){
+            if(particles[i].alpha<20){
                 numParticles--;
 
                 //shift elements in array
@@ -238,13 +238,13 @@ int main(void){
             rockets[i].y+=rockets[i].speedY*dt;
 
             //particle cooldown
-            /*if(rockets[i].cooldownParticle>0.f){
+            if(rockets[i].cooldownParticle>0.f){
                 rockets[i].cooldownParticle-=GetFrameTime();
             }
 
             //spawn fire particle
             if(rockets[i].cooldownParticle<=0){
-                rockets[i].cooldownParticle=0.2;
+                rockets[i].cooldownParticle=0.05;
 
                 numParticles++;
                 particles=realloc(particles,sizeof(Particle)*numParticles);
@@ -260,7 +260,7 @@ int main(void){
                 particles[numParticles-1]=*newParticle;
                 
                 free(newParticle);
-            }*/
+            }
         }  
 
         ClearBackground(BLACK); 
