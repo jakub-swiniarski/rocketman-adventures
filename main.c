@@ -44,6 +44,7 @@ typedef struct{
 //function declarations
 char *pathToFile(char *str);
 bool rocketBorderCheck(Rocket *r);
+void soldierBorderCheck(Soldier *s);
 
 //function implementations
 char *pathToFile(char *str){
@@ -63,6 +64,24 @@ bool rocketBorderCheck(Rocket *r){
     }
     else{
         return false;
+    }
+}
+
+void soldierBorderCheck(Soldier *s){
+    //horizontal
+    if(s->x<0){
+        s->x=0;
+    }
+    else if(s->x+s->tx.width>screenWidth){
+        s->x=screenWidth-s->tx.width;
+    }
+
+    //vertical
+    if(s->y<0){
+        s->y=0;
+    }
+    else if(s->y+s->tx.height>screenHeight){
+        s->y=screenHeight-s->tx.height;
     }
 }
 
@@ -108,7 +127,6 @@ int main(void){
     while(!WindowShouldClose()){
         dt=GetFrameTime();
 
-        //delete rockets
         for(int i=0; i<numRockets; i++){
             if(rocketBorderCheck(&rockets[i])){
                 //smoke particles
@@ -133,6 +151,11 @@ int main(void){
                     free(newParticle);
                 //}
 
+                //rocket jump
+                redSoldier.speedX=-rockets[i].speedX;
+                redSoldier.speedY=-rockets[i].speedY;
+
+                //delete rockets
                 numRockets--; 
 
                 //shift elements in array
@@ -210,16 +233,25 @@ int main(void){
             
             free(newRocket);
         }
-        if(IsKeyDown(KEY_D) && redSoldier.speedX==0){
+        if(IsKeyDown(KEY_D)){
             redSoldier.x+=150*dt;
         }
-        if(IsKeyDown(KEY_A) && redSoldier.speedX==0){
+        if(IsKeyDown(KEY_A)){
             redSoldier.x-=150*dt;
         }
         if(IsKeyDown(KEY_SPACE) && redSoldier.y+redSoldier.tx.height>=screenHeight){
             redSoldier.speedY=-300;
         }
-        
+
+        if(redSoldier.speedX>0){
+            redSoldier.speedX-=5;
+        }
+        else if(redSoldier.speedX<0){
+            redSoldier.speedX+=5;
+        }
+       
+        soldierBorderCheck(&redSoldier);
+
         //update player position
         redSoldier.x+=redSoldier.speedX*dt;
         redSoldier.y+=redSoldier.speedY*dt;
@@ -305,7 +337,7 @@ int main(void){
 
         EndDrawing();
     }
-    
+   
     //unload images
     UnloadImage(Images.redSoldier);
     UnloadImage(Images.rocket);
