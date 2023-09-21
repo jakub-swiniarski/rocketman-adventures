@@ -9,8 +9,8 @@
 const char *directory="assets/";
 char *path;
 
-const int screenWidth=1280;
-const int screenHeight=720;
+const unsigned short screenWidth=1280;
+const unsigned short screenHeight=720;
 
 //structs
 static struct{
@@ -88,7 +88,7 @@ void soldierBorderCheck(Soldier *s){
 int main(void){
     InitWindow(screenWidth,screenHeight,"Rocketman Adventures");
     
-    int display=GetCurrentMonitor();
+    u_int8_t display=GetCurrentMonitor();
     SetWindowSize(GetMonitorWidth(display),GetMonitorHeight(display));
     ToggleFullscreen();
     
@@ -122,17 +122,17 @@ int main(void){
     u_int8_t numRockets=0;
     Rocket* rockets=malloc(numRockets*sizeof(Rocket));
 
-    int numParticles=0;
+    u_int8_t numParticles=0;
     Particle* particles=malloc(numParticles*sizeof(Particle));
 
     //game loop
     while(!WindowShouldClose()){
         dt=GetFrameTime();
 
-        for(int i=0; i<numRockets; i++){
+        for(u_int8_t i=0; i<numRockets; i++){
             if(rocketBorderCheck(&rockets[i])){
                 //smoke particles
-                //for(int j=0; j<3; j++){
+                //for(u_int8_t j=0; j<3; j++){
                     numParticles++;
 
                     Particle* newParticle=malloc(sizeof(Particle));
@@ -162,13 +162,13 @@ int main(void){
                 numRockets--; 
 
                 //shift elements in array
-                for(int j=i; j<numRockets; j++){
+                for(u_int8_t j=i; j<numRockets; j++){
                     rockets[j]=rockets[j+1];
                 }
                
                 //TEMPORARY SOLUTION 
                 Rocket* buffer=malloc(sizeof(Rocket)*numRockets);
-                for(int j=0; j<numRockets; j++){
+                for(u_int8_t j=0; j<numRockets; j++){
                     buffer[j]=rockets[j];
                 }
                 rockets=buffer;
@@ -178,17 +178,17 @@ int main(void){
         }
 
         //delete particles
-        for(int i=0; i<numParticles; i++){
+        for(u_int8_t i=0; i<numParticles; i++){
             if(particles[i].alpha<20){
                 numParticles--;
 
                 //shift elements in array
-                for(int j=i; j<numParticles; j++){
+                for(u_int8_t j=i; j<numParticles; j++){
                     particles[j]=particles[j+1];
                 }
 
                 Particle* buffer=malloc(sizeof(Particle)*numParticles);
-                for(int j=0; j<numParticles; j++){
+                for(u_int8_t j=0; j<numParticles; j++){
                     buffer[j]=particles[j];
                 }
                 particles=buffer;
@@ -265,7 +265,7 @@ int main(void){
         }
 
         //update rockets
-        for(int i=0; i<numRockets; i++){
+        for(u_int8_t i=0; i<numRockets; i++){
             //position
             rockets[i].x+=rockets[i].speedX*dt;
             rockets[i].y+=rockets[i].speedY*dt;
@@ -277,7 +277,7 @@ int main(void){
         DrawTexture(redSoldier.tx,redSoldier.x,redSoldier.y,WHITE);
 
         //draw particles
-        for(int i=0; i<numParticles; i++){
+        for(u_int8_t i=0; i<numParticles; i++){
             particles[i].cooldownAlpha-=GetFrameTime();
 
             if(particles[i].cooldownAlpha<=0){
@@ -314,7 +314,7 @@ int main(void){
         }
 
         //draw rockets
-        for(int i=0; i<numRockets; i++){
+        for(u_int8_t i=0; i<numRockets; i++){
             DrawTexturePro(
                 rockets[i].tx,
                 (Rectangle){ //src
@@ -347,10 +347,10 @@ int main(void){
 
     //unload textures
     UnloadTexture(redSoldier.tx); 
-    for(int i=0; i<numRockets; i++){
+    for(u_int8_t i=0; i<numRockets; i++){
         UnloadTexture(rockets[i].tx); 
     } 
-    for(int i=0; i<numParticles; i++){
+    for(u_int8_t i=0; i<numParticles; i++){
         UnloadTexture(particles[i].tx);
     }
 
