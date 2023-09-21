@@ -154,6 +154,7 @@ int main(void){
                 //}
 
                 //rocket jump
+                //TODO: get the distance between the middle of rocket and middle of soldier and multiply the soldier speedx and speey by the difference so that the rocket gives you more boost the closer you are to the explosion
                 redSoldier.speedX=-rockets[i].speedX;
                 redSoldier.speedY=-rockets[i].speedY;
 
@@ -216,11 +217,11 @@ int main(void){
             Rocket* newRocket=malloc(sizeof(Rocket));
             
             newRocket->tx=LoadTextureFromImage(Images.rocket);
-            newRocket->x=redSoldier.x+redSoldier.tx.width/2;
-            newRocket->y=redSoldier.y+redSoldier.tx.height/2;
+            newRocket->x=redSoldier.x+(int)(redSoldier.tx.width/2);
+            newRocket->y=redSoldier.y+(int)(redSoldier.tx.height/2);
 
             //calculate rotataion
-            newRocket->rotation=90-atan2((redSoldier.x+redSoldier.tx.width/2-GetMouseX()),(redSoldier.y+redSoldier.tx.height/2-GetMouseY()))*180/PI;
+            newRocket->rotation=90-atan2((redSoldier.x+(int)(redSoldier.tx.width/2)-GetMouseX()),(redSoldier.y+(int)(redSoldier.tx.height/2)-GetMouseY()))*180/PI;
             /*if(GetMouseY()>redSoldier.y+redSoldier.tx.height){
                 newRocket->rotataion=newRocket->rotataion+180;
             }*/
@@ -299,8 +300,8 @@ int main(void){
                     .height=particles[i].tx.height
                 },
                 (Vector2){ //origin
-                    .x=particles[i].tx.width/2,
-                    .y=particles[i].tx.height/2
+                    .x=(int)(particles[i].tx.width/2),
+                    .y=(int)(particles[i].tx.height/2)
                 },
                 particles[i].rotation, //rotataion
                 (Color){
@@ -329,8 +330,8 @@ int main(void){
                     .height=rockets[i].tx.height
                 },
                 (Vector2){ //origin
-                    .x=rockets[i].tx.width/2,
-                    .y=rockets[i].tx.height/2
+                    .x=(int)(rockets[i].tx.width/2),
+                    .y=(int)(rockets[i].tx.height/2)
                 },
                 rockets[i].rotation,
                 WHITE
