@@ -44,6 +44,7 @@ typedef struct{
 //function declarations
 char *pathToFile(char *str);
 bool rocketBorderCheck(Rocket *r);
+void soldierBorderCheck(Soldier *s);
 
 //function implementations
 char *pathToFile(char *str){
@@ -63,6 +64,15 @@ bool rocketBorderCheck(Rocket *r){
     }
     else{
         return false;
+    }
+}
+
+void soldierBorderCheck(Soldier *s){
+    if(s->x<0){
+        s->x=0;
+    }
+    else if(s->x+s->tx.width>screenWidth){
+        s->x=screenWidth-s->tx.width;
     }
 }
 
@@ -230,7 +240,9 @@ int main(void){
         else if(redSoldier.speedX<0){
             redSoldier.speedX+=5;
         }
-        
+       
+        soldierBorderCheck(&redSoldier);
+
         //update player position
         redSoldier.x+=redSoldier.speedX*dt;
         redSoldier.y+=redSoldier.speedY*dt;
