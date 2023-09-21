@@ -116,6 +116,8 @@ int main(void){
         .cooldown=0.f
     };
     redSoldier.tx=LoadTextureFromImage(Images.redSoldier);
+
+    UnloadImage(Images.redSoldier);
      
     u_int8_t numRockets=0;
     Rocket* rockets=malloc(numRockets*sizeof(Rocket));
@@ -339,7 +341,6 @@ int main(void){
     }
    
     //unload images
-    UnloadImage(Images.redSoldier);
     UnloadImage(Images.rocket);
     UnloadImage(Images.particleSmoke);
 
