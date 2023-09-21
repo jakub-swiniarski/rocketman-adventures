@@ -29,15 +29,15 @@ typedef struct{
 typedef struct{
     Texture tx;
     float x,y;
-    unsigned short angle;
+    unsigned short rotation;
     short speedX,speedY;
 } Rocket;
 
 typedef struct{
     Texture tx;
     float x,y;
-    //TODO: rotation?
-    u_int8_t alpha; //TODO: delete particle if alpha==0
+    unsigned short rotation;
+    u_int8_t alpha;
     float cooldownAlpha;
 } Particle;
 
@@ -123,6 +123,8 @@ int main(void){
                     newParticle->x=rockets[i].x;//+rand()%(50-(-50)+1)-50;
                     newParticle->y=rockets[i].y;//+rand()%(50-(-50)+1)-50;
 
+                    newParticle->rotation=rand()%361;
+
                     newParticle->alpha=255;
                     newParticle->cooldownAlpha=0;
 
@@ -149,7 +151,6 @@ int main(void){
             }
         }
 
-        //FIXME: if there are 2 rockets at the same time, the game crashes, reduce the amount of particles?
         //delete particles
         for(int i=0; i<numParticles; i++){
             if(particles[i].alpha<20){
@@ -165,6 +166,8 @@ int main(void){
                     buffer[j]=particles[j];
                 }
                 particles=buffer;
+
+                //TODO: rewrite array to buffer, ignoring the index that you want to get rid of, assign particles to buffer;
 
                 break;
             }
@@ -191,14 +194,14 @@ int main(void){
             newRocket->x=redSoldier.x+redSoldier.tx.width/2;
             newRocket->y=redSoldier.y+redSoldier.tx.height/2;
 
-            //calculate angle
-            newRocket->angle=90-atan2((redSoldier.x+redSoldier.tx.width/2-GetMouseX()),(redSoldier.y+redSoldier.tx.height/2-GetMouseY()))*180/PI;
+            //calculate rotataion
+            newRocket->rotation=90-atan2((redSoldier.x+redSoldier.tx.width/2-GetMouseX()),(redSoldier.y+redSoldier.tx.height/2-GetMouseY()))*180/PI;
             /*if(GetMouseY()>redSoldier.y+redSoldier.tx.height){
-                newRocket->angle=newRocket->angle+180;
+                newRocket->rotataion=newRocket->rotataion+180;
             }*/
-            newRocket->speedX=-cos(newRocket->angle*PI/180)*800;
-            newRocket->speedY=-sin(newRocket->angle*PI/180)*800;
-            /*if(newRocket->angle>=320){
+            newRocket->speedX=-cos(newRocket->rotation*PI/180)*800;
+            newRocket->speedY=-sin(newRocket->rotation*PI/180)*800;
+            /*if(newRocket->rotataion>=320){
                 newRocket->speedX*=1;
                 newRocket->speedY*=1;
             }*/
@@ -265,7 +268,7 @@ int main(void){
                     .x=particles[i].tx.width/2,
                     .y=particles[i].tx.height/2
                 },
-                0, //angle
+                particles[i].rotation, //rotataion
                 (Color){
                     255,
                     255,
@@ -295,7 +298,7 @@ int main(void){
                     .x=rockets[i].tx.width/2,
                     .y=rockets[i].tx.height/2
                 },
-                rockets[i].angle,
+                rockets[i].rotation,
                 WHITE
             );
         }
