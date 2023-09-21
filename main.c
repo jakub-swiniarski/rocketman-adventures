@@ -81,7 +81,7 @@ int main(void){
     ImageResizeNN(&Images.redSoldier,12*5,20*5);
 
     Images.rocket=LoadImage(pathToFile("rocket.png"));
-    ImageResizeNN(&Images.rocket,20*3,6*3);
+    ImageResizeNN(&Images.rocket,30*3,8*3);
 
     Images.particleSmoke=LoadImage(pathToFile("particle_smoke.png"));
     ImageResizeNN(&Images.particleSmoke,12*10,12*10);
