@@ -16,7 +16,6 @@ const int screenHeight=720;
 static struct{
     Image redSoldier;
     Image rocket;
-    Image particleFire;
     Image particleSmoke;
 } Images;
 
@@ -32,7 +31,6 @@ typedef struct{
     float x,y;
     unsigned short angle;
     short speedX,speedY;
-    float cooldownParticle;
 } Rocket;
 
 typedef struct{
@@ -56,7 +54,7 @@ char *pathToFile(char *str){
     return path;
 }
 
-bool rocketBorderCheck(Rocket *r){ //TODO: extend borders so that rockets disappear before they get deleted
+bool rocketBorderCheck(Rocket *r){
     if(r->x<=0 ||
     r->x+r->tx.width>=screenWidth ||
     r->y<=0 ||
@@ -84,9 +82,6 @@ int main(void){
 
     Images.rocket=LoadImage(pathToFile("rocket.png"));
     ImageResizeNN(&Images.rocket,20*3,6*3);
-
-    Images.particleFire=LoadImage(pathToFile("particle_fire.png"));
-    ImageResizeNN(&Images.particleFire,12*5,12*5);
 
     Images.particleSmoke=LoadImage(pathToFile("particle_smoke.png"));
     ImageResizeNN(&Images.particleSmoke,12*10,12*10);
@@ -195,7 +190,6 @@ int main(void){
             newRocket->tx=LoadTextureFromImage(Images.rocket);
             newRocket->x=redSoldier.x+redSoldier.tx.width/2;
             newRocket->y=redSoldier.y+redSoldier.tx.height/2;
-            newRocket->cooldownParticle=0.f;
 
             //calculate angle
             newRocket->angle=90-atan2((redSoldier.x+redSoldier.tx.width/2-GetMouseX()),(redSoldier.y+redSoldier.tx.height/2-GetMouseY()))*180/PI;
@@ -237,31 +231,6 @@ int main(void){
             //position
             rockets[i].x+=rockets[i].speedX*dt;
             rockets[i].y+=rockets[i].speedY*dt;
-
-            //particle cooldown
-            if(rockets[i].cooldownParticle>0.f){
-                rockets[i].cooldownParticle-=GetFrameTime();
-            }
-
-            //spawn fire particle
-            if(rockets[i].cooldownParticle<=0){
-                rockets[i].cooldownParticle=0.05;
-
-                numParticles++;
-                particles=realloc(particles,sizeof(Particle)*numParticles);
-
-                Particle* newParticle=malloc(sizeof(Particle));
-
-                newParticle->tx=LoadTextureFromImage(Images.particleFire);
-                newParticle->x=rockets[i].x;
-                newParticle->y=rockets[i].y;
-                newParticle->alpha=255;
-                newParticle->cooldownAlpha=0;
-
-                particles[numParticles-1]=*newParticle;
-                
-                free(newParticle);
-            }
         }  
 
         ClearBackground(BLACK); 
@@ -274,7 +243,7 @@ int main(void){
             particles[i].cooldownAlpha-=GetFrameTime();
 
             if(particles[i].cooldownAlpha<=0){
-                particles->cooldownAlpha=0.01;
+                particles->cooldownAlpha=0.000005;
                 particles->alpha--;
             }
 
@@ -337,7 +306,6 @@ int main(void){
     //unload images
     UnloadImage(Images.redSoldier);
     UnloadImage(Images.rocket);
-    UnloadImage(Images.particleFire);
     UnloadImage(Images.particleSmoke);
 
     //unload textures
