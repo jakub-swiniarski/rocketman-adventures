@@ -68,11 +68,20 @@ bool rocketBorderCheck(Rocket *r){
 }
 
 void soldierBorderCheck(Soldier *s){
+    //horizontal
     if(s->x<0){
         s->x=0;
     }
     else if(s->x+s->tx.width>screenWidth){
         s->x=screenWidth-s->tx.width;
+    }
+
+    //vertical
+    if(s->y<0){
+        s->y=0;
+    }
+    else if(s->y+s->tx.height>screenHeight){
+        s->y=screenHeight-s->tx.height;
     }
 }
 
