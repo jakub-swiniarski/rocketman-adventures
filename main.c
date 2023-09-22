@@ -134,6 +134,7 @@ int main(void){
                 //smoke particles
                 //for(u_int8_t j=0; j<3; j++){
                     numParticles++;
+                    Particle *bufferP=malloc(sizeof(Particle)*numParticles);
 
                     Particle* newParticle=malloc(sizeof(Particle));
 
@@ -148,7 +149,12 @@ int main(void){
                     newParticle->alpha=255;
                     newParticle->cooldownAlpha=0;
 
-                    particles[numParticles-1]=*newParticle;
+                    for(u_int8_t i=0; i<numParticles-1; i++){
+                        bufferP[i]=particles[i];
+                    }
+
+                    bufferP[numParticles-1]=*newParticle;
+                    particles=bufferP;
 
                     free(newParticle);
                 //}
@@ -212,8 +218,8 @@ int main(void){
         if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && redSoldier.cooldown<=0){
             redSoldier.cooldown=0.5;
             numRockets++;
-            rockets=realloc(rockets,numRockets*sizeof(Rocket));
-            
+            Rocket *buffer=malloc(sizeof(Rocket)*numRockets);
+
             Rocket* newRocket=malloc(sizeof(Rocket));
             
             newRocket->tx=LoadTextureFromImage(Images.rocket);
@@ -232,8 +238,13 @@ int main(void){
                 newRocket->speedY*=1;
             }*/
             
-            rockets[numRockets-1]=*newRocket;
-            
+            for(u_int8_t i=0; i<numRockets-1; i++){
+                buffer[i]=rockets[i];
+            }
+
+            buffer[numRockets-1]=*newRocket;
+            rockets=buffer;
+
             free(newRocket);
         }
         if(IsKeyDown(KEY_D)){
