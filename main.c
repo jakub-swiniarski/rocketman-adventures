@@ -17,7 +17,7 @@ static struct{
     Image redSoldier;
     Image rocket;
     Image particleSmoke;
-    Image sky;
+    Image background;
 } Images;
 
 typedef struct{
@@ -106,8 +106,8 @@ int main(void){
     Images.particleSmoke=LoadImage(pathToFile("particle_smoke.png"));
     ImageResizeNN(&Images.particleSmoke,12*10,12*10);
 
-    Images.sky=LoadImage(pathToFile("sky.png"));
-    ImageResizeNN(&Images.sky,1280,720);
+    Images.background=LoadImage(pathToFile("background.png"));
+    ImageResizeNN(&Images.background,1280,720);
 
     free(path);
 
@@ -123,8 +123,8 @@ int main(void){
     UnloadImage(Images.redSoldier);
 
     //background
-    Texture sky=LoadTextureFromImage(Images.sky);
-    UnloadImage(Images.sky);
+    Texture background=LoadTextureFromImage(Images.background);
+    UnloadImage(Images.background);
 
     u_int8_t numRockets=0;
     Rocket* rockets=malloc(numRockets*sizeof(Rocket));
@@ -288,7 +288,7 @@ int main(void){
         BeginDrawing();
 
         //draw background
-        DrawTexture(sky,0,0,WHITE);
+        DrawTexture(background,0,0,WHITE);
 
         //draw entities
         DrawTexture(redSoldier.tx,redSoldier.x,redSoldier.y,WHITE);
