@@ -165,10 +165,11 @@ int main(void){
                     +pow(((int)rockets[i].y+(int)(rockets[i].tx.height/2)-(int)redSoldier.y-(int)(redSoldier.tx.height/2)),2)
                 );*/
                
-                //if(distance<100){
+                if(abs((int)(redSoldier.x+(int)(redSoldier.tx.width/2)-rockets[i].x-(int)(rockets[i].tx.width/2)))<100 
+                && abs((int)(redSoldier.y+(int)(redSoldier.tx.height/2)-rockets[i].y-(int)(rockets[i].tx.height/2)))<100){
                     redSoldier.speedX=-rockets[i].speedX;
                     redSoldier.speedY=-rockets[i].speedY; 
-                //}
+                }
 
                 //delete rockets
                 numRockets--; 
