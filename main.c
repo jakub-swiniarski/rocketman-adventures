@@ -290,8 +290,8 @@ int main(void){
             particles[i].cooldownAlpha-=GetFrameTime();
 
             if(particles[i].cooldownAlpha<=0){
-                particles->cooldownAlpha=0.01;
-                particles->alpha-=2;
+                particles[i].cooldownAlpha=0.01;
+                particles[i].alpha-=2;
             }
 
             DrawTexturePro(
