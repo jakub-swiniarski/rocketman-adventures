@@ -132,17 +132,17 @@ int main(void){
         for(u_int8_t i=0; i<numRockets; i++){
             if(rocketBorderCheck(&rockets[i])){
                 //smoke particles
-                //for(u_int8_t j=0; j<3; j++){
+                for(u_int8_t j=0; j<3; j++){
                     numParticles++;
-                    Particle *bufferP=malloc(sizeof(Particle)*numParticles);
+                    Particle *buffer=malloc(sizeof(Particle)*numParticles);
 
                     Particle* newParticle=malloc(sizeof(Particle));
 
                     newParticle->tx=LoadTextureFromImage(Images.particleSmoke);
 
                     //srand(time(NULL));
-                    newParticle->x=rockets[i].x;//+rand()%(50-(-50)+1)-50;
-                    newParticle->y=rockets[i].y;//+rand()%(50-(-50)+1)-50;
+                    newParticle->x=rockets[i].x+rand()%(50-(-50)+1)-50;
+                    newParticle->y=rockets[i].y+rand()%(50-(-50)+1)-50;
 
                     newParticle->rotation=rand()%361;
 
@@ -150,19 +150,18 @@ int main(void){
                     newParticle->cooldownAlpha=0;
 
                     for(u_int8_t i=0; i<numParticles-1; i++){
-                        bufferP[i]=particles[i];
+                        buffer[i]=particles[i];
                     }
 
-                    bufferP[numParticles-1]=*newParticle;
-                    particles=bufferP;
+                    buffer[numParticles-1]=*newParticle;
+                    particles=buffer;
 
                     free(newParticle);
-                //}
+                }
 
                 //rocket jump
-                //TODO: get the distance between the middle of rocket and middle of soldier and multiply the soldier speedx and speey by the difference so that the rocket gives you more boost the closer you are to the explosion
                 redSoldier.speedX=-rockets[i].speedX;
-                redSoldier.speedY=-rockets[i].speedY;
+                redSoldier.speedY=-rockets[i].speedY; 
 
                 //delete rockets
                 numRockets--; 
