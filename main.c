@@ -163,7 +163,6 @@ int main(void){
                 }
 
                 //rocket jump
-                
                 if(abs((int)(redSoldier.x+(int)(redSoldier.tx.width/2)-rockets[i].x-(int)(rockets[i].tx.width/2)))<100 
                 && abs((int)(redSoldier.y+(int)(redSoldier.tx.height/2)-rockets[i].y-(int)(rockets[i].tx.height/2)))<100){
                     redSoldier.speedX=-rockets[i].speedX;
@@ -222,28 +221,25 @@ int main(void){
         if((IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_R)) && redSoldier.cooldown<=0){
             redSoldier.cooldown=0.5;
             numRockets++;
+
             Rocket *buffer=malloc(sizeof(Rocket)*numRockets);
 
-            Rocket* newRocket=malloc(sizeof(Rocket));
+            Rocket newRocket={
+                .tx=LoadTextureFromImage(Images.rocket),
+                .x=redSoldier.x+(int)(redSoldier.tx.width/2),
+                .y=redSoldier.y+(int)(redSoldier.tx.height/2),
+                .rotation=90-atan2((redSoldier.x+(int)(redSoldier.tx.width/2)-GetMouseX()),(redSoldier.y+(int)(redSoldier.tx.height/2)-GetMouseY()))*180/PI, 
+            };
             
-            newRocket->tx=LoadTextureFromImage(Images.rocket);
-            newRocket->x=redSoldier.x+(int)(redSoldier.tx.width/2);
-            newRocket->y=redSoldier.y+(int)(redSoldier.tx.height/2);
-
-            //calculate rotataion
-            newRocket->rotation=90-atan2((redSoldier.x+(int)(redSoldier.tx.width/2)-GetMouseX()),(redSoldier.y+(int)(redSoldier.tx.height/2)-GetMouseY()))*180/PI;
-            
-            newRocket->speedX=-cos(newRocket->rotation*PI/180)*800;
-            newRocket->speedY=-sin(newRocket->rotation*PI/180)*800;
+            newRocket.speedX=-cos(newRocket.rotation*PI/180)*800;
+            newRocket.speedY=-sin(newRocket.rotation*PI/180)*800;
             
             for(u_int8_t i=0; i<numRockets-1; i++){
                 buffer[i]=rockets[i];
             }
 
-            buffer[numRockets-1]=*newRocket;
+            buffer[numRockets-1]=newRocket;
             rockets=buffer;
-
-            free(newRocket);
         }
         if(IsKeyDown(KEY_D)){
             redSoldier.x+=150*dt;
