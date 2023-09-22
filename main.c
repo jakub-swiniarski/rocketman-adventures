@@ -160,8 +160,15 @@ int main(void){
                 }
 
                 //rocket jump
-                redSoldier.speedX=-rockets[i].speedX;
-                redSoldier.speedY=-rockets[i].speedY; 
+                /*u_int8_t distance=sqrt(
+                    pow(((int)rockets[i].x+(int)(rockets[i].tx.width/2)-(int)redSoldier.x-(int)(redSoldier.tx.width/2)),2)
+                    +pow(((int)rockets[i].y+(int)(rockets[i].tx.height/2)-(int)redSoldier.y-(int)(redSoldier.tx.height/2)),2)
+                );*/
+               
+                //if(distance<100){
+                    redSoldier.speedX=-rockets[i].speedX;
+                    redSoldier.speedY=-rockets[i].speedY; 
+                //}
 
                 //delete rockets
                 numRockets--; 
