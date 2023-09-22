@@ -209,8 +209,6 @@ int main(void){
                 }
                 particles=buffer;
 
-                //TODO: rewrite array to buffer, ignoring the index that you want to get rid of, assign particles to buffer;
-
                 break;
             }
         }
