@@ -225,7 +225,7 @@ int main(void){
         }
 
         //input
-        if(IsMouseButtonPressed(MOUSE_LEFT_BUTTON) && redSoldier.cooldown<=0){
+        if((IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_R)) && redSoldier.cooldown<=0){
             redSoldier.cooldown=0.5;
             numRockets++;
             Rocket *buffer=malloc(sizeof(Rocket)*numRockets);
