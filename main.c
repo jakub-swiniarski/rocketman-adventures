@@ -17,6 +17,7 @@ static struct{
     Image redSoldier;
     Image rocket;
     Image particleSmoke;
+    Image sky;
 } Images;
 
 typedef struct{
@@ -105,6 +106,9 @@ int main(void){
     Images.particleSmoke=LoadImage(pathToFile("particle_smoke.png"));
     ImageResizeNN(&Images.particleSmoke,12*10,12*10);
 
+    Images.sky=LoadImage(pathToFile("sky.png"));
+    ImageResizeNN(&Images.sky,1280,720);
+
     free(path);
 
     //player
@@ -116,9 +120,12 @@ int main(void){
         .cooldown=0.f
     };
     redSoldier.tx=LoadTextureFromImage(Images.redSoldier);
-
     UnloadImage(Images.redSoldier);
-     
+
+    //background
+    Texture sky=LoadTextureFromImage(Images.sky);
+    UnloadImage(Images.sky);
+
     u_int8_t numRockets=0;
     Rocket* rockets=malloc(numRockets*sizeof(Rocket));
 
@@ -160,6 +167,7 @@ int main(void){
                 }
 
                 //rocket jump
+                
                 /*u_int8_t distance=sqrt(
                     pow(((int)rockets[i].x+(int)(rockets[i].tx.width/2)-(int)redSoldier.x-(int)(redSoldier.tx.width/2)),2)
                     +pow(((int)rockets[i].y+(int)(rockets[i].tx.height/2)-(int)redSoldier.y-(int)(redSoldier.tx.height/2)),2)
@@ -292,6 +300,10 @@ int main(void){
         ClearBackground(BLACK); 
         BeginDrawing();
 
+        //draw background
+        DrawTexture(sky,0,0,WHITE);
+
+        //draw entities
         DrawTexture(redSoldier.tx,redSoldier.x,redSoldier.y,WHITE);
 
         //draw particles
