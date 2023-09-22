@@ -168,11 +168,6 @@ int main(void){
 
                 //rocket jump
                 
-                /*u_int8_t distance=sqrt(
-                    pow(((int)rockets[i].x+(int)(rockets[i].tx.width/2)-(int)redSoldier.x-(int)(redSoldier.tx.width/2)),2)
-                    +pow(((int)rockets[i].y+(int)(rockets[i].tx.height/2)-(int)redSoldier.y-(int)(redSoldier.tx.height/2)),2)
-                );*/
-               
                 if(abs((int)(redSoldier.x+(int)(redSoldier.tx.width/2)-rockets[i].x-(int)(rockets[i].tx.width/2)))<100 
                 && abs((int)(redSoldier.y+(int)(redSoldier.tx.height/2)-rockets[i].y-(int)(rockets[i].tx.height/2)))<100){
                     redSoldier.speedX=-rockets[i].speedX;
@@ -243,15 +238,9 @@ int main(void){
 
             //calculate rotataion
             newRocket->rotation=90-atan2((redSoldier.x+(int)(redSoldier.tx.width/2)-GetMouseX()),(redSoldier.y+(int)(redSoldier.tx.height/2)-GetMouseY()))*180/PI;
-            /*if(GetMouseY()>redSoldier.y+redSoldier.tx.height){
-                newRocket->rotataion=newRocket->rotataion+180;
-            }*/
+            
             newRocket->speedX=-cos(newRocket->rotation*PI/180)*800;
             newRocket->speedY=-sin(newRocket->rotation*PI/180)*800;
-            /*if(newRocket->rotataion>=320){
-                newRocket->speedX*=1;
-                newRocket->speedY*=1;
-            }*/
             
             for(u_int8_t i=0; i<numRockets-1; i++){
                 buffer[i]=rockets[i];
