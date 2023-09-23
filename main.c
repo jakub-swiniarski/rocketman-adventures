@@ -16,6 +16,7 @@ const unsigned short screenHeight=720;
 static struct{
     Image redSoldier;
     Image rocket;
+    Image launcher;
     Image particleSmoke;
     Image background;
 } Images;
@@ -109,6 +110,9 @@ int main(void){
     Images.rocket=LoadImage(pathToFile("rocket.png"));
     ImageResizeNN(&Images.rocket,30*3,8*3);
 
+    Images.launcher=LoadImage(pathToFile("launcher.png"));
+    ImageResizeNN(&Images.launcher,53*2,21*2);
+
     Images.particleSmoke=LoadImage(pathToFile("particle_smoke.png"));
     ImageResizeNN(&Images.particleSmoke,12*10,12*10);
 
@@ -118,15 +122,24 @@ int main(void){
     free(path);
 
     //player
-    Soldier redSoldier = {
+    Soldier redSoldier={
+        .tx=LoadTextureFromImage(Images.redSoldier),
         .x=100,
         .y=100,
         .speedX=0,
         .speedY=0,
         .cooldown=0.f
     };
-    redSoldier.tx=LoadTextureFromImage(Images.redSoldier);
     UnloadImage(Images.redSoldier);
+
+    //rocket launcher
+    Launcher rl={
+        .tx=LoadTextureFromImage(Images.launcher),
+        .x=100,
+        .y=100,
+        .rotation=0
+    };
+    UnloadImage(Images.launcher);
 
     //background
     Texture background=LoadTextureFromImage(Images.background);
