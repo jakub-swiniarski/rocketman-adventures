@@ -301,8 +301,56 @@ int main(void){
         //draw background
         DrawTexture(background,0,0,WHITE);
 
-        //draw entities
+        //draw player
         DrawTexture(redSoldier.tx,redSoldier.x,redSoldier.y,WHITE);
+
+        //draw rockets
+        for(u_int8_t i=0; i<numRockets; i++){
+            DrawTexturePro(
+                rockets[i].tx,
+                (Rectangle){ //src
+                    .x=0,
+                    .y=0,
+                    .width=rockets[i].tx.width,
+                    .height=rockets[i].tx.height
+                },
+                (Rectangle){ //dest
+                    .x=rockets[i].x,
+                    .y=rockets[i].y,
+                    .width=rockets[i].tx.width,
+                    .height=rockets[i].tx.height
+                },
+                (Vector2){ //origin
+                    .x=(int)(rockets[i].tx.width/2),
+                    .y=(int)(rockets[i].tx.height/2)
+                },
+                rockets[i].rotation,
+                WHITE
+            );
+        }
+
+        //draw rocket launcher
+        DrawTexturePro(
+            rl.tx,
+            (Rectangle){ //src
+                .x=0,
+                .y=0,
+                .width=rl.tx.width,
+                .height=rl.tx.height
+            },
+            (Rectangle){ //dest
+                .x=rl.x,
+                .y=rl.y,
+                .width=rl.tx.width,
+                .height=rl.tx.height
+            },
+            (Vector2){ //origin
+                .x=(int)(rl.tx.width/2),
+                .y=(int)(rl.tx.height/2)
+            },
+            rl.rotation,
+            WHITE
+        ); 
 
         //draw particles
         for(u_int8_t i=0; i<numParticles; i++){
@@ -339,32 +387,7 @@ int main(void){
                     particles[i].alpha
                 }
             );
-        }
-
-        //draw rockets
-        for(u_int8_t i=0; i<numRockets; i++){
-            DrawTexturePro(
-                rockets[i].tx,
-                (Rectangle){ //src
-                    .x=0,
-                    .y=0,
-                    .width=rockets[i].tx.width,
-                    .height=rockets[i].tx.height
-                },
-                (Rectangle){ //dest
-                    .x=rockets[i].x,
-                    .y=rockets[i].y,
-                    .width=rockets[i].tx.width,
-                    .height=rockets[i].tx.height
-                },
-                (Vector2){ //origin
-                    .x=(int)(rockets[i].tx.width/2),
-                    .y=(int)(rockets[i].tx.height/2)
-                },
-                rockets[i].rotation,
-                WHITE
-            );
-        }
+        } 
 
         EndDrawing();
     }
