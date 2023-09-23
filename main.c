@@ -16,6 +16,7 @@ const unsigned short screenHeight=720;
 static struct{
     Image redSoldier;
     Image rocket;
+    Image launcher;
     Image particleSmoke;
     Image background;
 } Images;
@@ -33,6 +34,13 @@ typedef struct{
     unsigned short rotation;
     short speedX,speedY;
 } Rocket;
+
+typedef struct{
+    Texture tx;
+    float x,y;
+    unsigned short rotation;
+    int8_t flip; //1 means befault, -1 means flipped
+} Launcher;
 
 typedef struct{
     Texture tx;
@@ -103,6 +111,9 @@ int main(void){
     Images.rocket=LoadImage(pathToFile("rocket.png"));
     ImageResizeNN(&Images.rocket,30*3,8*3);
 
+    Images.launcher=LoadImage(pathToFile("launcher.png"));
+    ImageResizeNN(&Images.launcher,53*2,21*2);
+
     Images.particleSmoke=LoadImage(pathToFile("particle_smoke.png"));
     ImageResizeNN(&Images.particleSmoke,12*10,12*10);
 
@@ -112,15 +123,24 @@ int main(void){
     free(path);
 
     //player
-    Soldier redSoldier = {
+    Soldier redSoldier={
+        .tx=LoadTextureFromImage(Images.redSoldier),
         .x=100,
         .y=100,
         .speedX=0,
         .speedY=0,
         .cooldown=0.f
     };
-    redSoldier.tx=LoadTextureFromImage(Images.redSoldier);
     UnloadImage(Images.redSoldier);
+
+    //rocket launcher
+    Launcher rl={
+        .tx=LoadTextureFromImage(Images.launcher),
+        .x=100,
+        .y=100,
+        .rotation=0
+    };
+    UnloadImage(Images.launcher);
 
     //background
     Texture background=LoadTextureFromImage(Images.background);
@@ -264,6 +284,11 @@ int main(void){
         redSoldier.x+=redSoldier.speedX*dt;
         redSoldier.y+=redSoldier.speedY*dt;
 
+        //update rocket launcher
+        rl.x=redSoldier.x+(int)(redSoldier.tx.width/2);
+        rl.y=redSoldier.y+(int)(redSoldier.tx.height/2); 
+        rl.rotation=270-atan2((redSoldier.x+(int)(redSoldier.tx.width/2)-GetMouseX()),(redSoldier.y+(int)(redSoldier.tx.height/2)-GetMouseY()))*180/PI; 
+
         //update cooldowns
         if(redSoldier.cooldown>0.f){
             redSoldier.cooldown-=GetFrameTime();
@@ -282,8 +307,63 @@ int main(void){
         //draw background
         DrawTexture(background,0,0,WHITE);
 
-        //draw entities
+        //draw player
         DrawTexture(redSoldier.tx,redSoldier.x,redSoldier.y,WHITE);
+
+        //draw rockets
+        for(u_int8_t i=0; i<numRockets; i++){
+            DrawTexturePro(
+                rockets[i].tx,
+                (Rectangle){ //src
+                    .x=0,
+                    .y=0,
+                    .width=rockets[i].tx.width,
+                    .height=rockets[i].tx.height
+                },
+                (Rectangle){ //dest
+                    .x=rockets[i].x,
+                    .y=rockets[i].y,
+                    .width=rockets[i].tx.width,
+                    .height=rockets[i].tx.height
+                },
+                (Vector2){ //origin
+                    .x=(int)(rockets[i].tx.width/2),
+                    .y=(int)(rockets[i].tx.height/2)
+                },
+                rockets[i].rotation,
+                WHITE
+            );
+        }
+    
+        if(GetMouseX()<redSoldier.x+(int)(redSoldier.tx.width/2)){
+            rl.flip=-1;
+        }
+        else{
+            rl.flip=1;
+        }
+
+        //draw rocket launcher
+        DrawTexturePro(
+            rl.tx,
+            (Rectangle){ //src
+                .x=0,
+                .y=0,
+                .width=rl.tx.width,
+                .height=rl.flip*rl.tx.height
+            },
+            (Rectangle){ //dest
+                .x=rl.x,
+                .y=rl.y,
+                .width=rl.tx.width,
+                .height=rl.tx.height
+            },
+            (Vector2){ //origin
+                .x=(int)(rl.tx.width/2),
+                .y=(int)(rl.tx.height/2)
+            },
+            rl.rotation,
+            WHITE
+        ); 
 
         //draw particles
         for(u_int8_t i=0; i<numParticles; i++){
@@ -320,32 +400,7 @@ int main(void){
                     particles[i].alpha
                 }
             );
-        }
-
-        //draw rockets
-        for(u_int8_t i=0; i<numRockets; i++){
-            DrawTexturePro(
-                rockets[i].tx,
-                (Rectangle){ //src
-                    .x=0,
-                    .y=0,
-                    .width=rockets[i].tx.width,
-                    .height=rockets[i].tx.height
-                },
-                (Rectangle){ //dest
-                    .x=rockets[i].x,
-                    .y=rockets[i].y,
-                    .width=rockets[i].tx.width,
-                    .height=rockets[i].tx.height
-                },
-                (Vector2){ //origin
-                    .x=(int)(rockets[i].tx.width/2),
-                    .y=(int)(rockets[i].tx.height/2)
-                },
-                rockets[i].rotation,
-                WHITE
-            );
-        }
+        } 
 
         EndDrawing();
     }
