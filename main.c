@@ -39,6 +39,7 @@ typedef struct{
     Texture tx;
     float x,y;
     unsigned short rotation;
+    int8_t flip; //1 means befault, -1 means flipped
 } Launcher;
 
 typedef struct{
@@ -333,6 +334,13 @@ int main(void){
                 WHITE
             );
         }
+    
+        if(GetMouseX()<redSoldier.x+(int)(redSoldier.tx.width/2)){
+            rl.flip=-1;
+        }
+        else{
+            rl.flip=1;
+        }
 
         //draw rocket launcher
         DrawTexturePro(
@@ -341,7 +349,7 @@ int main(void){
                 .x=0,
                 .y=0,
                 .width=rl.tx.width,
-                .height=rl.tx.height
+                .height=rl.flip*rl.tx.height
             },
             (Rectangle){ //dest
                 .x=rl.x,
