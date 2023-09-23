@@ -105,7 +105,7 @@ int main(void){
     float dt=1.f;
     
     //load and resize images
-    Images.redSoldier=LoadImage(pathToFile("soldier.png"));
+    Images.redSoldier=LoadImage(pathToFile("red_soldier.png"));
     ImageResizeNN(&Images.redSoldier,12*5,20*5);
 
     Images.rocket=LoadImage(pathToFile("rocket.png"));
