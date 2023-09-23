@@ -38,6 +38,12 @@ typedef struct{
     Texture tx;
     float x,y;
     unsigned short rotation;
+} Launcher;
+
+typedef struct{
+    Texture tx;
+    float x,y;
+    unsigned short rotation;
     u_int8_t alpha;
     float cooldownAlpha;
 } Particle;
