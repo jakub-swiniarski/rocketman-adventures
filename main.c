@@ -283,9 +283,10 @@ int main(void){
         redSoldier.x+=redSoldier.speedX*dt;
         redSoldier.y+=redSoldier.speedY*dt;
 
-        //update rocket launcher position
+        //update rocket launcher
         rl.x=redSoldier.x+(int)(redSoldier.tx.width/2);
         rl.y=redSoldier.y+(int)(redSoldier.tx.height/2); 
+        rl.rotation=270-atan2((redSoldier.x+(int)(redSoldier.tx.width/2)-GetMouseX()),(redSoldier.y+(int)(redSoldier.tx.height/2)-GetMouseY()))*180/PI; 
 
         //update cooldowns
         if(redSoldier.cooldown>0.f){
