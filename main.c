@@ -1,98 +1,13 @@
-#include "raylib.h"
+#include <raylib.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 #include <math.h>
 #include <time.h>
 
-//global variables
-const char *directory="assets/";
-char *path;
-
-const unsigned short screenWidth=1280;
-const unsigned short screenHeight=720;
-
-//structs
-static struct{
-    Image redSoldier;
-    Image rocket;
-    Image launcher;
-    Image particleSmoke;
-    Image background;
-} Images;
-
-typedef struct{
-    Texture tx;
-    float x,y;
-    float speedX, speedY; //used for gravity and jumping
-    float cooldown;
-} Soldier;
-
-typedef struct{
-    Texture tx;
-    float x,y;
-    unsigned short rotation;
-    short speedX,speedY;
-} Rocket;
-
-typedef struct{
-    Texture tx;
-    float x,y;
-    unsigned short rotation;
-    int8_t flip; //1 means befault, -1 means flipped
-} Launcher;
-
-typedef struct{
-    Texture tx;
-    float x,y;
-    unsigned short rotation;
-    u_int8_t alpha;
-    float cooldownAlpha;
-} Particle;
-
-//function declarations
-char *pathToFile(char *str);
-bool rocketBorderCheck(Rocket *r);
-void soldierBorderCheck(Soldier *s);
-
-//function implementations
-char *pathToFile(char *str){
-    path=malloc(sizeof(char)*strlen(directory)+strlen(str)+1);
-    strcpy(path,directory);
-    strcat(path,str);
-    
-    return path;
-}
-
-bool rocketBorderCheck(Rocket *r){
-    if(r->x<=0 ||
-    r->x+r->tx.width>=screenWidth ||
-    r->y<=0 ||
-    r->y+r->tx.height>=screenHeight){
-        return true;
-    }
-    else{
-        return false;
-    }
-}
-
-void soldierBorderCheck(Soldier *s){
-    //horizontal
-    if(s->x<0){
-        s->x=0;
-    }
-    else if(s->x+s->tx.width>screenWidth){
-        s->x=screenWidth-s->tx.width;
-    }
-
-    //vertical
-    if(s->y<0){
-        s->y=0;
-    }
-    else if(s->y+s->tx.height>screenHeight){
-        s->y=screenHeight-s->tx.height;
-    }
-}
+#include "headers/structs.h"
+#include "headers/functions.h"
+#include "headers/globals.h"
 
 int main(void){
     InitWindow(screenWidth,screenHeight,"Rocketman Adventures");
@@ -119,8 +34,6 @@ int main(void){
 
     Images.background=LoadImage(pathToFile("background.png"));
     ImageResizeNN(&Images.background,1280,720);
-
-    free(path);
 
     //player
     Soldier redSoldier={
