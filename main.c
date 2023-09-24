@@ -10,14 +10,12 @@
 
 //global variables
 const char *directory="assets/";
-char *path;
-
 const unsigned short screenWidth=1280;
 const unsigned short screenHeight=720;
 
 //function implementations
 char *pathToFile(char *str){
-    path=malloc(sizeof(char)*strlen(directory)+strlen(str)+1);
+    char *path=malloc(sizeof(char)*strlen(directory)+strlen(str)+1);
     strcpy(path,directory);
     strcat(path,str);
     
@@ -79,8 +77,6 @@ int main(void){
 
     Images.background=LoadImage(pathToFile("background.png"));
     ImageResizeNN(&Images.background,1280,720);
-
-    free(path);
 
     //player
     Soldier redSoldier={
