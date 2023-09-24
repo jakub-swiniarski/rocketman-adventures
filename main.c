@@ -7,11 +7,7 @@
 
 #include "headers/structs.h"
 #include "headers/functions.h"
-
-//global variables
-const char *directory="assets/";
-const unsigned short screenWidth=1280;
-const unsigned short screenHeight=720;
+#include "headers/globals.h"
 
 //function implementations
 char *pathToFile(char *str){
