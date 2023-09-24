@@ -14,15 +14,6 @@ char *path;
 const unsigned short screenWidth=1280;
 const unsigned short screenHeight=720;
 
-//structs
-static struct{
-    Image redSoldier;
-    Image rocket;
-    Image launcher;
-    Image particleSmoke;
-    Image background;
-} Images;
-
 //function declarations
 char *pathToFile(char *str);
 bool rocketBorderCheck(Rocket *r);
