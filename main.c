@@ -6,6 +6,7 @@
 #include <time.h>
 
 #include "headers/structs.h"
+#include "headers/functions.h"
 
 //global variables
 const char *directory="assets/";
@@ -13,11 +14,6 @@ char *path;
 
 const unsigned short screenWidth=1280;
 const unsigned short screenHeight=720;
-
-//function declarations
-char *pathToFile(char *str);
-bool rocketBorderCheck(Rocket *r);
-void soldierBorderCheck(Soldier *s);
 
 //function implementations
 char *pathToFile(char *str){
