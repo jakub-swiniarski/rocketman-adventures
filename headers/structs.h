@@ -1,6 +1,14 @@
 #include <raylib.h>
 #include <sys/types.h>
 
+static struct{
+    Image redSoldier;
+    Image rocket;
+    Image launcher;
+    Image particleSmoke;
+    Image background;
+} Images;
+
 typedef struct{
     Texture tx;
     float x,y;
