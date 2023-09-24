@@ -1,5 +1,5 @@
-SOURCES=main.c
-OBJECTS=main.o
+SOURCES=main.c src/functions.c
+OBJECTS=main.o functions.o
 FLAGS=-lraylib -lm
 
 main: $(OBJECTS)
