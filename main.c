@@ -1,9 +1,11 @@
-#include "raylib.h"
+#include <raylib.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 #include <math.h>
 #include <time.h>
+
+#include "headers/structs.h"
 
 //global variables
 const char *directory="assets/";
@@ -20,35 +22,6 @@ static struct{
     Image particleSmoke;
     Image background;
 } Images;
-
-typedef struct{
-    Texture tx;
-    float x,y;
-    float speedX, speedY; //used for gravity and jumping
-    float cooldown;
-} Soldier;
-
-typedef struct{
-    Texture tx;
-    float x,y;
-    unsigned short rotation;
-    short speedX,speedY;
-} Rocket;
-
-typedef struct{
-    Texture tx;
-    float x,y;
-    unsigned short rotation;
-    int8_t flip; //1 means befault, -1 means flipped
-} Launcher;
-
-typedef struct{
-    Texture tx;
-    float x,y;
-    unsigned short rotation;
-    u_int8_t alpha;
-    float cooldownAlpha;
-} Particle;
 
 //function declarations
 char *pathToFile(char *str);
