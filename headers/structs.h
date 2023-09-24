@@ -1,3 +1,6 @@
+#ifndef STRUCTS_H
+#define STRUCTS_H
+
 #include <raylib.h>
 #include <sys/types.h>
 
@@ -37,3 +40,5 @@ typedef struct{
     u_int8_t alpha;
     float cooldownAlpha;
 } Particle;
+
+#endif
