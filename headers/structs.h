@@ -41,4 +41,9 @@ typedef struct{
     float cooldownAlpha;
 } Particle;
 
+typedef struct{
+    Texture tx;
+    float x,y;
+} Platform;
+
 #endif
