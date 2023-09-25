@@ -10,6 +10,7 @@ static struct{
     Image launcher;
     Image particleSmoke;
     Image background;
+    Image platform;
 } Images;
 
 typedef struct{

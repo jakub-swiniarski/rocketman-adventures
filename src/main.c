@@ -35,6 +35,9 @@ int main(void){
     Images.background=LoadImage(pathToFile("background.png"));
     ImageResizeNN(&Images.background,1280,720);
 
+    Images.platform=LoadImage(pathToFile("platform.png"));
+    ImageResizeNN(&Images.platform,30*5,2*5);
+
     //player
     Soldier redSoldier={
         .tx=LoadTextureFromImage(Images.redSoldier),
@@ -55,6 +58,12 @@ int main(void){
     };
     UnloadImage(Images.launcher);
 
+    Platform *newPlatform=malloc(sizeof(Platform));
+    newPlatform->tx=LoadTextureFromImage(Images.platform);
+    newPlatform->x=300;
+    newPlatform->y=600;
+    UnloadImage(Images.platform);
+
     //background
     Texture background=LoadTextureFromImage(Images.background);
     UnloadImage(Images.background);
@@ -64,6 +73,11 @@ int main(void){
 
     u_int8_t numParticles=0;
     Particle* particles=malloc(numParticles*sizeof(Particle));
+
+    u_int8_t numPlatforms=1;
+    Platform* platforms=malloc(numPlatforms*sizeof(Platform));
+    platforms[0]=*newPlatform;
+    free(newPlatform);
 
     srand(time(NULL)); 
 
@@ -222,6 +236,11 @@ int main(void){
 
         //draw background
         DrawTexture(background,0,0,WHITE);
+    
+        //draw platforms
+        for(u_int8_t i=0; i<numPlatforms; i++){
+            DrawTexture(platforms[i].tx,platforms[i].x,platforms[i].y,WHITE);
+        }
 
         //draw player
         DrawTexture(redSoldier.tx,redSoldier.x,redSoldier.y,WHITE);
