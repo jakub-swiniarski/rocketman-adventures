@@ -13,7 +13,7 @@ char *pathToFile(char *str){
     return path;
 }
 
-bool rocketCollisionCheck(Rocket *r){
+bool rocketBorderCheck(Rocket *r){
     if(r->x<=0 ||
     r->x+r->tx.width>=screenWidth ||
     r->y<=0 ||

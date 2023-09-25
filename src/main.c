@@ -87,7 +87,7 @@ int main(void){
         dt=GetFrameTime();
 
         for(u_int8_t i=0; i<numRockets; i++){
-            if(rocketCollisionCheck(&rockets[i])){
+            if(rocketBorderCheck(&rockets[i])){
                 //smoke particles
                 if(rockets[i].y>=0){
                     for(u_int8_t j=0; j<3; j++){
