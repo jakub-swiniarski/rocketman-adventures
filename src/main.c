@@ -87,7 +87,7 @@ int main(void){
         dt=GetFrameTime();
 
         for(u_int8_t i=0; i<numRockets; i++){
-            if(rocketBorderCheck(&rockets[i])){
+            if(rocketCollisionCheck(&rockets[i])){
                 //smoke particles
                 if(rockets[i].y>=0){
                     for(u_int8_t j=0; j<3; j++){
@@ -159,6 +159,18 @@ int main(void){
             }
         }
 
+        //movement
+        if(IsKeyDown(KEY_D)){
+            redSoldier.x+=150*dt;
+        }
+        if(IsKeyDown(KEY_A)){
+            redSoldier.x-=150*dt;
+        } 
+        if(IsKeyDown(KEY_SPACE) && !redSoldier.falling){
+            redSoldier.falling=0;
+            redSoldier.speedY=-301;
+        } 
+
         //update player position
         redSoldier.x+=redSoldier.speedX*dt;
         if(redSoldier.speedY>0){
@@ -205,16 +217,7 @@ int main(void){
             buffer[numRockets-1]=newRocket;
             rockets=buffer;
         }
-        if(IsKeyDown(KEY_D)){
-            redSoldier.x+=150*dt;
-        }
-        if(IsKeyDown(KEY_A)){
-            redSoldier.x-=150*dt;
-        }
-        if(IsKeyDown(KEY_SPACE) && redSoldier.y+redSoldier.tx.height>=screenHeight){
-            redSoldier.speedY=-300;
-        }
-
+        
         if(redSoldier.speedX>0){
             redSoldier.speedX-=5;
         }
@@ -223,8 +226,6 @@ int main(void){
         }
        
         soldierBorderCheck(&redSoldier);
-
-        
 
         //update rocket launcher
         rl.x=redSoldier.x+(int)(redSoldier.tx.width/2);
@@ -251,7 +252,9 @@ int main(void){
     
         //draw platforms
         for(u_int8_t i=0; i<numPlatforms; i++){
-            platformCollisionCheck(&platforms[i],&redSoldier);
+            if(redSoldier.speedY>0){
+                platformCollisionCheck(&platforms[i],&redSoldier);
+            }
             DrawTexture(platforms[i].tx,platforms[i].x,platforms[i].y,WHITE);
         }
 
