@@ -5,9 +5,9 @@
 #include <math.h>
 #include <time.h>
 
-#include "headers/structs.h"
-#include "headers/functions.h"
-#include "headers/globals.h"
+#include "../headers/structs.h"
+#include "../headers/functions.h"
+#include "../headers/globals.h"
 
 int main(void){
     InitWindow(screenWidth,screenHeight,"Rocketman Adventures");
