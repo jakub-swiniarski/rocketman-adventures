@@ -35,9 +35,9 @@ void soldierBorderCheck(Soldier *s){
     }
 
     //vertical
-    if(s->y<0){
+    /*if(s->y<0){
         s->y=0;
-    }
+    }*/
     else if(s->y+s->tx.height>screenHeight){
         s->y=screenHeight-s->tx.height;
     }
