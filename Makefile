@@ -1,4 +1,4 @@
-SOURCES=main.c src/functions.c
+SOURCES=src/main.c src/functions.c
 OBJECTS=main.o functions.o
 FLAGS=-lraylib -lm
 
