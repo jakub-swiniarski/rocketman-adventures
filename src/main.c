@@ -74,33 +74,36 @@ int main(void){
         for(u_int8_t i=0; i<numRockets; i++){
             if(rocketBorderCheck(&rockets[i])){
                 //smoke particles
-                for(u_int8_t j=0; j<3; j++){
-                    numParticles++;
-                    Particle *buffer=malloc(sizeof(Particle)*numParticles);
+                if(rockets[i].y>=0){
+                    for(u_int8_t j=0; j<3; j++){
+                        numParticles++;
+                        Particle *buffer=malloc(sizeof(Particle)*numParticles);
                     
-                    Particle newParticle={
-                        .tx=LoadTextureFromImage(Images.particleSmoke),
-                        .x=rockets[i].x+(int)(rockets[i].tx.width/2)+rand()%(50-(-50)+1)-50,
-                        .y=rockets[i].y+(int)(rockets[i].tx.width/2)+rand()%(50-(-50)+1)-50,
-                        .rotation=rand()%361,
-                        .alpha=255,
-                        .cooldownAlpha=0
-                    };
+                        Particle newParticle={
+                            .tx=LoadTextureFromImage(Images.particleSmoke),
+                            .x=rockets[i].x+(int)(rockets[i].tx.width/2)+rand()%(50-(-50)+1)-50,
+                            .y=rockets[i].y+(int)(rockets[i].tx.width/2)+rand()%(50-(-50)+1)-50,
+                            .rotation=rand()%361,
+                            .alpha=255,
+                            .cooldownAlpha=0
+                        };
 
-                    for(u_int8_t i=0; i<numParticles-1; i++){
-                        buffer[i]=particles[i];
+                        for(u_int8_t i=0; i<numParticles-1; i++){
+                            buffer[i]=particles[i];
+                        }
+
+                        buffer[numParticles-1]=newParticle;
+                        particles=buffer;
                     }
 
-                    buffer[numParticles-1]=newParticle;
-                    particles=buffer;
+                    //rocket jump
+                    if(abs((int)(redSoldier.x+(int)(redSoldier.tx.width/2)-rockets[i].x-(int)(rockets[i].tx.width/2)))<100 
+                    && abs((int)(redSoldier.y+(int)(redSoldier.tx.height/2)-rockets[i].y-(int)(rockets[i].tx.height/2)))<100){
+                        redSoldier.speedX=-rockets[i].speedX;
+                        redSoldier.speedY=-rockets[i].speedY; 
+                    } 
                 }
-
-                //rocket jump
-                if(abs((int)(redSoldier.x+(int)(redSoldier.tx.width/2)-rockets[i].x-(int)(rockets[i].tx.width/2)))<100 
-                && abs((int)(redSoldier.y+(int)(redSoldier.tx.height/2)-rockets[i].y-(int)(rockets[i].tx.height/2)))<100){
-                    redSoldier.speedX=-rockets[i].speedX;
-                    redSoldier.speedY=-rockets[i].speedY; 
-                }
+                
 
                 //delete rockets
                 numRockets--; 
