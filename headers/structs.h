@@ -18,6 +18,7 @@ typedef struct{
     float x,y;
     float speedX, speedY; //used for gravity and jumping
     float cooldown;
+    bool falling;
 } Soldier;
 
 typedef struct{

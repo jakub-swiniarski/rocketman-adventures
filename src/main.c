@@ -45,7 +45,8 @@ int main(void){
         .y=100,
         .speedX=0,
         .speedY=0,
-        .cooldown=0.f
+        .cooldown=0.f,
+        .falling=0
     };
     UnloadImage(Images.redSoldier);
 
@@ -158,12 +159,25 @@ int main(void){
             }
         }
 
+        //update player position
+        redSoldier.x+=redSoldier.speedX*dt;
+        if(redSoldier.speedY>0){
+            if(redSoldier.falling){
+                redSoldier.y+=redSoldier.speedY*dt; 
+            }
+        }
+        else{
+            redSoldier.y+=redSoldier.speedY*dt; 
+        } 
+
         //gravity
         if(redSoldier.y+redSoldier.tx.height>=screenHeight){
             redSoldier.y=screenHeight-redSoldier.tx.height;
             redSoldier.speedY=0;
+            redSoldier.falling=0;
         }
         else{
+            redSoldier.falling=1;
             redSoldier.speedY+=15;
         }
 
@@ -210,9 +224,7 @@ int main(void){
        
         soldierBorderCheck(&redSoldier);
 
-        //update player position
-        redSoldier.x+=redSoldier.speedX*dt;
-        redSoldier.y+=redSoldier.speedY*dt;
+        
 
         //update rocket launcher
         rl.x=redSoldier.x+(int)(redSoldier.tx.width/2);
@@ -239,6 +251,7 @@ int main(void){
     
         //draw platforms
         for(u_int8_t i=0; i<numPlatforms; i++){
+            platformCollisionCheck(&platforms[i],&redSoldier);
             DrawTexture(platforms[i].tx,platforms[i].x,platforms[i].y,WHITE);
         }
 
