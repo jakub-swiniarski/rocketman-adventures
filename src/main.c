@@ -87,7 +87,9 @@ int main(void){
         dt=GetFrameTime();
 
         for(u_int8_t i=0; i<numRockets; i++){
-            if(rocketBorderCheck(&rockets[i])){
+            rocketBorderCheck(&rockets[i]);
+
+            if(rockets[i].collided){
                 //smoke particles
                 if(rockets[i].y>=0){
                     for(u_int8_t j=0; j<3; j++){
@@ -204,7 +206,8 @@ int main(void){
                 .tx=LoadTextureFromImage(Images.rocket),
                 .x=redSoldier.x+(int)(redSoldier.tx.width/2),
                 .y=redSoldier.y+(int)(redSoldier.tx.height/2),
-                .rotation=90-atan2((redSoldier.x+(int)(redSoldier.tx.width/2)-GetMouseX()),(redSoldier.y+(int)(redSoldier.tx.height/2)-GetMouseY()))*180/PI, 
+                .rotation=90-atan2((redSoldier.x+(int)(redSoldier.tx.width/2)-GetMouseX()),(redSoldier.y+(int)(redSoldier.tx.height/2)-GetMouseY()))*180/PI,
+                .collided=0
             };
             
             newRocket.speedX=-cos(newRocket.rotation*PI/180)*800;
