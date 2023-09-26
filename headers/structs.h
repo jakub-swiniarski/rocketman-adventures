@@ -26,6 +26,7 @@ typedef struct{
     float x,y;
     unsigned short rotation;
     short speedX,speedY;
+    bool collided;
 } Rocket;
 
 typedef struct{
