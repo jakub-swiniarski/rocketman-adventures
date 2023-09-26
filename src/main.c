@@ -76,7 +76,7 @@ int main(void){
     for(u_int8_t i=0; i<numPlatforms; i++){
         Platform newPlatform={
             .tx=LoadTextureFromImage(Images.platform),
-            .x=rand()%1280-150, //hardcoded width
+            .x=rand()%((1280-300)-150+1)+150,
             .y=screenHeight-i*100
         };
 
