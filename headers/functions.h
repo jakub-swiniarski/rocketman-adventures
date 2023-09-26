@@ -4,7 +4,9 @@
 #include "structs.h"
 
 char *pathToFile(char *str);
-bool rocketBorderCheck(Rocket *r);
+void rocketBorderCheck(Rocket *r);
 void soldierBorderCheck(Soldier *s);
+void platformCollisionCheckS(Platform *p, Soldier *s);
+void platformCollisionCheckR(Platform *p, Rocket *r);
 
 #endif

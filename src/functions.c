@@ -13,15 +13,12 @@ char *pathToFile(char *str){
     return path;
 }
 
-bool rocketBorderCheck(Rocket *r){
+void rocketBorderCheck(Rocket *r){
     if(r->x<=0 ||
     r->x+r->tx.width>=screenWidth ||
     r->y<=0 ||
     r->y+r->tx.height>=screenHeight){
-        return true;
-    }
-    else{
-        return false;
+        r->collided=1;
     }
 }
 
@@ -35,10 +32,30 @@ void soldierBorderCheck(Soldier *s){
     }
 
     //vertical
-    if(s->y<0){
+    /*if(s->y<0){
         s->y=0;
-    }
-    else if(s->y+s->tx.height>screenHeight){
+    }*/
+    /*else if(s->y+s->tx.height>screenHeight){
         s->y=screenHeight-s->tx.height;
+    }*/
+}
+
+void platformCollisionCheckS(Platform *p, Soldier *s){
+    if(s->x+s->tx.width>p->x && s->x<p->x+p->tx.width){
+        if(s->y+s->tx.height<p->y+p->tx.height 
+        && s->y+s->tx.height>=p->y){
+            s->y=p->y-s->tx.height;
+            s->speedY=0;
+            s->falling=0;
+        }
     }
+}
+
+void platformCollisionCheckR(Platform *p, Rocket *r){
+    if(r->x+r->tx.width>p->x && r->x<p->x+p->tx.width){
+        if(r->y+r->tx.height<p->y+p->tx.height 
+        && r->y+r->tx.height>=p->y){
+            r->collided=1;
+        }
+    } 
 }
