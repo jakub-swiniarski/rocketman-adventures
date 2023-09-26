@@ -41,33 +41,29 @@ int main(void){
     //player
     Soldier redSoldier={
         .tx=LoadTextureFromImage(Images.redSoldier),
-        .x=100,
-        .y=100,
         .speedX=0,
         .speedY=0,
         .cooldown=0.f,
         .falling=0
     };
+    redSoldier.x=(int)(screenWidth/2)-redSoldier.tx.width;
+    redSoldier.y=screenHeight-redSoldier.tx.height;
     UnloadImage(Images.redSoldier);
 
     //rocket launcher
     Launcher rl={
         .tx=LoadTextureFromImage(Images.launcher),
-        .x=100,
-        .y=100,
+        .x=0,
+        .y=0,
         .rotation=0
     };
     UnloadImage(Images.launcher);
 
-    Platform *newPlatform=malloc(sizeof(Platform));
-    newPlatform->tx=LoadTextureFromImage(Images.platform);
-    newPlatform->x=300;
-    newPlatform->y=600;
-    UnloadImage(Images.platform);
-
     //background
     Texture background=LoadTextureFromImage(Images.background);
     UnloadImage(Images.background);
+
+    srand(time(NULL));
 
     u_int8_t numRockets=0;
     Rocket* rockets=malloc(numRockets*sizeof(Rocket));
@@ -75,12 +71,18 @@ int main(void){
     u_int8_t numParticles=0;
     Particle* particles=malloc(numParticles*sizeof(Particle));
 
-    u_int8_t numPlatforms=1;
-    Platform* platforms=malloc(numPlatforms*sizeof(Platform));
-    platforms[0]=*newPlatform;
-    free(newPlatform);
+    u_int8_t numPlatforms=5;
+    Platform platforms[numPlatforms];
+    for(u_int8_t i=0; i<numPlatforms; i++){
+        Platform newPlatform={
+            .tx=LoadTextureFromImage(Images.platform),
+            .x=rand()%1280-150, //hardcoded width
+            .y=screenHeight-i*100
+        };
 
-    srand(time(NULL)); 
+        platforms[i]=newPlatform;
+    }
+    UnloadImage(Images.platform);
 
     //game loop
     while(!WindowShouldClose()){
@@ -264,7 +266,7 @@ int main(void){
 
             //rocket collisions
             for(u_int8_t j=0; j<numRockets; j++){
-                platformCollisionCheckR(&platforms[i],&rockets[i]);
+                platformCollisionCheckR(&platforms[i],&rockets[j]);
             }
 
             //draw platforms
