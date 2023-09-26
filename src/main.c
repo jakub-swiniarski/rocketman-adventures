@@ -35,6 +35,9 @@ int main(void){
     Images.background=LoadImage(pathToFile("background.png"));
     ImageResizeNN(&Images.background,1280,720);
 
+    Images.platform=LoadImage(pathToFile("platform.png"));
+    ImageResizeNN(&Images.platform,30*5,2*5);
+
     //player
     Soldier redSoldier={
         .tx=LoadTextureFromImage(Images.redSoldier),
@@ -42,7 +45,8 @@ int main(void){
         .y=100,
         .speedX=0,
         .speedY=0,
-        .cooldown=0.f
+        .cooldown=0.f,
+        .falling=0
     };
     UnloadImage(Images.redSoldier);
 
@@ -55,6 +59,12 @@ int main(void){
     };
     UnloadImage(Images.launcher);
 
+    Platform *newPlatform=malloc(sizeof(Platform));
+    newPlatform->tx=LoadTextureFromImage(Images.platform);
+    newPlatform->x=300;
+    newPlatform->y=600;
+    UnloadImage(Images.platform);
+
     //background
     Texture background=LoadTextureFromImage(Images.background);
     UnloadImage(Images.background);
@@ -65,6 +75,11 @@ int main(void){
     u_int8_t numParticles=0;
     Particle* particles=malloc(numParticles*sizeof(Particle));
 
+    u_int8_t numPlatforms=1;
+    Platform* platforms=malloc(numPlatforms*sizeof(Platform));
+    platforms[0]=*newPlatform;
+    free(newPlatform);
+
     srand(time(NULL)); 
 
     //game loop
@@ -72,35 +87,42 @@ int main(void){
         dt=GetFrameTime();
 
         for(u_int8_t i=0; i<numRockets; i++){
-            if(rocketBorderCheck(&rockets[i])){
-                //smoke particles
-                for(u_int8_t j=0; j<3; j++){
-                    numParticles++;
-                    Particle *buffer=malloc(sizeof(Particle)*numParticles);
-                    
-                    Particle newParticle={
-                        .tx=LoadTextureFromImage(Images.particleSmoke),
-                        .x=rockets[i].x+(int)(rockets[i].tx.width/2)+rand()%(50-(-50)+1)-50,
-                        .y=rockets[i].y+(int)(rockets[i].tx.width/2)+rand()%(50-(-50)+1)-50,
-                        .rotation=rand()%361,
-                        .alpha=255,
-                        .cooldownAlpha=0
-                    };
+            rocketBorderCheck(&rockets[i]);
 
-                    for(u_int8_t i=0; i<numParticles-1; i++){
-                        buffer[i]=particles[i];
+            if(rockets[i].collided){
+                UnloadTexture(rockets[i].tx);
+
+                //smoke particles
+                if(rockets[i].y>=0){
+                    for(u_int8_t j=0; j<3; j++){
+                        numParticles++;
+                        Particle *buffer=malloc(sizeof(Particle)*numParticles);
+                    
+                        Particle newParticle={
+                            .tx=LoadTextureFromImage(Images.particleSmoke),
+                            .x=rockets[i].x+(int)(rockets[i].tx.width/2)+rand()%(50-(-50)+1)-50,
+                            .y=rockets[i].y+(int)(rockets[i].tx.width/2)+rand()%(50-(-50)+1)-50,
+                            .rotation=rand()%361,
+                            .alpha=255,
+                            .cooldownAlpha=0
+                        };
+
+                        for(u_int8_t i=0; i<numParticles-1; i++){
+                            buffer[i]=particles[i];
+                        }
+
+                        buffer[numParticles-1]=newParticle;
+                        particles=buffer;
                     }
 
-                    buffer[numParticles-1]=newParticle;
-                    particles=buffer;
+                    //rocket jump
+                    if(abs((int)(redSoldier.x+(int)(redSoldier.tx.width/2)-rockets[i].x-(int)(rockets[i].tx.width/2)))<100 
+                    && abs((int)(redSoldier.y+(int)(redSoldier.tx.height/2)-rockets[i].y-(int)(rockets[i].tx.height/2)))<100){
+                        redSoldier.speedX=-rockets[i].speedX;
+                        redSoldier.speedY=-rockets[i].speedY; 
+                    } 
                 }
-
-                //rocket jump
-                if(abs((int)(redSoldier.x+(int)(redSoldier.tx.width/2)-rockets[i].x-(int)(rockets[i].tx.width/2)))<100 
-                && abs((int)(redSoldier.y+(int)(redSoldier.tx.height/2)-rockets[i].y-(int)(rockets[i].tx.height/2)))<100){
-                    redSoldier.speedX=-rockets[i].speedX;
-                    redSoldier.speedY=-rockets[i].speedY; 
-                }
+                
 
                 //delete rockets
                 numRockets--; 
@@ -141,12 +163,37 @@ int main(void){
             }
         }
 
+        //movement
+        if(IsKeyDown(KEY_D)){
+            redSoldier.x+=150*dt;
+        }
+        if(IsKeyDown(KEY_A)){
+            redSoldier.x-=150*dt;
+        } 
+        if(IsKeyDown(KEY_SPACE) && !redSoldier.falling){
+            redSoldier.falling=0;
+            redSoldier.speedY=-301;
+        } 
+
+        //update player position
+        redSoldier.x+=redSoldier.speedX*dt;
+        if(redSoldier.speedY>0){
+            if(redSoldier.falling){
+                redSoldier.y+=redSoldier.speedY*dt; 
+            }
+        }
+        else{
+            redSoldier.y+=redSoldier.speedY*dt; 
+        } 
+
         //gravity
         if(redSoldier.y+redSoldier.tx.height>=screenHeight){
             redSoldier.y=screenHeight-redSoldier.tx.height;
             redSoldier.speedY=0;
+            redSoldier.falling=0;
         }
         else{
+            redSoldier.falling=1;
             redSoldier.speedY+=15;
         }
 
@@ -161,7 +208,8 @@ int main(void){
                 .tx=LoadTextureFromImage(Images.rocket),
                 .x=redSoldier.x+(int)(redSoldier.tx.width/2),
                 .y=redSoldier.y+(int)(redSoldier.tx.height/2),
-                .rotation=90-atan2((redSoldier.x+(int)(redSoldier.tx.width/2)-GetMouseX()),(redSoldier.y+(int)(redSoldier.tx.height/2)-GetMouseY()))*180/PI, 
+                .rotation=90-atan2((redSoldier.x+(int)(redSoldier.tx.width/2)-GetMouseX()),(redSoldier.y+(int)(redSoldier.tx.height/2)-GetMouseY()))*180/PI,
+                .collided=0
             };
             
             newRocket.speedX=-cos(newRocket.rotation*PI/180)*800;
@@ -174,16 +222,7 @@ int main(void){
             buffer[numRockets-1]=newRocket;
             rockets=buffer;
         }
-        if(IsKeyDown(KEY_D)){
-            redSoldier.x+=150*dt;
-        }
-        if(IsKeyDown(KEY_A)){
-            redSoldier.x-=150*dt;
-        }
-        if(IsKeyDown(KEY_SPACE) && redSoldier.y+redSoldier.tx.height>=screenHeight){
-            redSoldier.speedY=-300;
-        }
-
+        
         if(redSoldier.speedX>0){
             redSoldier.speedX-=5;
         }
@@ -192,10 +231,6 @@ int main(void){
         }
        
         soldierBorderCheck(&redSoldier);
-
-        //update player position
-        redSoldier.x+=redSoldier.speedX*dt;
-        redSoldier.y+=redSoldier.speedY*dt;
 
         //update rocket launcher
         rl.x=redSoldier.x+(int)(redSoldier.tx.width/2);
@@ -219,6 +254,22 @@ int main(void){
 
         //draw background
         DrawTexture(background,0,0,WHITE);
+    
+        //update platforms
+        for(u_int8_t i=0; i<numPlatforms; i++){
+            //soldier collisions
+            if(redSoldier.speedY>0){
+                platformCollisionCheckS(&platforms[i],&redSoldier);
+            }
+
+            //rocket collisions
+            for(u_int8_t j=0; j<numRockets; j++){
+                platformCollisionCheckR(&platforms[i],&rockets[i]);
+            }
+
+            //draw platforms
+            DrawTexture(platforms[i].tx,platforms[i].x,platforms[i].y,WHITE);
+        }
 
         //draw player
         DrawTexture(redSoldier.tx,redSoldier.x,redSoldier.y,WHITE);

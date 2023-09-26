@@ -10,6 +10,7 @@ static struct{
     Image launcher;
     Image particleSmoke;
     Image background;
+    Image platform;
 } Images;
 
 typedef struct{
@@ -17,6 +18,7 @@ typedef struct{
     float x,y;
     float speedX, speedY; //used for gravity and jumping
     float cooldown;
+    bool falling;
 } Soldier;
 
 typedef struct{
@@ -24,6 +26,7 @@ typedef struct{
     float x,y;
     unsigned short rotation;
     short speedX,speedY;
+    bool collided;
 } Rocket;
 
 typedef struct{
@@ -40,5 +43,10 @@ typedef struct{
     u_int8_t alpha;
     float cooldownAlpha;
 } Particle;
+
+typedef struct{
+    Texture tx;
+    float x,y;
+} Platform;
 
 #endif
