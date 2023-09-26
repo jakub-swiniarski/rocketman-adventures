@@ -90,6 +90,8 @@ int main(void){
             rocketBorderCheck(&rockets[i]);
 
             if(rockets[i].collided){
+                UnloadTexture(rockets[i].tx);
+
                 //smoke particles
                 if(rockets[i].y>=0){
                     for(u_int8_t j=0; j<3; j++){
@@ -253,11 +255,19 @@ int main(void){
         //draw background
         DrawTexture(background,0,0,WHITE);
     
-        //draw platforms
+        //update platforms
         for(u_int8_t i=0; i<numPlatforms; i++){
+            //soldier collisions
             if(redSoldier.speedY>0){
-                platformCollisionCheck(&platforms[i],&redSoldier);
+                platformCollisionCheckS(&platforms[i],&redSoldier);
             }
+
+            //rocket collisions
+            for(u_int8_t j=0; j<numRockets; j++){
+                platformCollisionCheckR(&platforms[i],&rockets[i]);
+            }
+
+            //draw platforms
             DrawTexture(platforms[i].tx,platforms[i].x,platforms[i].y,WHITE);
         }
 

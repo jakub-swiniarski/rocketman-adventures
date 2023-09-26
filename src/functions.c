@@ -40,7 +40,7 @@ void soldierBorderCheck(Soldier *s){
     }*/
 }
 
-void platformCollisionCheck(Platform *p, Soldier *s){
+void platformCollisionCheckS(Platform *p, Soldier *s){
     if(s->x+s->tx.width>p->x && s->x<p->x+p->tx.width){
         if(s->y+s->tx.height<p->y+p->tx.height 
         && s->y+s->tx.height>=p->y){
@@ -49,4 +49,10 @@ void platformCollisionCheck(Platform *p, Soldier *s){
             s->falling=0;
         }
     }
+}
+
+void platformCollisionCheckR(Platform *p, Rocket *r){
+    if(r->x+r->tx.width>p->x && r->x<p->x+p->tx.width){
+        r->collided=1;
+    } 
 }

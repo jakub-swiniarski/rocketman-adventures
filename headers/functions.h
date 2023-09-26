@@ -6,6 +6,7 @@
 char *pathToFile(char *str);
 void rocketBorderCheck(Rocket *r);
 void soldierBorderCheck(Soldier *s);
-void platformCollisionCheck(Platform *p, Soldier *s);
+void platformCollisionCheckS(Platform *p, Soldier *s);
+void platformCollisionCheckR(Platform *p, Rocket *r);
 
 #endif
