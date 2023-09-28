@@ -251,7 +251,7 @@ int main(void){
         rl.rotation=270-atan2((redSoldier.x+(int)(redSoldier.tx.width/2)-GetMouseX()),(redSoldier.y+(int)(redSoldier.tx.height/2)-GetMouseY()))*180/PI; 
 
         //update cooldowns
-        redSoldier.cooldown-=120*GetFrameTime();
+        redSoldier.cooldown-=150*GetFrameTime();
 
         //update rockets
         for(u_int8_t i=0; i<numRockets; i++){
@@ -391,6 +391,9 @@ int main(void){
     } 
     for(u_int8_t i=0; i<numParticles; i++){
         UnloadTexture(particles[i].tx);
+    }
+    for(u_int8_t i=0; i<numPlatforms; i++){
+        UnloadTexture(platforms[i].tx);
     }
 
     CloseWindow();
