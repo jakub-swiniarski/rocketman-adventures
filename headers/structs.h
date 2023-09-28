@@ -9,7 +9,7 @@ static struct{
     Image rocket;
     Image launcher;
     Image particleSmoke;
-    Image sky;
+    Image backgrounds[2];
     Image platform;
 } Images;
 

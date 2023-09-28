@@ -32,8 +32,11 @@ int main(void){
     Images.particleSmoke=LoadImage(pathToFile("particle_smoke.png"));
     ImageResizeNN(&Images.particleSmoke,12*10,12*10);
 
-    Images.sky=LoadImage(pathToFile("sky1.png"));
-    ImageResizeNN(&Images.sky,1280,720);
+    Images.backgrounds[0]=LoadImage(pathToFile("background0.png"));
+    ImageResizeNN(&Images.backgrounds[0],screenWidth,screenHeight);
+
+    Images.backgrounds[1]=LoadImage(pathToFile("background1.png"));
+    ImageResizeNN(&Images.backgrounds[1],screenWidth,screenHeight);
 
     Images.platform=LoadImage(pathToFile("platform.png"));
     ImageResizeNN(&Images.platform,30*5,2*5);
@@ -59,10 +62,14 @@ int main(void){
     };
     UnloadImage(Images.launcher);
 
-    //sky
-    Texture sky=LoadTextureFromImage(Images.sky);
-    UnloadImage(Images.sky);
-    short skyY=0;
+    //background
+    Texture backgrounds[2];
+    short bgY[2]; 
+    for(u_int8_t i=0; i<2; i++){
+        backgrounds[i]=LoadTextureFromImage(Images.backgrounds[i]);
+        UnloadImage(Images.backgrounds[i]);
+        bgY[i]=-i*screenHeight;
+    }
 
     srand(time(NULL));
 
@@ -84,6 +91,7 @@ int main(void){
         platforms[i]=newPlatform;
     }
     UnloadImage(Images.platform);
+    short *bgShift=NULL;
 
     //game loop
     while(!WindowShouldClose()){
@@ -195,9 +203,13 @@ int main(void){
 
         //gravity
         if(redSoldier.y+redSoldier.tx.height>=screenHeight){
+            //if game not started do this:
             redSoldier.y=screenHeight-redSoldier.tx.height;
             redSoldier.speedY=0;
             redSoldier.falling=0;
+
+            //if game started do this:
+            //GAME OVER
         }
         else{
             redSoldier.falling=1;
@@ -268,9 +280,24 @@ int main(void){
         ClearBackground(BLACK); 
         BeginDrawing();
 
-        //draw sky
-        DrawTexture(sky,0,skyY,WHITE);
-    
+        //update background
+        bgShift = malloc(sizeof(short)); //i have absolutely no idea why this works, but it does and therefore should not be touched
+        *bgShift=redSoldier.speedY*dt/2;
+        for(u_int8_t i=0; i<2; i++){
+            //parallax scrolling
+            if(bgY[i]>screenHeight){
+                bgY[i]=-screenHeight;
+                bgY[1-i]=0;
+            } 
+            if(redSoldier.y==(int)(screenHeight/2)-(int)(redSoldier.tx.height/2)){
+                bgY[i]-=*bgShift;
+            }
+
+            //draw background
+            DrawTexture(backgrounds[i],0,bgY[i],WHITE);
+        }
+        free(bgShift);
+
         //update platforms
         for(u_int8_t i=0; i<numPlatforms; i++){
             //soldier collisions
