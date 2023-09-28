@@ -201,7 +201,7 @@ int main(void){
 
         //input
         if((IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_R)) && redSoldier.cooldown<=0){
-            redSoldier.cooldown=0.5;
+            redSoldier.cooldown=255;
             numRockets++;
 
             Rocket *buffer=malloc(sizeof(Rocket)*numRockets);
@@ -252,7 +252,7 @@ int main(void){
 
         //update cooldowns
         if(redSoldier.cooldown>0.f){
-            redSoldier.cooldown-=GetFrameTime();
+            redSoldier.cooldown-=250*GetFrameTime();
         }
 
         //update rockets

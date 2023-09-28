@@ -17,7 +17,7 @@ typedef struct{
     Texture tx;
     short x,y;
     short speedX, speedY; //used for gravity and jumping
-    float cooldown;
+    u_int8_t cooldown;
     bool falling;
 } Soldier;
 
