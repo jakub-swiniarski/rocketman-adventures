@@ -43,7 +43,7 @@ int main(void){
         .tx=LoadTextureFromImage(Images.redSoldier),
         .speedX=0,
         .speedY=0,
-        .cooldown=0.f,
+        .cooldown=0,
         .falling=0
     };
     redSoldier.x=(int)(screenWidth/2)-redSoldier.tx.width;
@@ -224,14 +224,25 @@ int main(void){
             buffer[numRockets-1]=newRocket;
             rockets=buffer;
         }
-        
+       
+        //horizontal friction
         if(redSoldier.speedX>0){
-            redSoldier.speedX-=5;
+            if(redSoldier.speedX<5){
+                redSoldier.speedX=0;
+            }
+            else{
+                redSoldier.speedX-=8;
+            }
         }
         else if(redSoldier.speedX<0){
-            redSoldier.speedX+=5;
+            if(redSoldier.speedX>-5){
+                redSoldier.speedX=0;
+            }
+            else{
+                redSoldier.speedX+=8;
+            }
         }
-       
+
         soldierBorderCheck(&redSoldier);
 
         //update rocket launcher
