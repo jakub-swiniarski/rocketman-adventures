@@ -59,8 +59,8 @@ int main(void){
     };
     UnloadImage(Images.launcher);
 
-    //background
-    Texture background=LoadTextureFromImage(Images.sky);
+    //sky
+    Texture sky=LoadTextureFromImage(Images.sky);
     UnloadImage(Images.sky);
 
     srand(time(NULL));
@@ -263,8 +263,8 @@ int main(void){
         ClearBackground(BLACK); 
         BeginDrawing();
 
-        //draw background
-        DrawTexture(background,0,0,WHITE);
+        //draw sky
+        DrawTexture(sky,0,0,WHITE);
     
         //update platforms
         for(u_int8_t i=0; i<numPlatforms; i++){
