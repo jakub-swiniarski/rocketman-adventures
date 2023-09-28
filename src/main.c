@@ -189,6 +189,10 @@ int main(void){
             redSoldier.y+=redSoldier.speedY*dt; 
         } 
 
+        if(redSoldier.y<(int)(screenHeight/2)-(int)(redSoldier.tx.height/2)){
+            redSoldier.y=(int)(screenHeight/2)-(int)(redSoldier.tx.height/2); 
+        } //TODO: DO NOT MOVE THE PLAYER IN 'update player position' IF HE IS IN THE MIDDLE
+
         //gravity
         if(redSoldier.y+redSoldier.tx.height>=screenHeight){
             redSoldier.y=screenHeight-redSoldier.tx.height;
@@ -274,9 +278,18 @@ int main(void){
                 platformCollisionCheckS(&platforms[i],&redSoldier);
             }
 
+            if(redSoldier.y==(int)(screenHeight/2)-(int)(redSoldier.tx.height/2)){
+                platforms[i].y-=redSoldier.speedY*dt;
+            }
+
             //rocket collisions
             for(u_int8_t j=0; j<numRockets; j++){
                 platformCollisionCheckR(&platforms[i],&rockets[j]);
+            }
+
+            if(platforms[i].y>screenHeight){
+                platforms[i].x=rand()%((1280-150-300)-300+1)+300;
+                platforms[i].y=-platforms[i].tx.height;
             }
 
             //draw platforms
