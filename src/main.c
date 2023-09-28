@@ -43,7 +43,7 @@ int main(void){
         .tx=LoadTextureFromImage(Images.redSoldier),
         .speedX=0,
         .speedY=0,
-        .cooldown=0.f,
+        .cooldown=0,
         .falling=0
     };
     redSoldier.x=(int)(screenWidth/2)-redSoldier.tx.width;
@@ -71,13 +71,13 @@ int main(void){
     u_int8_t numParticles=0;
     Particle* particles=malloc(numParticles*sizeof(Particle));
 
-    u_int8_t numPlatforms=5;
+    u_int8_t numPlatforms=3;
     Platform platforms[numPlatforms];
     for(u_int8_t i=0; i<numPlatforms; i++){
         Platform newPlatform={
             .tx=LoadTextureFromImage(Images.platform),
-            .x=rand()%((1280-300)-150+1)+150,
-            .y=screenHeight-(i+1)*130
+            .x=rand()%((1280-150-300)-300+1)+300,
+            .y=screenHeight-(i+1)*200
         };
 
         platforms[i]=newPlatform;
@@ -147,7 +147,7 @@ int main(void){
 
         //delete particles
         for(u_int8_t i=0; i<numParticles; i++){
-            if(particles[i].alpha<20){
+            if(particles[i].alpha<5){
                 numParticles--;
 
                 //shift elements in array
@@ -174,7 +174,7 @@ int main(void){
         } 
         if(IsKeyDown(KEY_SPACE) && !redSoldier.falling){
             redSoldier.falling=0;
-            redSoldier.speedY=-301;
+            redSoldier.speedY=-300;
         } 
 
         //update player position
@@ -200,8 +200,8 @@ int main(void){
         }
 
         //input
-        if((IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_R)) && redSoldier.cooldown<=0){
-            redSoldier.cooldown=0.5;
+        if((IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_R)) && redSoldier.cooldown<0){
+            redSoldier.cooldown=120;
             numRockets++;
 
             Rocket *buffer=malloc(sizeof(Rocket)*numRockets);
@@ -224,14 +224,25 @@ int main(void){
             buffer[numRockets-1]=newRocket;
             rockets=buffer;
         }
-        
+       
+        //horizontal friction
         if(redSoldier.speedX>0){
-            redSoldier.speedX-=5;
+            if(redSoldier.speedX<5){
+                redSoldier.speedX=0;
+            }
+            else{
+                redSoldier.speedX-=8;
+            }
         }
         else if(redSoldier.speedX<0){
-            redSoldier.speedX+=5;
+            if(redSoldier.speedX>-5){
+                redSoldier.speedX=0;
+            }
+            else{
+                redSoldier.speedX+=8;
+            }
         }
-       
+
         soldierBorderCheck(&redSoldier);
 
         //update rocket launcher
@@ -240,9 +251,7 @@ int main(void){
         rl.rotation=270-atan2((redSoldier.x+(int)(redSoldier.tx.width/2)-GetMouseX()),(redSoldier.y+(int)(redSoldier.tx.height/2)-GetMouseY()))*180/PI; 
 
         //update cooldowns
-        if(redSoldier.cooldown>0.f){
-            redSoldier.cooldown-=GetFrameTime();
-        }
+        redSoldier.cooldown-=150*GetFrameTime();
 
         //update rockets
         for(u_int8_t i=0; i<numRockets; i++){
@@ -333,10 +342,10 @@ int main(void){
 
         //draw particles
         for(u_int8_t i=0; i<numParticles; i++){
-            particles[i].cooldownAlpha-=GetFrameTime();
+            particles[i].cooldownAlpha-=1000*GetFrameTime();
 
-            if(particles[i].cooldownAlpha<=0){
-                particles[i].cooldownAlpha=0.01;
+            if(particles[i].cooldownAlpha<0){
+                particles[i].cooldownAlpha=20;
                 particles[i].alpha-=2;
             }
 
@@ -382,6 +391,9 @@ int main(void){
     } 
     for(u_int8_t i=0; i<numParticles; i++){
         UnloadTexture(particles[i].tx);
+    }
+    for(u_int8_t i=0; i<numPlatforms; i++){
+        UnloadTexture(platforms[i].tx);
     }
 
     CloseWindow();
