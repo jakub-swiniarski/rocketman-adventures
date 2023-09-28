@@ -191,7 +191,7 @@ int main(void){
 
         if(redSoldier.y<(int)(screenHeight/2)-(int)(redSoldier.tx.height/2)){
             redSoldier.y=(int)(screenHeight/2)-(int)(redSoldier.tx.height/2); 
-        } //TODO: DO NOT MOVE THE PLAYER IN 'update player position' IF HE IS IN THE MIDDLE
+        }
 
         //gravity
         if(redSoldier.y+redSoldier.tx.height>=screenHeight){
@@ -354,15 +354,20 @@ int main(void){
             WHITE
         ); 
 
-        //draw particles
+        //update particles
         for(u_int8_t i=0; i<numParticles; i++){
-            particles[i].cooldownAlpha-=1000*GetFrameTime();
+            if(redSoldier.y==(int)(screenHeight/2)-(int)(redSoldier.tx.height/2)){
+                particles[i].y-=redSoldier.speedY*dt;
+            }  
 
+            //cooldown
+            particles[i].cooldownAlpha-=1000*GetFrameTime();
             if(particles[i].cooldownAlpha<0){
                 particles[i].cooldownAlpha=20;
                 particles[i].alpha-=2;
             }
-
+            
+            //draw
             DrawTexturePro(
                 particles[i].tx,
                 (Rectangle){ //src
