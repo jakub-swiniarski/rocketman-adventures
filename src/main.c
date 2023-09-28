@@ -147,7 +147,7 @@ int main(void){
 
         //delete particles
         for(u_int8_t i=0; i<numParticles; i++){
-            if(particles[i].alpha<20){
+            if(particles[i].alpha<5){
                 numParticles--;
 
                 //shift elements in array
@@ -200,8 +200,8 @@ int main(void){
         }
 
         //input
-        if((IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_R)) && redSoldier.cooldown<=0){
-            redSoldier.cooldown=255;
+        if((IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_R)) && redSoldier.cooldown<0){
+            redSoldier.cooldown=120;
             numRockets++;
 
             Rocket *buffer=malloc(sizeof(Rocket)*numRockets);
@@ -251,9 +251,7 @@ int main(void){
         rl.rotation=270-atan2((redSoldier.x+(int)(redSoldier.tx.width/2)-GetMouseX()),(redSoldier.y+(int)(redSoldier.tx.height/2)-GetMouseY()))*180/PI; 
 
         //update cooldowns
-        if(redSoldier.cooldown>0.f){
-            redSoldier.cooldown-=250*GetFrameTime();
-        }
+        redSoldier.cooldown-=100*GetFrameTime();
 
         //update rockets
         for(u_int8_t i=0; i<numRockets; i++){
@@ -344,10 +342,10 @@ int main(void){
 
         //draw particles
         for(u_int8_t i=0; i<numParticles; i++){
-            particles[i].cooldownAlpha-=GetFrameTime();
+            particles[i].cooldownAlpha-=1000*GetFrameTime();
 
-            if(particles[i].cooldownAlpha<=0){
-                particles[i].cooldownAlpha=0.01;
+            if(particles[i].cooldownAlpha<0){
+                particles[i].cooldownAlpha=20;
                 particles[i].alpha-=2;
             }
 
