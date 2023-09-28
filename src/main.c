@@ -32,8 +32,8 @@ int main(void){
     Images.particleSmoke=LoadImage(pathToFile("particle_smoke.png"));
     ImageResizeNN(&Images.particleSmoke,12*10,12*10);
 
-    Images.background=LoadImage(pathToFile("background.png"));
-    ImageResizeNN(&Images.background,1280,720);
+    Images.sky=LoadImage(pathToFile("sky.png"));
+    ImageResizeNN(&Images.sky,1280,720);
 
     Images.platform=LoadImage(pathToFile("platform.png"));
     ImageResizeNN(&Images.platform,30*5,2*5);
@@ -60,8 +60,8 @@ int main(void){
     UnloadImage(Images.launcher);
 
     //background
-    Texture background=LoadTextureFromImage(Images.background);
-    UnloadImage(Images.background);
+    Texture background=LoadTextureFromImage(Images.sky);
+    UnloadImage(Images.sky);
 
     srand(time(NULL));
 
