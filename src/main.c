@@ -174,7 +174,7 @@ int main(void){
         } 
         if(IsKeyDown(KEY_SPACE) && !redSoldier.falling){
             redSoldier.falling=0;
-            redSoldier.speedY=-301;
+            redSoldier.speedY=-300;
         } 
 
         //update player position
@@ -251,7 +251,7 @@ int main(void){
         rl.rotation=270-atan2((redSoldier.x+(int)(redSoldier.tx.width/2)-GetMouseX()),(redSoldier.y+(int)(redSoldier.tx.height/2)-GetMouseY()))*180/PI; 
 
         //update cooldowns
-        redSoldier.cooldown-=100*GetFrameTime();
+        redSoldier.cooldown-=120*GetFrameTime();
 
         //update rockets
         for(u_int8_t i=0; i<numRockets; i++){
