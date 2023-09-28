@@ -33,7 +33,7 @@ int main(void){
     ImageResizeNN(&Images.particleSmoke,12*10,12*10);
 
     Images.sky=LoadImage(pathToFile("sky.png"));
-    ImageResizeNN(&Images.sky,1280,720);
+    ImageResizeNN(&Images.sky,1280,720*2);
 
     Images.platform=LoadImage(pathToFile("platform.png"));
     ImageResizeNN(&Images.platform,30*5,2*5);
@@ -62,6 +62,7 @@ int main(void){
     //sky
     Texture sky=LoadTextureFromImage(Images.sky);
     UnloadImage(Images.sky);
+    short skyY=-(int)(sky.height/2);
 
     srand(time(NULL));
 
@@ -264,7 +265,7 @@ int main(void){
         BeginDrawing();
 
         //draw sky
-        DrawTexture(sky,0,0,WHITE);
+        DrawTexture(sky,0,skyY,WHITE);
     
         //update platforms
         for(u_int8_t i=0; i<numPlatforms; i++){
