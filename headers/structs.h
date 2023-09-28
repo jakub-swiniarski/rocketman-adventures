@@ -15,15 +15,15 @@ static struct{
 
 typedef struct{
     Texture tx;
-    float x,y;
-    float speedX, speedY; //used for gravity and jumping
+    short x,y;
+    short speedX, speedY; //used for gravity and jumping
     float cooldown;
     bool falling;
 } Soldier;
 
 typedef struct{
     Texture tx;
-    float x,y;
+    short x,y;
     unsigned short rotation;
     short speedX,speedY;
     bool collided;
@@ -31,14 +31,14 @@ typedef struct{
 
 typedef struct{
     Texture tx;
-    float x,y;
+    short x,y;
     unsigned short rotation;
     int8_t flip; //1 means befault, -1 means flipped
 } Launcher;
 
 typedef struct{
     Texture tx;
-    float x,y;
+    short x,y;
     unsigned short rotation;
     u_int8_t alpha;
     float cooldownAlpha;
@@ -46,7 +46,7 @@ typedef struct{
 
 typedef struct{
     Texture tx;
-    float x,y;
+    short x,y;
 } Platform;
 
 #endif
