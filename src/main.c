@@ -71,13 +71,13 @@ int main(void){
     u_int8_t numParticles=0;
     Particle* particles=malloc(numParticles*sizeof(Particle));
 
-    u_int8_t numPlatforms=5;
+    u_int8_t numPlatforms=3;
     Platform platforms[numPlatforms];
     for(u_int8_t i=0; i<numPlatforms; i++){
         Platform newPlatform={
             .tx=LoadTextureFromImage(Images.platform),
-            .x=rand()%((1280-300)-150+1)+150,
-            .y=screenHeight-(i+1)*130
+            .x=rand()%((1280-150-300)-300+1)+300,
+            .y=screenHeight-(i+1)*200
         };
 
         platforms[i]=newPlatform;
