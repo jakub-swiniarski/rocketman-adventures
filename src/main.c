@@ -32,8 +32,8 @@ int main(void){
     Images.particleSmoke=LoadImage(pathToFile("particle_smoke.png"));
     ImageResizeNN(&Images.particleSmoke,12*10,12*10);
 
-    Images.sky=LoadImage(pathToFile("sky.png"));
-    ImageResizeNN(&Images.sky,1280,720*2);
+    Images.sky=LoadImage(pathToFile("sky1.png"));
+    ImageResizeNN(&Images.sky,1280,720);
 
     Images.platform=LoadImage(pathToFile("platform.png"));
     ImageResizeNN(&Images.platform,30*5,2*5);
@@ -62,7 +62,7 @@ int main(void){
     //sky
     Texture sky=LoadTextureFromImage(Images.sky);
     UnloadImage(Images.sky);
-    short skyY=-(int)(sky.height/2);
+    short skyY=0;
 
     srand(time(NULL));
 
