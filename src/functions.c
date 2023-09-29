@@ -14,11 +14,15 @@ char *pathToFile(char *str){
 }
 
 void rocketBorderCheck(Rocket *r){
-    if(r->x<=0 ||
-    r->x+r->tx.width>=screenWidth ||
-    r->y<=0 ||
-    r->y+r->tx.height>=screenHeight){
+    if(r->y+r->tx.height>=screenHeight){
         r->collided=1;
+    }
+    else if(
+    r->x<=0 ||
+    r->x>=screenWidth ||
+    r->y<=0){
+        r->collided=1;
+        r->shouldExplode=0;
     }
 }
 
