@@ -1,4 +1,5 @@
 #include <raylib.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
@@ -18,7 +19,9 @@ int main(void){
     
     SetTargetFPS(60);
     float dt=1.f;
-    
+
+    u_int8_t gameState=0; //0 - not started, 1 - in progress, 2 - game over
+
     //load and resize images
     Images.redSoldier=LoadImage(pathToFile("red_soldier.png"));
     ImageResizeNN(&Images.redSoldier,12*5,20*5);
@@ -93,6 +96,9 @@ int main(void){
     UnloadImage(Images.platform);
     short *bgShift=NULL;
 
+    unsigned short score=0;
+    char scoreString[5];
+
     //game loop
     while(!WindowShouldClose()){
         dt=GetFrameTime();
@@ -104,7 +110,7 @@ int main(void){
                 UnloadTexture(rockets[i].tx);
 
                 //smoke particles
-                if(rockets[i].y>=0){
+                if(rockets[i].shouldExplode){
                     for(u_int8_t j=0; j<3; j++){
                         numParticles++;
                         Particle *buffer=malloc(sizeof(Particle)*numParticles);
@@ -198,18 +204,28 @@ int main(void){
         } 
 
         if(redSoldier.y<(int)(screenHeight/2)-(int)(redSoldier.tx.height/2)){
+            //score
+            score-=redSoldier.speedY*dt;
+            sprintf(scoreString, "%hu", score);
+
             redSoldier.y=(int)(screenHeight/2)-(int)(redSoldier.tx.height/2); 
+            
+            if(gameState==0){
+                gameState=1;
+            }
         }
 
         //gravity
         if(redSoldier.y+redSoldier.tx.height>=screenHeight){
-            //if game not started do this:
-            redSoldier.y=screenHeight-redSoldier.tx.height;
-            redSoldier.speedY=0;
-            redSoldier.falling=0;
+            if(gameState!=1){
+                redSoldier.y=screenHeight-redSoldier.tx.height;
+                redSoldier.speedY=0;
+                redSoldier.falling=0;
+            }
 
-            //if game started do this:
-            //GAME OVER
+            if(gameState==1){
+                gameState=2;
+            }
         }
         else{
             redSoldier.falling=1;
@@ -228,7 +244,8 @@ int main(void){
                 .x=redSoldier.x+(int)(redSoldier.tx.width/2),
                 .y=redSoldier.y+(int)(redSoldier.tx.height/2),
                 .rotation=90-atan2((redSoldier.x+(int)(redSoldier.tx.width/2)-GetMouseX()),(redSoldier.y+(int)(redSoldier.tx.height/2)-GetMouseY()))*180/PI,
-                .collided=0
+                .collided=0,
+                .shouldExplode=1
             };
             
             newRocket.speedX=-cos(newRocket.rotation*PI/180)*800;
@@ -421,6 +438,42 @@ int main(void){
                     particles[i].alpha
                 }
             );
+        } 
+    
+        //text
+        switch(gameState){
+            case 0: //game not started
+                DrawText( //TODO: TURN THIS INTO A FUNCTION DRAWTEXTCENTER
+                    "ROCKETMAN ADVENTURES", 
+                    (int)(screenWidth/2)-(int)(MeasureTextEx(GetFontDefault(), "ROCKETMAN ADVENTURES", 100, 10).x/2),
+                    100,
+                    100,
+                    BLACK
+                );
+
+                DrawText(
+                    "START JUMPING TO BEGIN", 
+                    (int)(screenWidth/2)-(int)(MeasureTextEx(GetFontDefault(), "START JUMPING TO BEGIN", 64, 10).x/2),
+                    200,
+                    64,
+                    BLACK
+                ); 
+                break;
+            case 1: //game in progress
+                DrawText("SCORE: ", 10, 10, 64, BLACK);
+                DrawText(scoreString,280, 10, 64, BLACK);
+                break;
+            case 2: //game over
+                DrawText(
+                    "GAME OVER", 
+                    (int)(screenWidth/2)-(int)(MeasureTextEx(GetFontDefault(), "GAME OVER", 100, 10).x/2),
+                    (int)(screenHeight/2)-(int)(MeasureTextEx(GetFontDefault(), "GAME OVER", 100, 10).y/2),
+                    100,
+                    BLACK
+                );  
+                break;
+            default:
+                DrawText("ERROR", 100, 100, 120, BLACK);
         } 
 
         EndDrawing();
