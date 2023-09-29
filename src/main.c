@@ -79,7 +79,7 @@ int main(void){
     u_int8_t numParticles=0;
     Particle* particles=malloc(numParticles*sizeof(Particle));
 
-    u_int8_t numPlatforms=3;
+    u_int8_t numPlatforms=5;
     Platform platforms[numPlatforms];
     for(u_int8_t i=0; i<numPlatforms; i++){
         Platform newPlatform={
