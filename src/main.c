@@ -463,17 +463,31 @@ int main(void){
                 ); 
                 break;
             case 1: //game in progress
-                DrawText("SCORE: ", 10, 10, 64, BLACK);
-                DrawText(scoreString,280, 10, 64, BLACK);
+                DrawText("SCORE:", 10, 10, 64, BLACK);
+                DrawText(scoreString,250, 10, 64, BLACK);
                 break;
             case 2: //game over
                 DrawText(
                     "GAME OVER", 
                     (int)(screenWidth/2)-(int)(MeasureTextEx(GetFontDefault(), "GAME OVER", 100, 10).x/2),
-                    (int)(screenHeight/2)-(int)(MeasureTextEx(GetFontDefault(), "GAME OVER", 100, 10).y/2),
+                    (int)(screenHeight/2)-(int)(MeasureTextEx(GetFontDefault(), "GAME OVER", 100, 10).y/2)-100,
                     100,
                     BLACK
-                );  
+                );
+                DrawText(
+                    "SCORE:", 
+                    (int)(screenWidth/2)-(int)(MeasureTextEx(GetFontDefault(), "SCORE:", 64, 10).x/2),
+                    (int)(screenHeight/2)-(int)(MeasureTextEx(GetFontDefault(), "SCORE", 64, 10).y/2),
+                    64,
+                    BLACK
+                );
+                DrawText(
+                    scoreString, 
+                    (int)(screenWidth/2)-(int)(MeasureTextEx(GetFontDefault(), scoreString, 64, 10).x/2),
+                    (int)(screenHeight/2)-(int)(MeasureTextEx(GetFontDefault(), scoreString, 64, 10).y/2)+100,
+                    64,
+                    BLACK
+                ); 
                 break;
             default:
                 DrawText("ERROR", 100, 100, 120, BLACK);
