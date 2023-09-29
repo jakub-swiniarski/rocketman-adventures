@@ -201,17 +201,23 @@ int main(void){
 
         if(redSoldier.y<(int)(screenHeight/2)-(int)(redSoldier.tx.height/2)){
             redSoldier.y=(int)(screenHeight/2)-(int)(redSoldier.tx.height/2); 
+            
+            if(gameState==0){
+                gameState=1;
+            }
         }
 
         //gravity
         if(redSoldier.y+redSoldier.tx.height>=screenHeight){
-            //if game not started do this:
-            redSoldier.y=screenHeight-redSoldier.tx.height;
-            redSoldier.speedY=0;
-            redSoldier.falling=0;
+            if(gameState==0){
+                redSoldier.y=screenHeight-redSoldier.tx.height;
+                redSoldier.speedY=0;
+                redSoldier.falling=0;
+            }
 
-            //if game started do this:
-            //GAME OVER
+            if(gameState==1){
+                gameState=2;
+            }
         }
         else{
             redSoldier.falling=1;
