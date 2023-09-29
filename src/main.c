@@ -18,7 +18,9 @@ int main(void){
     
     SetTargetFPS(60);
     float dt=1.f;
-    
+
+    u_int8_t gameState=0; //0 - not started, 1 - in progress, 2 - game over
+
     //load and resize images
     Images.redSoldier=LoadImage(pathToFile("red_soldier.png"));
     ImageResizeNN(&Images.redSoldier,12*5,20*5);
@@ -421,6 +423,41 @@ int main(void){
                     particles[i].alpha
                 }
             );
+        } 
+    
+        //text
+        switch(gameState){
+            case 0: //game not started
+                DrawText( //TODO: TURN THIS INTO A FUNCTION DRAWTEXTCENTER
+                    "ROCKETMAN ADVENTURES", 
+                    (int)(screenWidth/2)-(int)(MeasureTextEx(GetFontDefault(), "ROCKETMAN ADVENTURES", 100, 10).x/2),
+                    100,
+                    100,
+                    BLACK
+                );
+
+                DrawText(
+                    "START JUMPING TO BEGIN", 
+                    (int)(screenWidth/2)-(int)(MeasureTextEx(GetFontDefault(), "START JUMPING TO BEGIN", 64, 10).x/2),
+                    200,
+                    64,
+                    BLACK
+                ); 
+                break;
+            case 1: //game in progress
+                DrawText("SCORE: 0", 10, 10, 64, BLACK);
+                break;
+            case 2: //game over
+                DrawText(
+                    "GAME OVER", 
+                    (int)(screenWidth/2)-(int)(MeasureTextEx(GetFontDefault(), "GAME OVER", 100, 10).x/2),
+                    (int)(screenHeight/2)-(int)(MeasureTextEx(GetFontDefault(), "GAME OVER", 100, 10).y/2),
+                    100,
+                    BLACK
+                );  
+                break;
+            default:
+                DrawText("ERROR", 100, 100, 120, BLACK);
         } 
 
         EndDrawing();
