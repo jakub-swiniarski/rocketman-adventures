@@ -15,7 +15,7 @@ char *pathToFile(char *str){
 
 void rocketBorderCheck(Rocket *r){
     if(r->x<=0 ||
-    r->x+r->tx.width>=screenWidth ||
+    r->x>=screenWidth ||
     r->y<=0 ||
     r->y+r->tx.height>=screenHeight){
         r->collided=1;

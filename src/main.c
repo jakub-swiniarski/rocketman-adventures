@@ -106,7 +106,7 @@ int main(void){
                 UnloadTexture(rockets[i].tx);
 
                 //smoke particles
-                if(rockets[i].y>=0){
+                if(rockets[i].y+rockets[i].tx.height>=screenHeight){
                     for(u_int8_t j=0; j<3; j++){
                         numParticles++;
                         Particle *buffer=malloc(sizeof(Particle)*numParticles);
