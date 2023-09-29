@@ -134,7 +134,8 @@ int main(void){
 
                     //rocket jump
                     if(abs((int)(redSoldier.x+(int)(redSoldier.tx.width/2)-rockets[i].x-(int)(rockets[i].tx.width/2)))<100 
-                    && abs((int)(redSoldier.y+(int)(redSoldier.tx.height/2)-rockets[i].y-(int)(rockets[i].tx.height/2)))<100){
+                    && abs((int)(redSoldier.y+(int)(redSoldier.tx.height/2)-rockets[i].y-(int)(rockets[i].tx.height/2)))<100
+                    && gameState!=2){
                         redSoldier.speedX=-rockets[i].speedX;
                         redSoldier.speedY=-rockets[i].speedY; 
                     } 
@@ -181,16 +182,30 @@ int main(void){
         }
 
         //movement
-        if(IsKeyDown(KEY_D)){
-            redSoldier.x+=150*dt;
+        if(gameState!=2){
+            if(IsKeyDown(KEY_D)){
+                redSoldier.x+=150*dt;
+            }
+            if(IsKeyDown(KEY_A)){
+                redSoldier.x-=150*dt;
+            } 
+            if(IsKeyDown(KEY_SPACE) && !redSoldier.falling){
+                redSoldier.falling=0;
+                redSoldier.speedY=-300;
+            }
+
+            //update rocket launcher
+            rl.x=redSoldier.x+(int)(redSoldier.tx.width/2);
+            rl.y=redSoldier.y+(int)(redSoldier.tx.height/2); 
+            rl.rotation=270-atan2((redSoldier.x+(int)(redSoldier.tx.width/2)-GetMouseX()),(redSoldier.y+(int)(redSoldier.tx.height/2)-GetMouseY()))*180/PI; 
+        
+            if(GetMouseX()<redSoldier.x+(int)(redSoldier.tx.width/2)){
+                rl.flip=-1;
+            }
+            else{
+                rl.flip=1;
+            } 
         }
-        if(IsKeyDown(KEY_A)){
-            redSoldier.x-=150*dt;
-        } 
-        if(IsKeyDown(KEY_SPACE) && !redSoldier.falling){
-            redSoldier.falling=0;
-            redSoldier.speedY=-300;
-        } 
 
         //update player position
         redSoldier.x+=redSoldier.speedX*dt;
@@ -279,11 +294,6 @@ int main(void){
 
         soldierBorderCheck(&redSoldier);
 
-        //update rocket launcher
-        rl.x=redSoldier.x+(int)(redSoldier.tx.width/2);
-        rl.y=redSoldier.y+(int)(redSoldier.tx.height/2); 
-        rl.rotation=270-atan2((redSoldier.x+(int)(redSoldier.tx.width/2)-GetMouseX()),(redSoldier.y+(int)(redSoldier.tx.height/2)-GetMouseY()))*180/PI; 
-
         //update cooldowns
         redSoldier.cooldown-=150*GetFrameTime();
 
@@ -366,13 +376,6 @@ int main(void){
                 rockets[i].rotation,
                 WHITE
             );
-        }
-    
-        if(GetMouseX()<redSoldier.x+(int)(redSoldier.tx.width/2)){
-            rl.flip=-1;
-        }
-        else{
-            rl.flip=1;
         }
 
         //draw rocket launcher
