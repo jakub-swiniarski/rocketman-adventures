@@ -1,4 +1,5 @@
 #include <raylib.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
@@ -94,6 +95,9 @@ int main(void){
     }
     UnloadImage(Images.platform);
     short *bgShift=NULL;
+
+    unsigned short score=0;
+    char scoreString[5];
 
     //game loop
     while(!WindowShouldClose()){
@@ -200,6 +204,10 @@ int main(void){
         } 
 
         if(redSoldier.y<(int)(screenHeight/2)-(int)(redSoldier.tx.height/2)){
+            //score
+            score-=redSoldier.speedY*dt;
+            sprintf(scoreString, "%hu", score);
+
             redSoldier.y=(int)(screenHeight/2)-(int)(redSoldier.tx.height/2); 
             
             if(gameState==0){
@@ -452,7 +460,8 @@ int main(void){
                 ); 
                 break;
             case 1: //game in progress
-                DrawText("SCORE: 0", 10, 10, 64, BLACK);
+                DrawText("SCORE: ", 10, 10, 64, BLACK);
+                DrawText(scoreString,280, 10, 64, BLACK);
                 break;
             case 2: //game over
                 DrawText(
