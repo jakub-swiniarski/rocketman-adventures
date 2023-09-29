@@ -209,7 +209,7 @@ int main(void){
 
         //gravity
         if(redSoldier.y+redSoldier.tx.height>=screenHeight){
-            if(gameState==0){
+            if(gameState!=1){
                 redSoldier.y=screenHeight-redSoldier.tx.height;
                 redSoldier.speedY=0;
                 redSoldier.falling=0;
