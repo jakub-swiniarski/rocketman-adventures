@@ -106,7 +106,7 @@ int main(void){
                 UnloadTexture(rockets[i].tx);
 
                 //smoke particles
-                if(rockets[i].y+rockets[i].tx.height>=screenHeight){
+                if(rockets[i].shouldExplode){
                     for(u_int8_t j=0; j<3; j++){
                         numParticles++;
                         Particle *buffer=malloc(sizeof(Particle)*numParticles);
@@ -236,7 +236,8 @@ int main(void){
                 .x=redSoldier.x+(int)(redSoldier.tx.width/2),
                 .y=redSoldier.y+(int)(redSoldier.tx.height/2),
                 .rotation=90-atan2((redSoldier.x+(int)(redSoldier.tx.width/2)-GetMouseX()),(redSoldier.y+(int)(redSoldier.tx.height/2)-GetMouseY()))*180/PI,
-                .collided=0
+                .collided=0,
+                .shouldExplode=1
             };
             
             newRocket.speedX=-cos(newRocket.rotation*PI/180)*800;
