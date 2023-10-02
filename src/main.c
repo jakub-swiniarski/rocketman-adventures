@@ -124,8 +124,7 @@ int main(void){
                             .x=rockets[i].x+(int)(rockets[i].tx.width/2)+rand()%(50-(-50)+1)-50,
                             .y=rockets[i].y+(int)(rockets[i].tx.width/2)+rand()%(50-(-50)+1)-50,
                             .rotation=rand()%361,
-                            .alpha=255,
-                            .cooldownAlpha=0
+                            .alpha=255
                         };
 
                         for(u_int8_t i=0; i<numParticles-1; i++){
@@ -411,12 +410,8 @@ int main(void){
                 particles[i].y-=redSoldier.speedY*dt;
             }  
 
-            //cooldown
-            particles[i].cooldownAlpha-=1000*GetFrameTime();
-            if(particles[i].cooldownAlpha<0){
-                particles[i].cooldownAlpha=20;
-                particles[i].alpha-=2;
-            }
+            //fade away 
+            particles[i].alpha-=2*dt;
             
             //draw
             DrawTexturePro(
