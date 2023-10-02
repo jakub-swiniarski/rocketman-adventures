@@ -411,7 +411,7 @@ int main(void){
             }  
 
             //fade away 
-            particles[i].alpha-=dt;
+            particles[i].alpha-=2*dt;
             
             //draw
             DrawTexturePro(
