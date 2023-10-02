@@ -251,7 +251,7 @@ int main(void){
         }
 
         //input
-        if((IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_R)) && redSoldier.cooldown<0){
+        if((IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_R)) && redSoldier.cooldown<0 && gameState!=2){
             redSoldier.cooldown=120;
             numRockets++;
 
@@ -446,7 +446,7 @@ int main(void){
         switch(gameState){
             case 0: //game not started
                 //bg
-                DrawText( //TODO: TURN THIS INTO A FUNCTION DRAWTEXTCENTER, AUTOMATICALLY DRAW BACKGROUND AND FOREGROUND
+                DrawText( //TODO: TURN THESE INTO A FUNCTION, AUTOMATICALLY DRAW BACKGROUND AND FOREGROUND, BOOLEAN ARGUMENT CENTERED
                     "ROCKETMAN ADVENTURES", 
                     (int)(screenWidth/2)-(int)(MeasureTextEx(GetFontDefault(), "ROCKETMAN ADVENTURES", 100, 10).x/2),
                     200,
