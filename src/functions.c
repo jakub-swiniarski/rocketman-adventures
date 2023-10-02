@@ -57,8 +57,8 @@ void platformCollisionCheckS(Platform *p, Soldier *s){
 
 void platformCollisionCheckR(Platform *p, Rocket *r){
     if(r->x+r->tx.width>p->x && r->x<p->x+p->tx.width){
-        if(r->y+r->tx.height<p->y+p->tx.height 
-        && r->y+r->tx.height>=p->y){
+        if(r->y+r->tx.height>p->y 
+        && r->y<p->y+p->tx.height){
             r->collided=1;
         }
     } 
