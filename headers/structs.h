@@ -42,7 +42,6 @@ typedef struct{
     short x,y;
     unsigned short rotation;
     u_int8_t alpha;
-    int8_t cooldownAlpha;
 } Particle;
 
 typedef struct{
