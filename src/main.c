@@ -446,7 +446,7 @@ int main(void){
         switch(gameState){
             case 0: //game not started
                 //bg
-                DrawText( //TODO: TURN THIS INTO A FUNCTION DRAWTEXTCENTER
+                DrawText( //TODO: TURN THIS INTO A FUNCTION DRAWTEXTCENTER, AUTOMATICALLY DRAW BACKGROUND AND FOREGROUND
                     "ROCKETMAN ADVENTURES", 
                     (int)(screenWidth/2)-(int)(MeasureTextEx(GetFontDefault(), "ROCKETMAN ADVENTURES", 100, 10).x/2),
                     200,
@@ -455,15 +455,23 @@ int main(void){
                 );
 
                 DrawText(
+                    version, 
+                    (int)(screenWidth/2)-(int)(MeasureTextEx(GetFontDefault(), version, 64, 10).x/2),
+                    300,
+                    64,
+                    BLACK
+                ); 
+
+                DrawText(
                     "START JUMPING TO BEGIN", 
                     (int)(screenWidth/2)-(int)(MeasureTextEx(GetFontDefault(), "START JUMPING TO BEGIN", 64, 10).x/2),
-                    300,
+                    400,
                     64,
                     BLACK
                 );
 
                 //fg
-                DrawText( //TODO: TURN THIS INTO A FUNCTION DRAWTEXTCENTER
+                DrawText(
                     "ROCKETMAN ADVENTURES", 
                     (int)(screenWidth/2)-(int)(MeasureTextEx(GetFontDefault(), "ROCKETMAN ADVENTURES", 100, 10).x/2)+7,
                     200+7,
@@ -472,9 +480,17 @@ int main(void){
                 );
 
                 DrawText(
+                    version, 
+                    (int)(screenWidth/2)-(int)(MeasureTextEx(GetFontDefault(), version, 64, 10).x/2)+7,
+                    300+7,
+                    64,
+                    WHITE
+                ); 
+
+                DrawText(
                     "START JUMPING TO BEGIN", 
                     (int)(screenWidth/2)-(int)(MeasureTextEx(GetFontDefault(), "START JUMPING TO BEGIN", 64, 10).x/2)+7,
-                    300+7,
+                    400+7,
                     64,
                     WHITE
                 ); 
