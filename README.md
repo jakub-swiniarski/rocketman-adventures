@@ -16,7 +16,8 @@ cd rocketman-adventures <br/>
 sudo make install
 
 ### How to run?
-Run this command: rocketman
+Run this command: <br/>
+**rocketman**
 
 ## How to uninstall?
 Go inside the cloned repository and run: <br/>
