@@ -5,7 +5,7 @@
 
 ## How to install?
 ### Prerequisites:
-- g++,
+- gcc,
 - raylib,
 - git,
 - make.
