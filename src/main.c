@@ -87,7 +87,7 @@ int main(void){
     for(u_int8_t i=0; i<numPlatforms; i++){
         Platform newPlatform={
             .tx=LoadTextureFromImage(Images.platform),
-            .x=rand()%(1200-300+1)+300, //this is also used for random x when moving platform to the top
+            .x=rand()%(screenWidth/2+1)+screenWidth/4, //this is also used for random x when moving platform to the top
             .y=screenHeight-(i+1)*200
         };
 
@@ -345,7 +345,7 @@ int main(void){
             }
 
             if(platforms[i].y>screenHeight){
-                platforms[i].x=rand()%(1200-300+1)+300;
+                platforms[i].x=rand()%(screenWidth/2+1)+screenWidth/4;
                 platforms[i].y=-platforms[i].tx.height;
             }
 
