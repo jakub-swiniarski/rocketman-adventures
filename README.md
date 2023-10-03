@@ -11,20 +11,20 @@
 - make.
 
 ### Compile & install
-git clone https://github.com/jakub-swiniarski/rocketman-adventures.git
-cd rocketman-adventures
+git clone https://github.com/jakub-swiniarski/rocketman-adventures.git <br/>
+cd rocketman-adventures <br/>
 sudo make install
 
 ### How to run?
 Run this command: rocketman
 
 ## How to uninstall?
-Go inside the cloned repository and run:
+Go inside the cloned repository and run: <br/>
 sudo make clean uninstall
 
 ## Controls
-A - move left
-D - move right
-Space - jump
-Left mouse button or R - shoot
+A - move left <br/>
+D - move right <br/>
+Space - jump <br/>
+Left mouse button or R - shoot <br/>
 Escape - exit the game
