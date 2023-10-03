@@ -266,8 +266,8 @@ int main(void){
                 .shouldExplode=1
             };
             
-            newRocket.speedX=-cos(newRocket.rotation*PI/180)*800;
-            newRocket.speedY=-sin(newRocket.rotation*PI/180)*800;
+            newRocket.speedX=-1.2*cos(newRocket.rotation*PI/180)*800;
+            newRocket.speedY=-1.2*sin(newRocket.rotation*PI/180)*800;
             
             for(u_int8_t i=0; i<numRockets-1; i++){
                 buffer[i]=rockets[i];
