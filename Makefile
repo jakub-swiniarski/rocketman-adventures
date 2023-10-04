@@ -13,7 +13,7 @@ $(OBJECTS): $(SOURCES)
 clean:
 	rm *.o rocketman
 
-run: main
+run: rocketman
 	./rocketman
 
 install: rocketman assets_rocketman/
