@@ -1,9 +1,9 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
-static const char *directory="/usr/share/assets_rocketman/";
-static const unsigned short screenWidth=1920;
-static const unsigned short screenHeight=1080;
-static const char *version="1.0.0";
+static const char *DIRECTORY="/usr/share/assets_rocketman/";
+static const unsigned short SCREENWIDTH=1920;
+static const unsigned short SCREENHEIGHT=1080;
+static const char *VERSION="1.0.0";
 
 #endif
