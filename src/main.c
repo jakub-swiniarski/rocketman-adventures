@@ -10,7 +10,7 @@
 #include "../headers/globals.h"
 
 int main(void){
-    InitWindow(screenWidth,screenHeight,"Rocketman Adventures");
+    InitWindow(SCREENWIDTH,SCREENHEIGHT,"Rocketman Adventures");
     
     u_int8_t display=GetCurrentMonitor();
     SetWindowSize(GetMonitorWidth(display),GetMonitorHeight(display));
@@ -35,10 +35,10 @@ int main(void){
     ImageResizeNN(&Images.particleSmoke,12*10,12*10);
 
     Images.backgrounds[0]=LoadImage(pathToFile("background0.png"));
-    ImageResizeNN(&Images.backgrounds[0],screenWidth,screenHeight);
+    ImageResizeNN(&Images.backgrounds[0],SCREENWIDTH,SCREENHEIGHT);
 
     Images.backgrounds[1]=LoadImage(pathToFile("background1.png"));
-    ImageResizeNN(&Images.backgrounds[1],screenWidth,screenHeight);
+    ImageResizeNN(&Images.backgrounds[1],SCREENWIDTH,SCREENHEIGHT);
 
     Images.platform=LoadImage(pathToFile("platform.png"));
     ImageResizeNN(&Images.platform,30*5,2*5);
@@ -51,8 +51,8 @@ int main(void){
         .cooldown=0,
         .falling=0
     };
-    redSoldier.x=(int)(screenWidth/2)-redSoldier.tx.width;
-    redSoldier.y=screenHeight-redSoldier.tx.height;
+    redSoldier.x=(int)(SCREENWIDTH/2)-redSoldier.tx.width;
+    redSoldier.y=SCREENHEIGHT-redSoldier.tx.height;
     UnloadImage(Images.redSoldier);
 
     //rocket launcher
@@ -70,7 +70,7 @@ int main(void){
     for(u_int8_t i=0; i<2; i++){
         backgrounds[i]=LoadTextureFromImage(Images.backgrounds[i]);
         UnloadImage(Images.backgrounds[i]);
-        bgY[i]=-i*screenHeight;
+        bgY[i]=-i*SCREENHEIGHT;
     }
 
     srand(time(NULL));
@@ -86,8 +86,8 @@ int main(void){
     for(u_int8_t i=0; i<numPlatforms; i++){
         Platform newPlatform={
             .tx=LoadTextureFromImage(Images.platform),
-            .x=rand()%(screenWidth/2+1)+screenWidth/4, //this is also used for random x when moving platform to the top
-            .y=screenHeight-(i+1)*200
+            .x=rand()%(SCREENWIDTH/2+1)+SCREENWIDTH/4, //this is also used for random x when moving platform to the top
+            .y=SCREENHEIGHT-(i+1)*200
         };
 
         platforms[i]=newPlatform;
@@ -219,12 +219,12 @@ int main(void){
             redSoldier.y+=redSoldier.speedY*dt; 
         } 
 
-        if(redSoldier.y<(int)(screenHeight/2)-(int)(redSoldier.tx.height/2)){
+        if(redSoldier.y<(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2)){
             //score
             score-=redSoldier.speedY*dt;
             sprintf(scoreString, "%hu", score);
 
-            redSoldier.y=(int)(screenHeight/2)-(int)(redSoldier.tx.height/2); 
+            redSoldier.y=(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2); 
             
             if(gameState==0){
                 gameState=1;
@@ -232,9 +232,9 @@ int main(void){
         }
 
         //gravity
-        if(redSoldier.y+redSoldier.tx.height>=screenHeight){
+        if(redSoldier.y+redSoldier.tx.height>=SCREENHEIGHT){
             if(gameState!=1){
-                redSoldier.y=screenHeight-redSoldier.tx.height;
+                redSoldier.y=SCREENHEIGHT-redSoldier.tx.height;
                 redSoldier.speedY=0;
                 redSoldier.falling=0;
             }
@@ -313,11 +313,11 @@ int main(void){
         *bgShift=redSoldier.speedY*dt/2;
         for(u_int8_t i=0; i<2; i++){
             //parallax scrolling
-            if(bgY[i]>screenHeight){
-                bgY[i]=-screenHeight;
+            if(bgY[i]>SCREENHEIGHT){
+                bgY[i]=-SCREENHEIGHT;
                 bgY[1-i]=0;
             } 
-            if(redSoldier.y==(int)(screenHeight/2)-(int)(redSoldier.tx.height/2)){
+            if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2)){
                 bgY[i]-=*bgShift;
             }
 
@@ -333,7 +333,7 @@ int main(void){
                 platformCollisionCheckS(&platforms[i],&redSoldier);
             }
 
-            if(redSoldier.y==(int)(screenHeight/2)-(int)(redSoldier.tx.height/2)){
+            if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2)){
                 platforms[i].y-=redSoldier.speedY*dt;
             }
 
@@ -342,8 +342,8 @@ int main(void){
                 platformCollisionCheckR(&platforms[i],&rockets[j]);
             }
 
-            if(platforms[i].y>screenHeight){
-                platforms[i].x=rand()%(screenWidth/2+1)+screenWidth/4;
+            if(platforms[i].y>SCREENHEIGHT){
+                platforms[i].x=rand()%(SCREENWIDTH/2+1)+SCREENWIDTH/4;
                 platforms[i].y=-platforms[i].tx.height;
             }
 
@@ -404,7 +404,7 @@ int main(void){
 
         //update particles
         for(u_int8_t i=0; i<numParticles; i++){
-            if(redSoldier.y==(int)(screenHeight/2)-(int)(redSoldier.tx.height/2)){
+            if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2)){
                 particles[i].y-=redSoldier.speedY*dt;
             }  
 
@@ -446,15 +446,15 @@ int main(void){
                 //bg
                 DrawText( //TODO: TURN THESE INTO A FUNCTION, AUTOMATICALLY DRAW BACKGROUND AND FOREGROUND, BOOLEAN ARGUMENT CENTERED
                     "ROCKETMAN ADVENTURES", 
-                    (int)(screenWidth/2)-(int)(MeasureTextEx(GetFontDefault(), "ROCKETMAN ADVENTURES", 100, 10).x/2),
+                    (int)(SCREENWIDTH/2)-(int)(MeasureTextEx(GetFontDefault(), "ROCKETMAN ADVENTURES", 100, 10).x/2),
                     200,
                     100,
                     BLACK
                 );
 
                 DrawText(
-                    version, 
-                    (int)(screenWidth/2)-(int)(MeasureTextEx(GetFontDefault(), version, 64, 10).x/2),
+                    VERSION, 
+                    (int)(SCREENWIDTH/2)-(int)(MeasureTextEx(GetFontDefault(), VERSION, 64, 10).x/2),
                     300,
                     64,
                     BLACK
@@ -462,7 +462,7 @@ int main(void){
 
                 DrawText(
                     "START JUMPING TO BEGIN", 
-                    (int)(screenWidth/2)-(int)(MeasureTextEx(GetFontDefault(), "START JUMPING TO BEGIN", 64, 10).x/2),
+                    (int)(SCREENWIDTH/2)-(int)(MeasureTextEx(GetFontDefault(), "START JUMPING TO BEGIN", 64, 10).x/2),
                     400,
                     64,
                     BLACK
@@ -471,15 +471,15 @@ int main(void){
                 //fg
                 DrawText(
                     "ROCKETMAN ADVENTURES", 
-                    (int)(screenWidth/2)-(int)(MeasureTextEx(GetFontDefault(), "ROCKETMAN ADVENTURES", 100, 10).x/2)+7,
+                    (int)(SCREENWIDTH/2)-(int)(MeasureTextEx(GetFontDefault(), "ROCKETMAN ADVENTURES", 100, 10).x/2)+7,
                     200+7,
                     100,
                     WHITE
                 );
 
                 DrawText(
-                    version, 
-                    (int)(screenWidth/2)-(int)(MeasureTextEx(GetFontDefault(), version, 64, 10).x/2)+7,
+                    VERSION, 
+                    (int)(SCREENWIDTH/2)-(int)(MeasureTextEx(GetFontDefault(), VERSION, 64, 10).x/2)+7,
                     300+7,
                     64,
                     WHITE
@@ -487,7 +487,7 @@ int main(void){
 
                 DrawText(
                     "START JUMPING TO BEGIN", 
-                    (int)(screenWidth/2)-(int)(MeasureTextEx(GetFontDefault(), "START JUMPING TO BEGIN", 64, 10).x/2)+7,
+                    (int)(SCREENWIDTH/2)-(int)(MeasureTextEx(GetFontDefault(), "START JUMPING TO BEGIN", 64, 10).x/2)+7,
                     400+7,
                     64,
                     WHITE
@@ -503,27 +503,27 @@ int main(void){
                 DrawText(scoreString,250+7, 10+7, 64, WHITE); 
                 break;
             case 2: //game over
-                DrawRectangle(0,0,screenWidth,screenHeight,(Color){0,0,0,150});
+                DrawRectangle(0,0,SCREENWIDTH,SCREENHEIGHT,(Color){0,0,0,150});
                
                 //bg
                 DrawText(
                     "GAME OVER", 
-                    (int)(screenWidth/2)-(int)(MeasureTextEx(GetFontDefault(), "GAME OVER", 100, 10).x/2),
-                    (int)(screenHeight/2)-(int)(MeasureTextEx(GetFontDefault(), "GAME OVER", 100, 10).y/2)-100,
+                    (int)(SCREENWIDTH/2)-(int)(MeasureTextEx(GetFontDefault(), "GAME OVER", 100, 10).x/2),
+                    (int)(SCREENHEIGHT/2)-(int)(MeasureTextEx(GetFontDefault(), "GAME OVER", 100, 10).y/2)-100,
                     100,
                     BLACK
                 );
                 DrawText(
                     "SCORE:", 
-                    (int)(screenWidth/2)-(int)(MeasureTextEx(GetFontDefault(), "SCORE:", 64, 10).x/2),
-                    (int)(screenHeight/2)-(int)(MeasureTextEx(GetFontDefault(), "SCORE", 64, 10).y/2),
+                    (int)(SCREENWIDTH/2)-(int)(MeasureTextEx(GetFontDefault(), "SCORE:", 64, 10).x/2),
+                    (int)(SCREENHEIGHT/2)-(int)(MeasureTextEx(GetFontDefault(), "SCORE", 64, 10).y/2),
                     64,
                     BLACK
                 );
                 DrawText(
                     scoreString, 
-                    (int)(screenWidth/2)-(int)(MeasureTextEx(GetFontDefault(), scoreString, 64, 10).x/2),
-                    (int)(screenHeight/2)-(int)(MeasureTextEx(GetFontDefault(), scoreString, 64, 10).y/2)+100,
+                    (int)(SCREENWIDTH/2)-(int)(MeasureTextEx(GetFontDefault(), scoreString, 64, 10).x/2),
+                    (int)(SCREENHEIGHT/2)-(int)(MeasureTextEx(GetFontDefault(), scoreString, 64, 10).y/2)+100,
                     64,
                     BLACK
                 );
@@ -531,22 +531,22 @@ int main(void){
                 //fg
                 DrawText(
                     "GAME OVER", 
-                    (int)(screenWidth/2)-(int)(MeasureTextEx(GetFontDefault(), "GAME OVER", 100, 10).x/2)+7,
-                    (int)(screenHeight/2)-(int)(MeasureTextEx(GetFontDefault(), "GAME OVER", 100, 10).y/2)-100+7,
+                    (int)(SCREENWIDTH/2)-(int)(MeasureTextEx(GetFontDefault(), "GAME OVER", 100, 10).x/2)+7,
+                    (int)(SCREENHEIGHT/2)-(int)(MeasureTextEx(GetFontDefault(), "GAME OVER", 100, 10).y/2)-100+7,
                     100,
                     WHITE
                 );
                 DrawText(
                     "SCORE:", 
-                    (int)(screenWidth/2)-(int)(MeasureTextEx(GetFontDefault(), "SCORE:", 64, 10).x/2)+7,
-                    (int)(screenHeight/2)-(int)(MeasureTextEx(GetFontDefault(), "SCORE", 64, 10).y/2)+7,
+                    (int)(SCREENWIDTH/2)-(int)(MeasureTextEx(GetFontDefault(), "SCORE:", 64, 10).x/2)+7,
+                    (int)(SCREENHEIGHT/2)-(int)(MeasureTextEx(GetFontDefault(), "SCORE", 64, 10).y/2)+7,
                     64,
                     WHITE
                 );
                 DrawText(
                     scoreString, 
-                    (int)(screenWidth/2)-(int)(MeasureTextEx(GetFontDefault(), scoreString, 64, 10).x/2)+7,
-                    (int)(screenHeight/2)-(int)(MeasureTextEx(GetFontDefault(), scoreString, 64, 10).y/2)+100+7,
+                    (int)(SCREENWIDTH/2)-(int)(MeasureTextEx(GetFontDefault(), scoreString, 64, 10).x/2)+7,
+                    (int)(SCREENHEIGHT/2)-(int)(MeasureTextEx(GetFontDefault(), scoreString, 64, 10).y/2)+100+7,
                     64,
                     WHITE
                 ); 

@@ -6,20 +6,20 @@
 
 //function implementations
 char *pathToFile(char *str){
-    char *path=malloc(sizeof(char)*strlen(directory)+strlen(str)+1);
-    strcpy(path,directory);
+    char *path=malloc(sizeof(char)*strlen(DIRECTORY)+strlen(str)+1);
+    strcpy(path,DIRECTORY);
     strcat(path,str);
     
     return path;
 }
 
 void rocketBorderCheck(Rocket *r){
-    if(r->y+r->tx.height>=screenHeight){
+    if(r->y+r->tx.height>=SCREENHEIGHT){
         r->collided=1;
     }
     else if(
     r->x<=0 ||
-    r->x>=screenWidth ||
+    r->x>=SCREENWIDTH ||
     r->y<=0){
         r->collided=1;
         r->shouldExplode=0;
@@ -31,16 +31,16 @@ void soldierBorderCheck(Soldier *s){
     if(s->x<0){
         s->x=0;
     }
-    else if(s->x+s->tx.width>screenWidth){
-        s->x=screenWidth-s->tx.width;
+    else if(s->x+s->tx.width>SCREENWIDTH){
+        s->x=SCREENWIDTH-s->tx.width;
     }
 
     //vertical
     /*if(s->y<0){
         s->y=0;
     }*/
-    /*else if(s->y+s->tx.height>screenHeight){
-        s->y=screenHeight-s->tx.height;
+    /*else if(s->y+s->tx.height>SCREENHEIGHT){
+        s->y=SCREENHEIGHT-s->tx.height;
     }*/
 }
 
