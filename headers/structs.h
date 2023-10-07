@@ -2,7 +2,7 @@
 #define STRUCTS_H
 
 #include <raylib.h>
-#include <sys/types.h>
+#include <stdint.h>
 
 static struct{
     Image redSoldier;
@@ -41,7 +41,7 @@ typedef struct{
     Texture tx;
     short x,y;
     unsigned short rotation;
-    u_int8_t alpha;
+    uint8_t alpha;
 } Particle;
 
 typedef struct{
