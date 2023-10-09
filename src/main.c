@@ -44,7 +44,7 @@ int main(void){
     ImageResizeNN(&Images.platform,30*5,2*5);
 
     Images.parachute=LoadImage(pathToFile("parachute.png"));
-    ImageResizeNN(&Images.parachute, 16*5, 20*5);
+    ImageResizeNN(&Images.parachute, 16*4, 20*4);
 
     //player
     Soldier redSoldier={
@@ -112,6 +112,7 @@ int main(void){
     //TODO: ADD BASE JUMPER THAT HAS A CHANCE TO SPAWN WHEN A PLATFORM IS MOVED TO TOP, WHEN EQUIPPED IT ALLOWS U TO GLIDE BACK TO THE PLATFORM AFTER YOU FALL
     //TODO: ADD GOLDEN ROCKET LAUNCHER, DONT CREATE A NEW STRUCT JUST DO BOOL ISGOLD AND CHANGE TEXTURE
     //TODO: PICKUP STRUCT? BOOL VISIBLE? CREATE 1 BASE JUMPER AND 1 GOLDEN RL ON THE STACK AND ONLY DRAW IF THEY ARE VISIBLE
+    //TODO: SHINE PARTICLES FOR PICKUPS
 
     //game loop
     while(!WindowShouldClose()){
