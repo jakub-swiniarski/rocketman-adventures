@@ -20,6 +20,7 @@ typedef struct{
     short speedX, speedY; //used for gravity and jumping
     int8_t cooldown;
     bool falling;
+    uint8_t pickup;
 } Soldier;
 
 typedef struct{

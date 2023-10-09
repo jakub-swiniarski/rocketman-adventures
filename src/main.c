@@ -369,6 +369,7 @@ int main(void){
         }
 
         //update pickup
+        pickupCollectCheck(&pickup, &redSoldier); 
         if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2)){
             pickup.y-=redSoldier.speedY*dt; 
         } 
