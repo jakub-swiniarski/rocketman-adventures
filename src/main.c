@@ -101,8 +101,8 @@ int main(void){
     //pickups
     Pickup pickup={
         .tx=LoadTextureFromImage(Images.parachute),
-        .x=100,
-        .y=100,
+        .x=-100,
+        .y=-100,
         .id=0
     };
 
@@ -372,7 +372,9 @@ int main(void){
         if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2)){
             pickup.y-=redSoldier.speedY*dt; 
         } 
-        DrawTexture(pickup.tx,pickup.x,pickup.y,WHITE);
+        if(pickupVisible(&pickup)){
+            DrawTexture(pickup.tx,pickup.x,pickup.y,WHITE);
+        }
 
         //draw player
         DrawTexture(redSoldier.tx,redSoldier.x,redSoldier.y,WHITE);
