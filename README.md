@@ -28,4 +28,5 @@ A - move left <br/>
 D - move right <br/>
 Space - jump <br/>
 Left mouse button or R - shoot <br/>
+Q - use the pickup
 Escape - exit the game
