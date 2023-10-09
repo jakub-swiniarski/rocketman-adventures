@@ -98,6 +98,14 @@ int main(void){
     UnloadImage(Images.platform);
     short *bgShift=NULL;
 
+    //pickups
+    Pickup pickup={
+        .tx=LoadTextureFromImage(Images.parachute),
+        .x=100,
+        .y=100,
+        .id=0
+    };
+
     unsigned short score=0;
     char scoreString[5];
 
@@ -354,6 +362,9 @@ int main(void){
             DrawTexture(platforms[i].tx,platforms[i].x,platforms[i].y,WHITE);
         }
 
+        //draw pickup
+        DrawTexture(pickup.tx,pickup.x,pickup.y,WHITE);
+
         //draw player
         DrawTexture(redSoldier.tx,redSoldier.x,redSoldier.y,WHITE);
 
@@ -564,6 +575,7 @@ int main(void){
     //unload images
     UnloadImage(Images.rocket);
     UnloadImage(Images.particleSmoke);
+    UnloadImage(Images.parachute);
 
     //unload textures
     UnloadTexture(redSoldier.tx); 
@@ -576,6 +588,7 @@ int main(void){
     for(uint8_t i=0; i<numPlatforms; i++){
         UnloadTexture(platforms[i].tx);
     }
+    UnloadTexture(pickup.tx);
 
     CloseWindow();
 
