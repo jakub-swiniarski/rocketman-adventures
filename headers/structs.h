@@ -12,6 +12,7 @@ static struct{
     Image backgrounds[2];
     Image platform;
     Image parachutePickup;
+    Image parachute;
 } Images;
 
 typedef struct{

@@ -46,6 +46,9 @@ int main(void){
     Images.parachutePickup=LoadImage(pathToFile("parachute_pickup.png"));
     ImageResizeNN(&Images.parachutePickup, 16*4, 20*4);
 
+    Images.parachute=LoadImage(pathToFile("parachute.png"));
+    ImageResizeNN(&Images.parachute, 13*8, 11*8);
+
     //player
     Soldier redSoldier={
         .tx=LoadTextureFromImage(Images.redSoldier),
@@ -58,6 +61,10 @@ int main(void){
     redSoldier.x=(int)(SCREENWIDTH/2)-redSoldier.tx.width;
     redSoldier.y=SCREENHEIGHT-redSoldier.tx.height;
     UnloadImage(Images.redSoldier);
+
+    //parachute
+    Texture parachute=LoadTextureFromImage(Images.parachute);
+    UnloadImage(Images.parachute);
 
     //rocket launcher
     Launcher rl={
@@ -399,6 +406,11 @@ int main(void){
             DrawTexture(pickup.tx,pickup.x,pickup.y,WHITE);
         }
 
+        //parachute
+        if(redSoldier.pickupActive==1){
+            DrawTexture(parachute, redSoldier.x+redSoldier.tx.width/2-parachute.width/2, redSoldier.y-parachute.height, WHITE);
+        }
+        
         //draw player
         DrawTexture(redSoldier.tx,redSoldier.x,redSoldier.y,WHITE);
 
@@ -623,6 +635,7 @@ int main(void){
         UnloadTexture(platforms[i].tx);
     }
     UnloadTexture(pickup.tx);
+    UnloadTexture(parachute);
 
     CloseWindow();
 
