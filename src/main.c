@@ -43,17 +43,28 @@ int main(void){
     Images.platform=LoadImage(pathToFile("platform.png"));
     ImageResizeNN(&Images.platform,30*5,2*5);
 
+    Images.parachutePickup=LoadImage(pathToFile("parachute_pickup.png"));
+    ImageResizeNN(&Images.parachutePickup, 16*4, 20*4);
+
+    Images.parachute=LoadImage(pathToFile("parachute.png"));
+    ImageResizeNN(&Images.parachute, 13*8, 11*8);
+
     //player
     Soldier redSoldier={
         .tx=LoadTextureFromImage(Images.redSoldier),
         .speedX=0,
         .speedY=0,
         .cooldown=0,
-        .falling=0
+        .falling=0,
+        .slowfall=1
     };
     redSoldier.x=(int)(SCREENWIDTH/2)-redSoldier.tx.width;
     redSoldier.y=SCREENHEIGHT-redSoldier.tx.height;
     UnloadImage(Images.redSoldier);
+
+    //parachute
+    Texture parachute=LoadTextureFromImage(Images.parachute);
+    UnloadImage(Images.parachute);
 
     //rocket launcher
     Launcher rl={
@@ -95,12 +106,21 @@ int main(void){
     UnloadImage(Images.platform);
     short *bgShift=NULL;
 
+    //pickups
+    Pickup pickup={
+        .tx=LoadTextureFromImage(Images.parachutePickup),
+        .x=-100,
+        .y=-100,
+        .id=1
+    };
+
     unsigned short score=0;
     char scoreString[5];
 
     //TODO: ADD BASE JUMPER THAT HAS A CHANCE TO SPAWN WHEN A PLATFORM IS MOVED TO TOP, WHEN EQUIPPED IT ALLOWS U TO GLIDE BACK TO THE PLATFORM AFTER YOU FALL
     //TODO: ADD GOLDEN ROCKET LAUNCHER, DONT CREATE A NEW STRUCT JUST DO BOOL ISGOLD AND CHANGE TEXTURE
     //TODO: PICKUP STRUCT? BOOL VISIBLE? CREATE 1 BASE JUMPER AND 1 GOLDEN RL ON THE STACK AND ONLY DRAW IF THEY ARE VISIBLE
+    //TODO: SHINE PARTICLES FOR PICKUPS
 
     //game loop
     while(!WindowShouldClose()){
@@ -191,6 +211,9 @@ int main(void){
                 redSoldier.x-=150*dt;
             } 
             if(IsKeyDown(KEY_SPACE) && !redSoldier.falling){
+                if(redSoldier.pickupActive==1){
+                    redSoldier.pickupActive=0;
+                }
                 redSoldier.falling=0;
                 redSoldier.speedY=-300;
             }
@@ -212,7 +235,7 @@ int main(void){
         redSoldier.x+=redSoldier.speedX*dt;
         if(redSoldier.speedY>0){
             if(redSoldier.falling){
-                redSoldier.y+=redSoldier.speedY*dt; 
+                redSoldier.y+=redSoldier.speedY*dt*redSoldier.slowfall; 
             }
         }
         else{
@@ -274,6 +297,11 @@ int main(void){
             buffer[numRockets-1]=newRocket;
             rockets=buffer;
         }
+        //ACTIVATE PICKUP
+        if(IsKeyPressed(KEY_Q)){
+            redSoldier.pickupActive=redSoldier.pickup;
+            redSoldier.pickup=0;
+        }
        
         //horizontal friction
         if(redSoldier.speedX>0){
@@ -305,6 +333,17 @@ int main(void){
             rockets[i].y+=rockets[i].speedY*dt;
         }  
 
+        //pickup effects
+        switch(redSoldier.pickupActive){
+            case 1:
+                redSoldier.slowfall=0.2;
+            break;
+
+            default: //RESET
+                redSoldier.slowfall=1;
+            break;
+        }
+
         ClearBackground(BLACK); 
         BeginDrawing();
 
@@ -317,7 +356,7 @@ int main(void){
                 bgY[i]=-SCREENHEIGHT;
                 bgY[1-i]=0;
             } 
-            if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2)){
+            if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2) && redSoldier.speedY<0){
                 bgY[i]-=*bgShift;
             }
 
@@ -333,7 +372,7 @@ int main(void){
                 platformCollisionCheckS(&platforms[i],&redSoldier);
             }
 
-            if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2)){
+            if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2) && redSoldier.speedY<0){
                 platforms[i].y-=redSoldier.speedY*dt;
             }
 
@@ -345,12 +384,33 @@ int main(void){
             if(platforms[i].y>SCREENHEIGHT){
                 platforms[i].x=rand()%(SCREENWIDTH/2+1)+SCREENWIDTH/4;
                 platforms[i].y=-platforms[i].tx.height;
+                if(!pickupVisible(&pickup)){
+                    int pickupRand=rand()%(10-1+1)+1;
+                    if(pickupRand==1){
+                        pickup.y=platforms[i].y-pickup.tx.height;
+                        pickup.x=platforms[i].x+platforms[i].tx.width/2-pickup.tx.width/2;
+                    }
+                }
             }
 
             //draw platforms
             DrawTexture(platforms[i].tx,platforms[i].x,platforms[i].y,WHITE);
         }
 
+        //update pickup
+        pickupCollectCheck(&pickup, &redSoldier); 
+        if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2) && redSoldier.speedY<0){
+            pickup.y-=redSoldier.speedY*dt; 
+        } 
+        if(pickupVisible(&pickup)){
+            DrawTexture(pickup.tx,pickup.x,pickup.y,WHITE);
+        }
+
+        //parachute
+        if(redSoldier.pickupActive==1){
+            DrawTexture(parachute, redSoldier.x+redSoldier.tx.width/2-parachute.width/2, redSoldier.y-parachute.height, WHITE);
+        }
+        
         //draw player
         DrawTexture(redSoldier.tx,redSoldier.x,redSoldier.y,WHITE);
 
@@ -404,7 +464,7 @@ int main(void){
 
         //update particles
         for(uint8_t i=0; i<numParticles; i++){
-            if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2)){
+            if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2) && redSoldier.speedY<0){
                 particles[i].y-=redSoldier.speedY*dt;
             }  
 
@@ -561,6 +621,7 @@ int main(void){
     //unload images
     UnloadImage(Images.rocket);
     UnloadImage(Images.particleSmoke);
+    UnloadImage(Images.parachutePickup);
 
     //unload textures
     UnloadTexture(redSoldier.tx); 
@@ -573,6 +634,8 @@ int main(void){
     for(uint8_t i=0; i<numPlatforms; i++){
         UnloadTexture(platforms[i].tx);
     }
+    UnloadTexture(pickup.tx);
+    UnloadTexture(parachute);
 
     CloseWindow();
 

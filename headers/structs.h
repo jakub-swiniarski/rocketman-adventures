@@ -11,6 +11,8 @@ static struct{
     Image particleSmoke;
     Image backgrounds[2];
     Image platform;
+    Image parachutePickup;
+    Image parachute;
 } Images;
 
 typedef struct{
@@ -19,6 +21,8 @@ typedef struct{
     short speedX, speedY; //used for gravity and jumping
     int8_t cooldown;
     bool falling;
+    uint8_t pickup, pickupActive;
+    float slowfall; //1 means no slowfall
 } Soldier;
 
 typedef struct{
@@ -48,5 +52,11 @@ typedef struct{
     Texture tx;
     short x,y;
 } Platform;
+
+typedef struct{
+    Texture tx;
+    short x,y;
+    uint8_t id; //1 - parachute
+} Pickup;
 
 #endif
