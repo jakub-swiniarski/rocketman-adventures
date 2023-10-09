@@ -11,6 +11,7 @@ static struct{
     Image particleSmoke;
     Image backgrounds[2];
     Image platform;
+    Image parachute;
 } Images;
 
 typedef struct{
@@ -48,5 +49,11 @@ typedef struct{
     Texture tx;
     short x,y;
 } Platform;
+
+typedef struct{
+    Texture tx;
+    short x,y;
+    uint8_t id; //0- parachute
+} Pickup;
 
 #endif
