@@ -204,6 +204,9 @@ int main(void){
                 redSoldier.x-=150*dt;
             } 
             if(IsKeyDown(KEY_SPACE) && !redSoldier.falling){
+                if(redSoldier.pickupActive==1){
+                    redSoldier.pickupActive=0;
+                }
                 redSoldier.falling=0;
                 redSoldier.speedY=-300;
             }
