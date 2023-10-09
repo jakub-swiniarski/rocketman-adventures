@@ -43,8 +43,8 @@ int main(void){
     Images.platform=LoadImage(pathToFile("platform.png"));
     ImageResizeNN(&Images.platform,30*5,2*5);
 
-    Images.parachute=LoadImage(pathToFile("parachute.png"));
-    ImageResizeNN(&Images.parachute, 16*4, 20*4);
+    Images.parachutePickup=LoadImage(pathToFile("parachute_pickup.png"));
+    ImageResizeNN(&Images.parachutePickup, 16*4, 20*4);
 
     //player
     Soldier redSoldier={
@@ -101,7 +101,7 @@ int main(void){
 
     //pickups
     Pickup pickup={
-        .tx=LoadTextureFromImage(Images.parachute),
+        .tx=LoadTextureFromImage(Images.parachutePickup),
         .x=-100,
         .y=-100,
         .id=1
@@ -609,7 +609,7 @@ int main(void){
     //unload images
     UnloadImage(Images.rocket);
     UnloadImage(Images.particleSmoke);
-    UnloadImage(Images.parachute);
+    UnloadImage(Images.parachutePickup);
 
     //unload textures
     UnloadTexture(redSoldier.tx); 

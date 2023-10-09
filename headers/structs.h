@@ -11,7 +11,7 @@ static struct{
     Image particleSmoke;
     Image backgrounds[2];
     Image platform;
-    Image parachute;
+    Image parachutePickup;
 } Images;
 
 typedef struct{
