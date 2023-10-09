@@ -20,7 +20,8 @@ typedef struct{
     short speedX, speedY; //used for gravity and jumping
     int8_t cooldown;
     bool falling;
-    uint8_t pickup;
+    uint8_t pickup, pickupActive;
+    float slowfall; //1 means no slowfall
 } Soldier;
 
 typedef struct{
@@ -54,7 +55,7 @@ typedef struct{
 typedef struct{
     Texture tx;
     short x,y;
-    uint8_t id; //0- parachute
+    uint8_t id; //1 - parachute
 } Pickup;
 
 #endif

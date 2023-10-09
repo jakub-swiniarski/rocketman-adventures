@@ -52,7 +52,8 @@ int main(void){
         .speedX=0,
         .speedY=0,
         .cooldown=0,
-        .falling=0
+        .falling=0,
+        .slowfall=1
     };
     redSoldier.x=(int)(SCREENWIDTH/2)-redSoldier.tx.width;
     redSoldier.y=SCREENHEIGHT-redSoldier.tx.height;
@@ -103,7 +104,7 @@ int main(void){
         .tx=LoadTextureFromImage(Images.parachute),
         .x=-100,
         .y=-100,
-        .id=0
+        .id=1
     };
 
     unsigned short score=0;
@@ -224,7 +225,7 @@ int main(void){
         redSoldier.x+=redSoldier.speedX*dt;
         if(redSoldier.speedY>0){
             if(redSoldier.falling){
-                redSoldier.y+=redSoldier.speedY*dt; 
+                redSoldier.y+=redSoldier.speedY*dt*redSoldier.slowfall; 
             }
         }
         else{
@@ -286,6 +287,11 @@ int main(void){
             buffer[numRockets-1]=newRocket;
             rockets=buffer;
         }
+        //ACTIVATE PICKUP
+        if(IsKeyPressed(KEY_Q)){
+            redSoldier.pickupActive=redSoldier.pickup;
+            redSoldier.pickup=0;
+        }
        
         //horizontal friction
         if(redSoldier.speedX>0){
@@ -317,6 +323,17 @@ int main(void){
             rockets[i].y+=rockets[i].speedY*dt;
         }  
 
+        //pickup effects
+        switch(redSoldier.pickupActive){
+            case 1:
+                redSoldier.slowfall=0.2;
+            break;
+
+            default: //RESET
+                redSoldier.slowfall=1;
+            break;
+        }
+
         ClearBackground(BLACK); 
         BeginDrawing();
 
@@ -329,7 +346,7 @@ int main(void){
                 bgY[i]=-SCREENHEIGHT;
                 bgY[1-i]=0;
             } 
-            if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2)){
+            if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2) && redSoldier.speedY<0){
                 bgY[i]-=*bgShift;
             }
 
@@ -345,7 +362,7 @@ int main(void){
                 platformCollisionCheckS(&platforms[i],&redSoldier);
             }
 
-            if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2)){
+            if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2) && redSoldier.speedY<0){
                 platforms[i].y-=redSoldier.speedY*dt;
             }
 
@@ -357,10 +374,12 @@ int main(void){
             if(platforms[i].y>SCREENHEIGHT){
                 platforms[i].x=rand()%(SCREENWIDTH/2+1)+SCREENWIDTH/4;
                 platforms[i].y=-platforms[i].tx.height;
-                int pickupRand=rand()%(10-1+1)+1;
-                if(pickupRand==1){
-                    pickup.y=platforms[i].y-pickup.tx.height;
-                    pickup.x=platforms[i].x+platforms[i].tx.width/2-pickup.tx.width/2;
+                if(!pickupVisible(&pickup)){
+                    int pickupRand=rand()%(10-1+1)+1;
+                    //if(pickupRand==1){
+                        pickup.y=platforms[i].y-pickup.tx.height;
+                        pickup.x=platforms[i].x+platforms[i].tx.width/2-pickup.tx.width/2;
+                    //}
                 }
             }
 
@@ -370,7 +389,7 @@ int main(void){
 
         //update pickup
         pickupCollectCheck(&pickup, &redSoldier); 
-        if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2)){
+        if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2) && redSoldier.speedY<0){
             pickup.y-=redSoldier.speedY*dt; 
         } 
         if(pickupVisible(&pickup)){
@@ -430,7 +449,7 @@ int main(void){
 
         //update particles
         for(uint8_t i=0; i<numParticles; i++){
-            if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2)){
+            if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2) && redSoldier.speedY<0){
                 particles[i].y-=redSoldier.speedY*dt;
             }  
 
