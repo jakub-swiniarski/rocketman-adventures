@@ -43,6 +43,9 @@ int main(void){
     Images.platform=LoadImage(pathToFile("platform.png"));
     ImageResizeNN(&Images.platform,30*5,2*5);
 
+    Images.parachute=LoadImage(pathToFile("parachute.png"));
+    ImageResizeNN(&Images.parachute, 16*5, 20*5);
+
     //player
     Soldier redSoldier={
         .tx=LoadTextureFromImage(Images.redSoldier),
