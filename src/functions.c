@@ -63,3 +63,12 @@ void platformCollisionCheckR(Platform *p, Rocket *r){
         }
     } 
 }
+
+bool pickupVisible(Pickup *p){
+    if(p->x+p->tx.width>0 && p->x<SCREENWIDTH){
+        if(p->y+p->tx.height>0 && p->y<SCREENHEIGHT){
+            return 1;
+        }
+    }
+    return 0;
+}
