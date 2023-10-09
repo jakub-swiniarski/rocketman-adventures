@@ -357,13 +357,21 @@ int main(void){
             if(platforms[i].y>SCREENHEIGHT){
                 platforms[i].x=rand()%(SCREENWIDTH/2+1)+SCREENWIDTH/4;
                 platforms[i].y=-platforms[i].tx.height;
+                int pickupRand=rand()%(10-1+1)+1;
+                if(pickupRand==1){
+                    pickup.y=platforms[i].y-pickup.tx.height;
+                    pickup.x=platforms[i].x+platforms[i].tx.width/2-pickup.tx.width/2;
+                }
             }
 
             //draw platforms
             DrawTexture(platforms[i].tx,platforms[i].x,platforms[i].y,WHITE);
         }
 
-        //draw pickup
+        //update pickup
+        if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2)){
+            pickup.y-=redSoldier.speedY*dt; 
+        } 
         DrawTexture(pickup.tx,pickup.x,pickup.y,WHITE);
 
         //draw player
