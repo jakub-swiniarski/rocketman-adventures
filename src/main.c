@@ -61,6 +61,7 @@ int main(void){
     redSoldier.x=(int)(SCREENWIDTH/2)-redSoldier.tx.width;
     redSoldier.y=SCREENHEIGHT-redSoldier.tx.height;
     UnloadImage(Images.redSoldier);
+    int8_t rotationParachute=0;
 
     //parachute
     Texture parachute=LoadTextureFromImage(Images.parachute);
@@ -104,7 +105,7 @@ int main(void){
         platforms[i]=newPlatform;
     }
     UnloadImage(Images.platform);
-    short *bgShift=NULL;
+    short bgShift=0;
 
     //pickups
     Pickup pickup={
@@ -117,10 +118,8 @@ int main(void){
     unsigned short score=0;
     char scoreString[5];
 
-    //TODO: ADD BASE JUMPER THAT HAS A CHANCE TO SPAWN WHEN A PLATFORM IS MOVED TO TOP, WHEN EQUIPPED IT ALLOWS U TO GLIDE BACK TO THE PLATFORM AFTER YOU FALL
-    //TODO: ADD GOLDEN ROCKET LAUNCHER, DONT CREATE A NEW STRUCT JUST DO BOOL ISGOLD AND CHANGE TEXTURE
-    //TODO: PICKUP STRUCT? BOOL VISIBLE? CREATE 1 BASE JUMPER AND 1 GOLDEN RL ON THE STACK AND ONLY DRAW IF THEY ARE VISIBLE
     //TODO: SHINE PARTICLES FOR PICKUPS
+    //TODO: MVM CRIT PICKUP FOR KNOCKBACK BOOST
 
     //game loop
     while(!WindowShouldClose()){
@@ -206,10 +205,27 @@ int main(void){
         if(gameState!=2){
             if(IsKeyDown(KEY_D)){
                 redSoldier.x+=150*dt;
+
+                if(redSoldier.pickupActive==1 && rotationParachute>-30){
+                    rotationParachute-=60*dt;
+                }
             }
             if(IsKeyDown(KEY_A)){
                 redSoldier.x-=150*dt;
-            } 
+            
+                if(redSoldier.pickupActive==1 && rotationParachute<30){
+                    rotationParachute+=60*dt;
+                } 
+            }
+            //reset parachute rotation
+            if(!IsKeyDown(KEY_A) && !IsKeyDown(KEY_D)){ //if not moving horizontally
+                if(rotationParachute>0){
+                    rotationParachute-=100*dt;
+                } 
+                else if(rotationParachute<0){
+                    rotationParachute+=100*dt;
+                }
+            }
             if(IsKeyDown(KEY_SPACE) && !redSoldier.falling){
                 if(redSoldier.pickupActive==1){
                     redSoldier.pickupActive=0;
@@ -348,8 +364,7 @@ int main(void){
         BeginDrawing();
 
         //update background
-        bgShift = malloc(sizeof(short)); //i have absolutely no idea why this works, but it does and therefore should not be touched
-        *bgShift=redSoldier.speedY*dt/2;
+        bgShift=redSoldier.speedY*dt/2;
         for(uint8_t i=0; i<2; i++){
             //parallax scrolling
             if(bgY[i]>SCREENHEIGHT){
@@ -357,13 +372,12 @@ int main(void){
                 bgY[1-i]=0;
             } 
             if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2) && redSoldier.speedY<0){
-                bgY[i]-=*bgShift;
+                bgY[i]-=bgShift;
             }
 
             //draw background
             DrawTexture(backgrounds[i],0,bgY[i],WHITE);
         }
-        free(bgShift);
 
         //update platforms
         for(uint8_t i=0; i<numPlatforms; i++){
@@ -408,7 +422,28 @@ int main(void){
 
         //parachute
         if(redSoldier.pickupActive==1){
-            DrawTexture(parachute, redSoldier.x+redSoldier.tx.width/2-parachute.width/2, redSoldier.y-parachute.height, WHITE);
+            //DrawTexture(parachute, redSoldier.x+redSoldier.tx.width/2-parachute.width/2, redSoldier.y-parachute.height, WHITE);
+            DrawTexturePro(
+                parachute,
+                (Rectangle){ //src
+                    .x=0,
+                    .y=0,
+                    .width=parachute.width,
+                    .height=parachute.height
+                },
+                (Rectangle){ //dest
+                    .x=redSoldier.x+(int)(redSoldier.tx.width/2),
+                    .y=redSoldier.y,
+                    .width=parachute.width,
+                    .height=parachute.height
+                },
+                (Vector2){ //origin
+                    .x=(int)(parachute.width/2),
+                    .y=(int)(parachute.height)
+                },
+                rotationParachute,
+                WHITE
+            ); 
         }
         
         //draw player
