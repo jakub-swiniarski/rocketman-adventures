@@ -104,7 +104,7 @@ int main(void){
         platforms[i]=newPlatform;
     }
     UnloadImage(Images.platform);
-    short *bgShift=NULL;
+    short bgShift=0;
 
     //pickups
     Pickup pickup={
@@ -348,8 +348,7 @@ int main(void){
         BeginDrawing();
 
         //update background
-        bgShift = malloc(sizeof(short)); //i have absolutely no idea why this works, but it does and therefore should not be touched
-        *bgShift=redSoldier.speedY*dt/2;
+        bgShift=redSoldier.speedY*dt/2;
         for(uint8_t i=0; i<2; i++){
             //parallax scrolling
             if(bgY[i]>SCREENHEIGHT){
@@ -357,13 +356,12 @@ int main(void){
                 bgY[1-i]=0;
             } 
             if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2) && redSoldier.speedY<0){
-                bgY[i]-=*bgShift;
+                bgY[i]-=bgShift;
             }
 
             //draw background
             DrawTexture(backgrounds[i],0,bgY[i],WHITE);
         }
-        free(bgShift);
 
         //update platforms
         for(uint8_t i=0; i<numPlatforms; i++){
