@@ -61,6 +61,7 @@ int main(void){
     redSoldier.x=(int)(SCREENWIDTH/2)-redSoldier.tx.width;
     redSoldier.y=SCREENHEIGHT-redSoldier.tx.height;
     UnloadImage(Images.redSoldier);
+    int8_t rotationParachute=0;
 
     //parachute
     Texture parachute=LoadTextureFromImage(Images.parachute);
@@ -204,10 +205,27 @@ int main(void){
         if(gameState!=2){
             if(IsKeyDown(KEY_D)){
                 redSoldier.x+=150*dt;
+
+                if(redSoldier.pickupActive==1 && rotationParachute>-30){
+                    rotationParachute-=60*dt;
+                }
             }
             if(IsKeyDown(KEY_A)){
                 redSoldier.x-=150*dt;
-            } 
+            
+                if(redSoldier.pickupActive==1 && rotationParachute<30){
+                    rotationParachute+=60*dt;
+                } 
+            }
+            //reset parachute rotation
+            if(!IsKeyDown(KEY_A) && !IsKeyDown(KEY_D)){ //if not moving horizontally
+                if(rotationParachute>0){
+                    rotationParachute-=100*dt;
+                } 
+                else if(rotationParachute<0){
+                    rotationParachute+=100*dt;
+                }
+            }
             if(IsKeyDown(KEY_SPACE) && !redSoldier.falling){
                 if(redSoldier.pickupActive==1){
                     redSoldier.pickupActive=0;
@@ -403,8 +421,30 @@ int main(void){
         }
 
         //parachute
+        redSoldier.pickupActive=1;
         if(redSoldier.pickupActive==1){
-            DrawTexture(parachute, redSoldier.x+redSoldier.tx.width/2-parachute.width/2, redSoldier.y-parachute.height, WHITE);
+            //DrawTexture(parachute, redSoldier.x+redSoldier.tx.width/2-parachute.width/2, redSoldier.y-parachute.height, WHITE);
+            DrawTexturePro(
+                parachute,
+                (Rectangle){ //src
+                    .x=0,
+                    .y=0,
+                    .width=parachute.width,
+                    .height=parachute.height
+                },
+                (Rectangle){ //dest
+                    .x=redSoldier.x+(int)(redSoldier.tx.width/2),
+                    .y=redSoldier.y,
+                    .width=parachute.width,
+                    .height=parachute.height
+                },
+                (Vector2){ //origin
+                    .x=(int)(parachute.width/2),
+                    .y=(int)(parachute.height)
+                },
+                rotationParachute,
+                WHITE
+            ); 
         }
         
         //draw player
