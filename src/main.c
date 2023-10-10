@@ -421,7 +421,6 @@ int main(void){
         }
 
         //parachute
-        redSoldier.pickupActive=1;
         if(redSoldier.pickupActive==1){
             //DrawTexture(parachute, redSoldier.x+redSoldier.tx.width/2-parachute.width/2, redSoldier.y-parachute.height, WHITE);
             DrawTexturePro(
