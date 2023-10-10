@@ -60,12 +60,12 @@ int main(void){
     };
     redSoldier.x=(int)(SCREENWIDTH/2)-redSoldier.tx.width;
     redSoldier.y=SCREENHEIGHT-redSoldier.tx.height;
-    UnloadImage(Images.redSoldier);
-    int8_t rotationParachute=0;
+    UnloadImage(Images.redSoldier);  
 
     //parachute
     Texture parachute=LoadTextureFromImage(Images.parachute);
     UnloadImage(Images.parachute);
+    int8_t rotationParachute=0; 
 
     //rocket launcher
     Launcher rl={
