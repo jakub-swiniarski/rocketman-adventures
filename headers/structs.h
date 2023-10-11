@@ -24,6 +24,7 @@ typedef struct{
     bool falling;
     uint8_t pickup, pickupActive;
     float slowfall; //1 means no slowfall
+    uint8_t critBoost;
 } Soldier;
 
 typedef struct{
