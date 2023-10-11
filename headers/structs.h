@@ -13,6 +13,7 @@ static struct{
     Image platform;
     Image parachutePickup;
     Image parachute;
+    Image critPickup;
 } Images;
 
 typedef struct{
@@ -56,7 +57,7 @@ typedef struct{
 typedef struct{
     Texture tx;
     short x,y;
-    uint8_t id; //1 - parachute
+    uint8_t id; //1 - parachute, 2 -crits
 } Pickup;
 
 #endif
