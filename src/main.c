@@ -49,6 +49,9 @@ int main(void){
     Images.parachute=LoadImage(pathToFile("parachute.png"));
     ImageResizeNN(&Images.parachute, 13*8, 11*8);
 
+    Images.critPickup=LoadImage(pathToFile("crit_pickup.png"));
+    ImageResizeNN(&Images.critPickup,9*8,13*8);
+
     //player
     Soldier redSoldier={
         .tx=LoadTextureFromImage(Images.redSoldier),
@@ -399,6 +402,17 @@ int main(void){
                 platforms[i].x=rand()%(SCREENWIDTH/2+1)+SCREENWIDTH/4;
                 platforms[i].y=-platforms[i].tx.height;
                 if(!pickupVisible(&pickup)){
+                    pickup.id=rand()%(2-1+1)+1;
+                    switch(pickup.id){
+                        case 1:
+                            pickup.tx=LoadTextureFromImage(Images.parachutePickup);
+                        break;
+                        
+                        case 2:
+                            pickup.tx=LoadTextureFromImage(Images.critPickup);
+                        break;
+                    }
+
                     int pickupRand=rand()%(10-1+1)+1;
                     if(pickupRand==1){
                         pickup.y=platforms[i].y-pickup.tx.height;
@@ -657,6 +671,7 @@ int main(void){
     UnloadImage(Images.rocket);
     UnloadImage(Images.particleSmoke);
     UnloadImage(Images.parachutePickup);
+    UnloadImage(Images.critPickup);
 
     //unload textures
     UnloadTexture(redSoldier.tx); 
