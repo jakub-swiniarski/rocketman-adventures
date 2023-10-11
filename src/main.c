@@ -76,7 +76,8 @@ int main(void){
         .tx=LoadTextureFromImage(Images.launcher),
         .x=0,
         .y=0,
-        .rotation=0
+        .rotation=0,
+        .color=WHITE
     };
     UnloadImage(Images.launcher);
 
@@ -123,7 +124,6 @@ int main(void){
     char scoreString[5];
 
     //TODO: SHINE PARTICLES FOR PICKUPS
-    //TODO: MVM CRIT PICKUP FOR KNOCKBACK BOOST
 
     //game loop
     while(!WindowShouldClose()){
@@ -161,9 +161,13 @@ int main(void){
                     if(abs((int)(redSoldier.x+(int)(redSoldier.tx.width/2)-rockets[i].x-(int)(rockets[i].tx.width/2)))<100 
                     && abs((int)(redSoldier.y+(int)(redSoldier.tx.height/2)-rockets[i].y-(int)(rockets[i].tx.height/2)))<100
                     && gameState!=2){
-                        redSoldier.speedX=redSoldier.critBoost*-rockets[i].speedX;
-                        redSoldier.speedY=redSoldier.critBoost*-rockets[i].speedY; 
-                    } 
+                        redSoldier.speedX=redSoldier.critBoost*-1*rockets[i].speedX;
+                        redSoldier.speedY=redSoldier.critBoost*-1*rockets[i].speedY; 
+                    }
+
+                    if(redSoldier.pickupActive==2){
+                        redSoldier.pickupActive=0;
+                    }      
                 }
 
                 //delete rockets
@@ -361,11 +365,13 @@ int main(void){
 
             case 2:
                 redSoldier.critBoost=2;
+                rl.color=RED;    
             break;
 
             default: //RESET
                 redSoldier.slowfall=1;
                 redSoldier.critBoost=1;
+                rl.color=WHITE;
             break;
         }
 
@@ -420,10 +426,10 @@ int main(void){
                     }
 
                     int pickupRand=rand()%(10-1+1)+1;
-                    if(pickupRand==1){
+                    //if(pickupRand==1){
                         pickup.y=platforms[i].y-pickup.tx.height;
                         pickup.x=platforms[i].x+platforms[i].tx.width/2-pickup.tx.width/2;
-                    }
+                    //}
                 }
             }
 
@@ -514,7 +520,7 @@ int main(void){
                 .y=(int)(rl.tx.height/2)
             },
             rl.rotation,
-            WHITE
+            rl.color
         ); 
 
         //update particles
