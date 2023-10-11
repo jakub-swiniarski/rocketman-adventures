@@ -59,7 +59,8 @@ int main(void){
         .speedY=0,
         .cooldown=0,
         .falling=0,
-        .slowfall=1
+        .slowfall=1,
+        .critBoost=1
     };
     redSoldier.x=(int)(SCREENWIDTH/2)-redSoldier.tx.width;
     redSoldier.y=SCREENHEIGHT-redSoldier.tx.height;
@@ -160,8 +161,8 @@ int main(void){
                     if(abs((int)(redSoldier.x+(int)(redSoldier.tx.width/2)-rockets[i].x-(int)(rockets[i].tx.width/2)))<100 
                     && abs((int)(redSoldier.y+(int)(redSoldier.tx.height/2)-rockets[i].y-(int)(rockets[i].tx.height/2)))<100
                     && gameState!=2){
-                        redSoldier.speedX=-rockets[i].speedX;
-                        redSoldier.speedY=-rockets[i].speedY; 
+                        redSoldier.speedX=redSoldier.critBoost*-rockets[i].speedX;
+                        redSoldier.speedY=redSoldier.critBoost*-rockets[i].speedY; 
                     } 
                 }
 
@@ -358,8 +359,13 @@ int main(void){
                 redSoldier.slowfall=0.2;
             break;
 
+            case 2:
+                redSoldier.critBoost=2;
+            break;
+
             default: //RESET
                 redSoldier.slowfall=1;
+                redSoldier.critBoost=1;
             break;
         }
 
