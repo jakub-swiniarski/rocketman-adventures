@@ -49,6 +49,9 @@ int main(void){
     Images.parachute=LoadImage(pathToFile("parachute.png"));
     ImageResizeNN(&Images.parachute, 13*8, 11*8);
 
+    Images.critPickup=LoadImage(pathToFile("crit_pickup.png"));
+    ImageResizeNN(&Images.critPickup,9*8,13*8);
+
     //player
     Soldier redSoldier={
         .tx=LoadTextureFromImage(Images.redSoldier),
@@ -56,7 +59,8 @@ int main(void){
         .speedY=0,
         .cooldown=0,
         .falling=0,
-        .slowfall=1
+        .slowfall=1,
+        .critBoost=1
     };
     redSoldier.x=(int)(SCREENWIDTH/2)-redSoldier.tx.width;
     redSoldier.y=SCREENHEIGHT-redSoldier.tx.height;
@@ -72,7 +76,8 @@ int main(void){
         .tx=LoadTextureFromImage(Images.launcher),
         .x=0,
         .y=0,
-        .rotation=0
+        .rotation=0,
+        .color=WHITE
     };
     UnloadImage(Images.launcher);
 
@@ -119,7 +124,6 @@ int main(void){
     char scoreString[5];
 
     //TODO: SHINE PARTICLES FOR PICKUPS
-    //TODO: MVM CRIT PICKUP FOR KNOCKBACK BOOST
 
     //game loop
     while(!WindowShouldClose()){
@@ -157,9 +161,13 @@ int main(void){
                     if(abs((int)(redSoldier.x+(int)(redSoldier.tx.width/2)-rockets[i].x-(int)(rockets[i].tx.width/2)))<100 
                     && abs((int)(redSoldier.y+(int)(redSoldier.tx.height/2)-rockets[i].y-(int)(rockets[i].tx.height/2)))<100
                     && gameState!=2){
-                        redSoldier.speedX=-rockets[i].speedX;
-                        redSoldier.speedY=-rockets[i].speedY; 
-                    } 
+                        redSoldier.speedX=redSoldier.critBoost*-1*rockets[i].speedX;
+                        redSoldier.speedY=redSoldier.critBoost*-1*rockets[i].speedY; 
+                    }
+
+                    if(redSoldier.pickupActive==2){
+                        redSoldier.pickupActive=0;
+                    }      
                 }
 
                 //delete rockets
@@ -355,8 +363,15 @@ int main(void){
                 redSoldier.slowfall=0.2;
             break;
 
+            case 2:
+                redSoldier.critBoost=2;
+                rl.color=RED;    
+            break;
+
             default: //RESET
                 redSoldier.slowfall=1;
+                redSoldier.critBoost=1;
+                rl.color=WHITE;
             break;
         }
 
@@ -399,6 +414,17 @@ int main(void){
                 platforms[i].x=rand()%(SCREENWIDTH/2+1)+SCREENWIDTH/4;
                 platforms[i].y=-platforms[i].tx.height;
                 if(!pickupVisible(&pickup)){
+                    pickup.id=rand()%(2-1+1)+1;
+                    switch(pickup.id){
+                        case 1:
+                            pickup.tx=LoadTextureFromImage(Images.parachutePickup);
+                        break;
+                        
+                        case 2:
+                            pickup.tx=LoadTextureFromImage(Images.critPickup);
+                        break;
+                    }
+
                     int pickupRand=rand()%(10-1+1)+1;
                     if(pickupRand==1){
                         pickup.y=platforms[i].y-pickup.tx.height;
@@ -494,7 +520,7 @@ int main(void){
                 .y=(int)(rl.tx.height/2)
             },
             rl.rotation,
-            WHITE
+            rl.color
         ); 
 
         //update particles
@@ -657,6 +683,7 @@ int main(void){
     UnloadImage(Images.rocket);
     UnloadImage(Images.particleSmoke);
     UnloadImage(Images.parachutePickup);
+    UnloadImage(Images.critPickup);
 
     //unload textures
     UnloadTexture(redSoldier.tx); 
