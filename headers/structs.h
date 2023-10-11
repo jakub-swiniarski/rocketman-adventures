@@ -41,6 +41,7 @@ typedef struct{
     short x,y;
     unsigned short rotation;
     int8_t flip; //1 means befault, -1 means flipped
+    Color color;
 } Launcher;
 
 typedef struct{
