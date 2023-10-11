@@ -426,10 +426,10 @@ int main(void){
                     }
 
                     int pickupRand=rand()%(10-1+1)+1;
-                    //if(pickupRand==1){
+                    if(pickupRand==1){
                         pickup.y=platforms[i].y-pickup.tx.height;
                         pickup.x=platforms[i].x+platforms[i].tx.width/2-pickup.tx.width/2;
-                    //}
+                    }
                 }
             }
 
