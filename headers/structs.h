@@ -13,6 +13,7 @@ static struct{
     Image platform;
     Image parachutePickup;
     Image parachute;
+    Image critPickup;
 } Images;
 
 typedef struct{
@@ -23,6 +24,7 @@ typedef struct{
     bool falling;
     uint8_t pickup, pickupActive;
     float slowfall; //1 means no slowfall
+    uint8_t critBoost;
 } Soldier;
 
 typedef struct{
@@ -39,6 +41,7 @@ typedef struct{
     short x,y;
     unsigned short rotation;
     int8_t flip; //1 means befault, -1 means flipped
+    Color color;
 } Launcher;
 
 typedef struct{
@@ -56,7 +59,7 @@ typedef struct{
 typedef struct{
     Texture tx;
     short x,y;
-    uint8_t id; //1 - parachute
+    uint8_t id; //1 - parachute, 2 -crits
 } Pickup;
 
 #endif
