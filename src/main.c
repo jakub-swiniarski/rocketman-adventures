@@ -211,14 +211,14 @@ int main(void){
 
         //movement
         if(gameState!=2){
-            if(IsKeyDown(KEY_D)){
+            if(IsKeyDown(KEY_D) && !IsKeyDown(KEY_A)){
                 redSoldier.x+=150*dt;
 
                 if(redSoldier.pickupActive==1 && rotationParachute>-30){
                     rotationParachute-=60*dt;
                 }
             }
-            if(IsKeyDown(KEY_A)){
+            if(IsKeyDown(KEY_A) && !IsKeyDown(KEY_D)){
                 redSoldier.x-=150*dt;
             
                 if(redSoldier.pickupActive==1 && rotationParachute<30){
@@ -247,12 +247,13 @@ int main(void){
             rl.y=redSoldier.y+(int)(redSoldier.tx.height/2); 
             rl.rotation=270-atan2((redSoldier.x+(int)(redSoldier.tx.width/2)-GetMouseX()),(redSoldier.y+(int)(redSoldier.tx.height/2)-GetMouseY()))*180/PI; 
         
+            //flip the rocket launcher to prevent it from going upside down
             if(GetMouseX()<redSoldier.x+(int)(redSoldier.tx.width/2)){
                 rl.flip=-1;
             }
             else{
                 rl.flip=1;
-            } 
+            }
         }
 
         //update player position
@@ -448,7 +449,6 @@ int main(void){
 
         //parachute
         if(redSoldier.pickupActive==1){
-            //DrawTexture(parachute, redSoldier.x+redSoldier.tx.width/2-parachute.width/2, redSoldier.y-parachute.height, WHITE);
             DrawTexturePro(
                 parachute,
                 (Rectangle){ //src
