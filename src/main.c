@@ -211,14 +211,14 @@ int main(void){
 
         //movement
         if(gameState!=2){
-            if(IsKeyDown(KEY_D)){
+            if(IsKeyDown(KEY_D) && !IsKeyDown(KEY_A)){
                 redSoldier.x+=150*dt;
 
                 if(redSoldier.pickupActive==1 && rotationParachute>-30){
                     rotationParachute-=60*dt;
                 }
             }
-            if(IsKeyDown(KEY_A)){
+            if(IsKeyDown(KEY_A) && !IsKeyDown(KEY_D)){
                 redSoldier.x-=150*dt;
             
                 if(redSoldier.pickupActive==1 && rotationParachute<30){
