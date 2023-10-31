@@ -11,17 +11,23 @@
 - make.
 
 ### Compile & install
-git clone https://github.com/jakub-swiniarski/rocketman-adventures.git <br/>
-cd rocketman-adventures <br/>
+```shell
+git clone https://github.com/jakub-swiniarski/rocketman-adventures.git
+cd rocketman-adventures
 sudo make install
+```
 
 ### How to run?
-Run this command: <br/>
-**rocketman**
+Use this command:
+```shell
+rocketman
+```
 
 ## How to uninstall?
 Go inside the cloned repository and run: <br/>
+```shell
 sudo make clean uninstall
+```
 
 ## Controls
 A - move left <br/>
