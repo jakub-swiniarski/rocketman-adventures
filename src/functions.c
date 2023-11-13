@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "../headers/functions.h"
 #include "../headers/globals.h"
