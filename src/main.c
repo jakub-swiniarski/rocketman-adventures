@@ -15,7 +15,9 @@ int main(void){
     uint8_t display=GetCurrentMonitor();
     SetWindowSize(GetMonitorWidth(display),GetMonitorHeight(display));
     ToggleFullscreen();
-    
+
+    InitAudioDevice();
+
     SetTargetFPS(60);
     float dt=1.f;
 
@@ -51,6 +53,8 @@ int main(void){
 
     Images.critPickup=LoadImage(pathToFile("crit_pickup.png"));
     ImageResizeNN(&Images.critPickup,9*8,13*8);
+
+    Sound fxExplosion=LoadSound(pathToFile("explosion.ogg"));
 
     //player
     Soldier redSoldier={
@@ -133,6 +137,7 @@ int main(void){
             rocketBorderCheck(&rockets[i]);
 
             if(rockets[i].collided){
+                PlaySound(fxExplosion);
                 UnloadTexture(rockets[i].tx);
 
                 //smoke particles
@@ -699,6 +704,7 @@ int main(void){
     UnloadTexture(pickup.tx);
     UnloadTexture(parachute);
 
+    CloseAudioDevice();
     CloseWindow();
 
     return 0;
