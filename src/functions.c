@@ -2,8 +2,8 @@
 #include <string.h>
 #include <stdbool.h>
 
-#include "../headers/functions.h"
-#include "../headers/globals.h"
+#include "functions.h"
+#include "globals.h"
 
 //function implementations
 char *pathToFile(char *str){
