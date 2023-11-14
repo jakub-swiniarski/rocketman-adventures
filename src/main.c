@@ -130,8 +130,6 @@ int main(void){
     unsigned short score=0;
     char scoreString[5];
 
-    //TODO: SHINE PARTICLES FOR PICKUPS
-
     PlayMusicStream(music);
 
     //game loop
