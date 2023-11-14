@@ -227,12 +227,8 @@ int main(void){
                     rotationParachute+=60*dt;
             }
             //reset parachute rotation
-            if(!IsKeyDown(KEY_A) && !IsKeyDown(KEY_D)){ //if not moving horizontally
-                if(rotationParachute>0)
-                    rotationParachute-=100*dt;
-                else if(rotationParachute<0)
-                    rotationParachute+=100*dt;
-            }
+            if(!IsKeyDown(KEY_A) && !IsKeyDown(KEY_D)) //if not moving horizontally
+                rotationParachute+=rotationParachute>0?-100*dt:100*dt;
             if(IsKeyDown(KEY_SPACE) && !redSoldier.falling){
                 if(redSoldier.pickupActive==1)
                     redSoldier.pickupActive=0;
@@ -246,10 +242,7 @@ int main(void){
             rl.rotation=270-atan2((redSoldier.x+(int)(redSoldier.tx.width/2)-GetMouseX()),(redSoldier.y+(int)(redSoldier.tx.height/2)-GetMouseY()))*180/PI; 
         
             //flip the rocket launcher to prevent it from going upside down
-            if(GetMouseX()<redSoldier.x+(int)(redSoldier.tx.width/2))
-                rl.flip=-1;
-            else
-                rl.flip=1;
+            rl.flip=GetMouseX()<redSoldier.x+(int)(redSoldier.tx.width/2)?-1:1;
         }
 
         //update player position
@@ -279,8 +272,7 @@ int main(void){
                 redSoldier.speedY=0;
                 redSoldier.falling=0;
             }
-
-            if(gameState==1)
+            else
                 gameState=2;
         }
         else{
