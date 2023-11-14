@@ -54,7 +54,10 @@ int main(void){
     Images.critPickup=LoadImage(pathToFile("crit_pickup.png"));
     ImageResizeNN(&Images.critPickup,9*8,13*8);
 
+    //sfx
     Sound fxExplosion=LoadSound(pathToFile("explosion.ogg"));
+    Sound fxPickup=LoadSound(pathToFile("pickup.ogg"));
+    Music music=LoadMusicStream(pathToFile("soundtrack0.ogg"));
 
     //player
     Soldier redSoldier={
@@ -129,9 +132,12 @@ int main(void){
 
     //TODO: SHINE PARTICLES FOR PICKUPS
 
+    PlayMusicStream(music);
+
     //game loop
     while(!WindowShouldClose()){
         dt=GetFrameTime();
+        UpdateMusicStream(music);
 
         for(uint8_t i=0; i<numRockets; i++){
             rocketBorderCheck(&rockets[i]);
