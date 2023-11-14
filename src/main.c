@@ -15,7 +15,9 @@ int main(void){
     uint8_t display=GetCurrentMonitor();
     SetWindowSize(GetMonitorWidth(display),GetMonitorHeight(display));
     ToggleFullscreen();
-    
+
+    InitAudioDevice();
+
     SetTargetFPS(60);
     float dt=1.f;
 
@@ -51,6 +53,11 @@ int main(void){
 
     Images.critPickup=LoadImage(pathToFile("crit_pickup.png"));
     ImageResizeNN(&Images.critPickup,9*8,13*8);
+
+    //sfx
+    Sound fxExplosion=LoadSound(pathToFile("explosion.ogg"));
+    Sound fxPickup=LoadSound(pathToFile("pickup.ogg"));
+    Music music=LoadMusicStream(pathToFile("soundtrack0.ogg"));
 
     //player
     Soldier redSoldier={
@@ -125,14 +132,18 @@ int main(void){
 
     //TODO: SHINE PARTICLES FOR PICKUPS
 
+    PlayMusicStream(music);
+
     //game loop
     while(!WindowShouldClose()){
         dt=GetFrameTime();
+        UpdateMusicStream(music);
 
         for(uint8_t i=0; i<numRockets; i++){
             rocketBorderCheck(&rockets[i]);
 
             if(rockets[i].collided){
+                PlaySound(fxExplosion);
                 UnloadTexture(rockets[i].tx);
 
                 //smoke particles
@@ -439,7 +450,7 @@ int main(void){
         }
 
         //update pickup
-        pickupCollectCheck(&pickup, &redSoldier); 
+        if(pickupCollectCheck(&pickup, &redSoldier)) PlaySound(fxPickup); 
         if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2) && redSoldier.speedY<0){
             pickup.y-=redSoldier.speedY*dt; 
         } 
@@ -699,6 +710,7 @@ int main(void){
     UnloadTexture(pickup.tx);
     UnloadTexture(parachute);
 
+    CloseAudioDevice();
     CloseWindow();
 
     return 0;

@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "../headers/functions.h"
 #include "../headers/globals.h"
@@ -73,7 +74,7 @@ bool pickupVisible(Pickup *p){
     return 0;
 }
 
-void pickupCollectCheck(Pickup *p, Soldier *r){
+bool pickupCollectCheck(Pickup *p, Soldier *r){
     if(r->x+r->tx.width>p->x && r->x<p->x+p->tx.width){
         if(r->y+r->tx.height>p->y
         && r->y<p->y+p->tx.height){
@@ -81,7 +82,9 @@ void pickupCollectCheck(Pickup *p, Soldier *r){
                 r->pickup=p->id;
                 p->x=-100;
                 p->y=-100;
+                return 1;
             }
         }
     }
+    return 0;
 }

@@ -36,3 +36,6 @@ Space - jump <br/>
 Left mouse button or R - shoot <br/>
 Q - use the pickup <br/>
 Escape - exit the game
+
+## Credits
+SFX by [Boper](https://github.com/boprr)
