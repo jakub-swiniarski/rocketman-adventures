@@ -1,5 +1,5 @@
 SOURCES=$(wildcard src/*.c)
-HEADERS=$(wildcard headers/*.h)
+HEADERS=$(wildcard src/*.h)
 OBJECTS=$(patsubst src/%.c,%.o,$(SOURCES))
 FLAGS=-lraylib -lm
 
@@ -17,10 +17,11 @@ clean:
 run: rocketman
 	./rocketman
 
-install: rocketman assets_rocketman/
+install: rocketman res
+	mkdir -p /usr/share/rocketman/
 	cp rocketman /usr/bin/
-	cp -r assets_rocketman /usr/share/
+	cp res/* /usr/share/rocketman/
 
 uninstall:
 	rm /usr/bin/rocketman
-	rm -rf /usr/share/assets_rocketman
+	rm -rf /usr/share/rocketman
