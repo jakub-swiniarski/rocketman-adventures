@@ -1,6 +1,6 @@
 SOURCES=$(wildcard src/*.c)
 HEADERS=$(wildcard headers/*.h)
-OBJECTS=functions.o main.o
+OBJECTS=$(patsubst src/%.c,%.o,$(SOURCES))
 FLAGS=-lraylib -lm
 
 rocketman: $(OBJECTS)
