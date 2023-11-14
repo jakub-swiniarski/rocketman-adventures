@@ -160,9 +160,8 @@ int main(void){
                             .alpha=255
                         };
 
-                        for(uint8_t i=0; i<numParticles-1; i++){
+                        for(uint8_t i=0; i<numParticles-1; i++)
                             buffer[i]=particles[i];
-                        }
 
                         buffer[numParticles-1]=newParticle;
                         particles=buffer;
@@ -176,24 +175,21 @@ int main(void){
                         redSoldier.speedY=redSoldier.critBoost*-1*rockets[i].speedY; 
                     }
 
-                    if(redSoldier.pickupActive==2){
+                    if(redSoldier.pickupActive==2)
                         redSoldier.pickupActive=0;
-                    }      
                 }
 
                 //delete rockets
                 numRockets--; 
 
                 //shift elements in array
-                for(uint8_t j=i; j<numRockets; j++){
+                for(uint8_t j=i; j<numRockets; j++)
                     rockets[j]=rockets[j+1];
-                }
                
                 //TEMPORARY SOLUTION 
                 Rocket* buffer=malloc(sizeof(Rocket)*numRockets);
-                for(uint8_t j=0; j<numRockets; j++){
+                for(uint8_t j=0; j<numRockets; j++)
                     buffer[j]=rockets[j];
-                }
                 rockets=buffer;
 
                 break;
@@ -206,14 +202,12 @@ int main(void){
                 numParticles--;
 
                 //shift elements in array
-                for(uint8_t j=i; j<numParticles; j++){
+                for(uint8_t j=i; j<numParticles; j++)
                     particles[j]=particles[j+1];
-                }
 
                 Particle* buffer=malloc(sizeof(Particle)*numParticles);
-                for(uint8_t j=0; j<numParticles; j++){
+                for(uint8_t j=0; j<numParticles; j++)
                     buffer[j]=particles[j];
-                }
                 particles=buffer;
 
                 break;
@@ -225,30 +219,25 @@ int main(void){
             if(IsKeyDown(KEY_D) && !IsKeyDown(KEY_A)){
                 redSoldier.x+=150*dt;
 
-                if(redSoldier.pickupActive==1 && rotationParachute>-30){
+                if(redSoldier.pickupActive==1 && rotationParachute>-30)
                     rotationParachute-=60*dt;
-                }
             }
             if(IsKeyDown(KEY_A) && !IsKeyDown(KEY_D)){
                 redSoldier.x-=150*dt;
             
-                if(redSoldier.pickupActive==1 && rotationParachute<30){
+                if(redSoldier.pickupActive==1 && rotationParachute<30)
                     rotationParachute+=60*dt;
-                } 
             }
             //reset parachute rotation
             if(!IsKeyDown(KEY_A) && !IsKeyDown(KEY_D)){ //if not moving horizontally
-                if(rotationParachute>0){
+                if(rotationParachute>0)
                     rotationParachute-=100*dt;
-                } 
-                else if(rotationParachute<0){
+                else if(rotationParachute<0)
                     rotationParachute+=100*dt;
-                }
             }
             if(IsKeyDown(KEY_SPACE) && !redSoldier.falling){
-                if(redSoldier.pickupActive==1){
+                if(redSoldier.pickupActive==1)
                     redSoldier.pickupActive=0;
-                }
                 redSoldier.falling=0;
                 redSoldier.speedY=-300;
             }
@@ -259,24 +248,20 @@ int main(void){
             rl.rotation=270-atan2((redSoldier.x+(int)(redSoldier.tx.width/2)-GetMouseX()),(redSoldier.y+(int)(redSoldier.tx.height/2)-GetMouseY()))*180/PI; 
         
             //flip the rocket launcher to prevent it from going upside down
-            if(GetMouseX()<redSoldier.x+(int)(redSoldier.tx.width/2)){
+            if(GetMouseX()<redSoldier.x+(int)(redSoldier.tx.width/2))
                 rl.flip=-1;
-            }
-            else{
+            else
                 rl.flip=1;
-            }
         }
 
         //update player position
         redSoldier.x+=redSoldier.speedX*dt;
         if(redSoldier.speedY>0){
-            if(redSoldier.falling){
+            if(redSoldier.falling)
                 redSoldier.y+=redSoldier.speedY*dt*redSoldier.slowfall; 
-            }
         }
-        else{
+        else
             redSoldier.y+=redSoldier.speedY*dt; 
-        } 
 
         if(redSoldier.y<(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2)){
             //score
@@ -285,9 +270,8 @@ int main(void){
 
             redSoldier.y=(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2); 
             
-            if(gameState==0){
+            if(gameState==0)
                 gameState=1;
-            }
         }
 
         //gravity
@@ -298,9 +282,8 @@ int main(void){
                 redSoldier.falling=0;
             }
 
-            if(gameState==1){
+            if(gameState==1)
                 gameState=2;
-            }
         }
         else{
             redSoldier.falling=1;
@@ -326,9 +309,8 @@ int main(void){
             newRocket.speedX=-1.2*cos(newRocket.rotation*PI/180)*800;
             newRocket.speedY=-1.2*sin(newRocket.rotation*PI/180)*800;
             
-            for(uint8_t i=0; i<numRockets-1; i++){
+            for(uint8_t i=0; i<numRockets-1; i++)
                 buffer[i]=rockets[i];
-            }
 
             buffer[numRockets-1]=newRocket;
             rockets=buffer;
@@ -341,20 +323,16 @@ int main(void){
        
         //horizontal friction
         if(redSoldier.speedX>0){
-            if(redSoldier.speedX<5){
+            if(redSoldier.speedX<5)
                 redSoldier.speedX=0;
-            }
-            else{
+            else
                 redSoldier.speedX-=8;
-            }
         }
         else if(redSoldier.speedX<0){
-            if(redSoldier.speedX>-5){
+            if(redSoldier.speedX>-5)
                 redSoldier.speedX=0;
-            }
-            else{
+            else
                 redSoldier.speedX+=8;
-            }
         }
 
         soldierBorderCheck(&redSoldier);
@@ -398,9 +376,8 @@ int main(void){
                 bgY[i]=-SCREENHEIGHT;
                 bgY[1-i]=0;
             } 
-            if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2) && redSoldier.speedY<0){
+            if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2) && redSoldier.speedY<0)
                 bgY[i]-=bgShift;
-            }
 
             //draw background
             DrawTexture(backgrounds[i],0,bgY[i],WHITE);
@@ -409,18 +386,15 @@ int main(void){
         //update platforms
         for(uint8_t i=0; i<numPlatforms; i++){
             //soldier collisions
-            if(redSoldier.speedY>0){
+            if(redSoldier.speedY>0)
                 platformCollisionCheckS(&platforms[i],&redSoldier);
-            }
 
-            if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2) && redSoldier.speedY<0){
+            if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2) && redSoldier.speedY<0)
                 platforms[i].y-=redSoldier.speedY*dt;
-            }
 
             //rocket collisions
-            for(uint8_t j=0; j<numRockets; j++){
+            for(uint8_t j=0; j<numRockets; j++)
                 platformCollisionCheckR(&platforms[i],&rockets[j]);
-            }
 
             if(platforms[i].y>SCREENHEIGHT){
                 platforms[i].x=rand()%(SCREENWIDTH/2+1)+SCREENWIDTH/4;
@@ -451,12 +425,10 @@ int main(void){
 
         //update pickup
         if(pickupCollectCheck(&pickup, &redSoldier)) PlaySound(fxPickup); 
-        if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2) && redSoldier.speedY<0){
+        if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2) && redSoldier.speedY<0)
             pickup.y-=redSoldier.speedY*dt; 
-        } 
-        if(pickupVisible(&pickup)){
+        if(pickupVisible(&pickup))
             DrawTexture(pickup.tx,pickup.x,pickup.y,WHITE);
-        }
 
         //parachute
         if(redSoldier.pickupActive==1){
@@ -536,9 +508,8 @@ int main(void){
 
         //update particles
         for(uint8_t i=0; i<numParticles; i++){
-            if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2) && redSoldier.speedY<0){
+            if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2) && redSoldier.speedY<0)
                 particles[i].y-=redSoldier.speedY*dt;
-            }  
 
             //fade away 
             particles[i].alpha-=2*dt;
@@ -698,15 +669,12 @@ int main(void){
 
     //unload textures
     UnloadTexture(redSoldier.tx); 
-    for(uint8_t i=0; i<numRockets; i++){
+    for(uint8_t i=0; i<numRockets; i++)
         UnloadTexture(rockets[i].tx); 
-    } 
-    for(uint8_t i=0; i<numParticles; i++){
+    for(uint8_t i=0; i<numParticles; i++)
         UnloadTexture(particles[i].tx);
-    }
-    for(uint8_t i=0; i<numPlatforms; i++){
+    for(uint8_t i=0; i<numPlatforms; i++)
         UnloadTexture(platforms[i].tx);
-    }
     UnloadTexture(pickup.tx);
     UnloadTexture(parachute);
 
