@@ -38,4 +38,4 @@ Q - use the pickup <br/>
 Escape - exit the game
 
 ## Credits
-**SFX by [Boper](https://github.com/boprr)**
+SFX by [Boper](https://github.com/boprr)
