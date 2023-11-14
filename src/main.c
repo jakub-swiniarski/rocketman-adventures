@@ -450,7 +450,7 @@ int main(void){
         }
 
         //update pickup
-        pickupCollectCheck(&pickup, &redSoldier); 
+        if(pickupCollectCheck(&pickup, &redSoldier)) PlaySound(fxPickup); 
         if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2) && redSoldier.speedY<0){
             pickup.y-=redSoldier.speedY*dt; 
         } 
