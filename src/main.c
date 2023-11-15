@@ -272,8 +272,7 @@ int main(void){
                 redSoldier.speedY=0;
                 redSoldier.falling=0;
             }
-            else
-                gameState=2;
+            else gameState=2;
         }
         else{
             redSoldier.falling=1;
@@ -536,113 +535,53 @@ int main(void){
         //text
         switch(gameState){
             case 0: //game not started
-                //bg
-                DrawText( //TODO: TURN THESE INTO A FUNCTION, AUTOMATICALLY DRAW BACKGROUND AND FOREGROUND, BOOLEAN ARGUMENT CENTERED
+                drawTextFull(
                     "ROCKETMAN ADVENTURES", 
                     (int)(SCREENWIDTH/2)-(int)(MeasureTextEx(GetFontDefault(), "ROCKETMAN ADVENTURES", 100, 10).x/2),
                     200,
-                    100,
-                    BLACK
+                    100
                 );
 
-                DrawText(
+                drawTextFull(
                     VERSION, 
                     (int)(SCREENWIDTH/2)-(int)(MeasureTextEx(GetFontDefault(), VERSION, 64, 10).x/2),
                     300,
-                    64,
-                    BLACK
+                    64
                 ); 
 
-                DrawText(
+                drawTextFull(
                     "START JUMPING TO BEGIN", 
                     (int)(SCREENWIDTH/2)-(int)(MeasureTextEx(GetFontDefault(), "START JUMPING TO BEGIN", 64, 10).x/2),
                     400,
-                    64,
-                    BLACK
+                    64
                 );
 
-                //fg
-                DrawText(
-                    "ROCKETMAN ADVENTURES", 
-                    (int)(SCREENWIDTH/2)-(int)(MeasureTextEx(GetFontDefault(), "ROCKETMAN ADVENTURES", 100, 10).x/2)+7,
-                    200+7,
-                    100,
-                    WHITE
-                );
-
-                DrawText(
-                    VERSION, 
-                    (int)(SCREENWIDTH/2)-(int)(MeasureTextEx(GetFontDefault(), VERSION, 64, 10).x/2)+7,
-                    300+7,
-                    64,
-                    WHITE
-                ); 
-
-                DrawText(
-                    "START JUMPING TO BEGIN", 
-                    (int)(SCREENWIDTH/2)-(int)(MeasureTextEx(GetFontDefault(), "START JUMPING TO BEGIN", 64, 10).x/2)+7,
-                    400+7,
-                    64,
-                    WHITE
-                ); 
                 break;
             case 1: //game in progress
-                //bg
-                DrawText("SCORE:", 10, 10, 64, BLACK);
-                DrawText(scoreString,250, 10, 64, BLACK);
-                
-                //fg
-                DrawText("SCORE:", 10+7, 10+7, 64, WHITE);
-                DrawText(scoreString,250+7, 10+7, 64, WHITE); 
+                drawTextFull("SCORE:", 10, 10, 64);
+                drawTextFull(scoreString,250, 10, 64);
                 break;
             case 2: //game over
                 DrawRectangle(0,0,SCREENWIDTH,SCREENHEIGHT,(Color){0,0,0,150});
                
-                //bg
-                DrawText(
+                drawTextFull(
                     "GAME OVER", 
                     (int)(SCREENWIDTH/2)-(int)(MeasureTextEx(GetFontDefault(), "GAME OVER", 100, 10).x/2),
                     (int)(SCREENHEIGHT/2)-(int)(MeasureTextEx(GetFontDefault(), "GAME OVER", 100, 10).y/2)-100,
-                    100,
-                    BLACK
+                    100
                 );
-                DrawText(
+                drawTextFull(
                     "SCORE:", 
                     (int)(SCREENWIDTH/2)-(int)(MeasureTextEx(GetFontDefault(), "SCORE:", 64, 10).x/2),
                     (int)(SCREENHEIGHT/2)-(int)(MeasureTextEx(GetFontDefault(), "SCORE", 64, 10).y/2),
-                    64,
-                    BLACK
+                    64
                 );
-                DrawText(
+                drawTextFull(
                     scoreString, 
                     (int)(SCREENWIDTH/2)-(int)(MeasureTextEx(GetFontDefault(), scoreString, 64, 10).x/2),
                     (int)(SCREENHEIGHT/2)-(int)(MeasureTextEx(GetFontDefault(), scoreString, 64, 10).y/2)+100,
-                    64,
-                    BLACK
+                    64
                 );
-
-                //fg
-                DrawText(
-                    "GAME OVER", 
-                    (int)(SCREENWIDTH/2)-(int)(MeasureTextEx(GetFontDefault(), "GAME OVER", 100, 10).x/2)+7,
-                    (int)(SCREENHEIGHT/2)-(int)(MeasureTextEx(GetFontDefault(), "GAME OVER", 100, 10).y/2)-100+7,
-                    100,
-                    WHITE
-                );
-                DrawText(
-                    "SCORE:", 
-                    (int)(SCREENWIDTH/2)-(int)(MeasureTextEx(GetFontDefault(), "SCORE:", 64, 10).x/2)+7,
-                    (int)(SCREENHEIGHT/2)-(int)(MeasureTextEx(GetFontDefault(), "SCORE", 64, 10).y/2)+7,
-                    64,
-                    WHITE
-                );
-                DrawText(
-                    scoreString, 
-                    (int)(SCREENWIDTH/2)-(int)(MeasureTextEx(GetFontDefault(), scoreString, 64, 10).x/2)+7,
-                    (int)(SCREENHEIGHT/2)-(int)(MeasureTextEx(GetFontDefault(), scoreString, 64, 10).y/2)+100+7,
-                    64,
-                    WHITE
-                ); 
                 break;
             default:
                 DrawText("ERROR", 100, 100, 120, BLACK);
