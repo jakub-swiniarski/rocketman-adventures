@@ -4,6 +4,6 @@
 static const char *DIRECTORY="/usr/share/rocketman/";
 static const unsigned short SCREENWIDTH=1920;
 static const unsigned short SCREENHEIGHT=1080;
-static const char *VERSION="1.3.1";
+static const char *VERSION="1.3.2";
 
 #endif
