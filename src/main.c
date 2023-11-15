@@ -526,27 +526,9 @@ int main(void){
         //text
         switch(gameState){
             case 0: //game not started
-                drawTextFull(
-                    "ROCKETMAN ADVENTURES", 
-                    (int)(SCREENWIDTH/2)-(int)(MeasureTextEx(GetFontDefault(), "ROCKETMAN ADVENTURES", 100, 10).x/2),
-                    200,
-                    100
-                );
-
-                drawTextFull(
-                    VERSION, 
-                    (int)(SCREENWIDTH/2)-(int)(MeasureTextEx(GetFontDefault(), VERSION, 64, 10).x/2),
-                    300,
-                    64
-                ); 
-
-                drawTextFull(
-                    "START JUMPING TO BEGIN", 
-                    (int)(SCREENWIDTH/2)-(int)(MeasureTextEx(GetFontDefault(), "START JUMPING TO BEGIN", 64, 10).x/2),
-                    400,
-                    64
-                );
-
+                drawTextFullCenter("ROCKETMAN ADVENTURES",200, 100);
+                drawTextFullCenter(VERSION, 300,64); 
+                drawTextFullCenter("START JUMPING TO BEGIN",400,64);
                 break;
             case 1: //game in progress
                 drawTextFull("SCORE:", 10, 10, 64);
@@ -554,28 +536,12 @@ int main(void){
                 break;
             case 2: //game over
                 DrawRectangle(0,0,SCREENWIDTH,SCREENHEIGHT,(Color){0,0,0,150});
-               
-                drawTextFull(
-                    "GAME OVER", 
-                    (int)(SCREENWIDTH/2)-(int)(MeasureTextEx(GetFontDefault(), "GAME OVER", 100, 10).x/2),
-                    (int)(SCREENHEIGHT/2)-(int)(MeasureTextEx(GetFontDefault(), "GAME OVER", 100, 10).y/2)-100,
-                    100
-                );
-                drawTextFull(
-                    "SCORE:", 
-                    (int)(SCREENWIDTH/2)-(int)(MeasureTextEx(GetFontDefault(), "SCORE:", 64, 10).x/2),
-                    (int)(SCREENHEIGHT/2)-(int)(MeasureTextEx(GetFontDefault(), "SCORE", 64, 10).y/2),
-                    64
-                );
-                drawTextFull(
-                    scoreString, 
-                    (int)(SCREENWIDTH/2)-(int)(MeasureTextEx(GetFontDefault(), scoreString, 64, 10).x/2),
-                    (int)(SCREENHEIGHT/2)-(int)(MeasureTextEx(GetFontDefault(), scoreString, 64, 10).y/2)+100,
-                    64
-                );
+                drawTextFullCenter("GAME OVER",200,100);
+                drawTextFullCenter("SCORE:",300,64);
+                drawTextFullCenter(scoreString,375,64);
                 break;
             default:
-                drawTextFull("ERROR", 100, 100, 120, BLACK);
+                drawTextFull("ERROR", 100, 100, 120);
         } 
 
         EndDrawing();
