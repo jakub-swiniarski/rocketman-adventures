@@ -11,5 +11,6 @@ void platformCollisionCheckR(Platform *p, Rocket *r);
 bool pickupVisible(Pickup *p);
 bool pickupCollectCheck(Pickup *p, Soldier *r);
 void drawTextFull(const char *text, short x, short y, unsigned short fontSize);
+void drawTextFullCenter(const char *text, short y, unsigned short fontSize);
 
 #endif
