@@ -421,7 +421,7 @@ int main(void){
             DrawTexture(pickup.tx,pickup.x,pickup.y,WHITE);
 
         //parachute
-        if(redSoldier.pickupActive==1){
+        if(redSoldier.slowfall<1){
             DrawTexturePro(
                 parachute,
                 (Rectangle){ //src
