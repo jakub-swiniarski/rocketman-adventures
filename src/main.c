@@ -260,7 +260,7 @@ int main(void){
             sprintf(scoreString, "%hu", score);
 
             redSoldier.y=(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2); 
-            
+           
             if(gameState==0)
                 gameState=1;
         }
@@ -311,18 +311,9 @@ int main(void){
         }
        
         //horizontal friction
-        if(redSoldier.speedX>0){
-            if(redSoldier.speedX<5)
-                redSoldier.speedX=0;
-            else
-                redSoldier.speedX-=8;
-        }
-        else if(redSoldier.speedX<0){
-            if(redSoldier.speedX>-5)
-                redSoldier.speedX=0;
-            else
-                redSoldier.speedX+=8;
-        }
+        redSoldier.speedX+=redSoldier.speedX>0?-8:8;
+        if(redSoldier.speedX>-5 && redSoldier.speedX<5)
+            redSoldier.speedX=0;
 
         soldierBorderCheck(&redSoldier);
 
