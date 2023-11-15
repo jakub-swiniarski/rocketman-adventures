@@ -575,7 +575,7 @@ int main(void){
                 );
                 break;
             default:
-                DrawText("ERROR", 100, 100, 120, BLACK);
+                drawTextFull("ERROR", 100, 100, 120, BLACK);
         } 
 
         EndDrawing();
