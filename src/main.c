@@ -186,8 +186,11 @@ int main(void){
                         redSoldier.speedY=redSoldier.critBoost*-1*rockets[i].speedY; 
                     
                         //damage
-                        if(gameState==1)
+                        if(gameState==1){
                             redSoldier.hp-=20;
+                            if(redSoldier.hp<=0)
+                                gameState=2;
+                        }
                     }
 
                     if(redSoldier.pickupActive==2)
