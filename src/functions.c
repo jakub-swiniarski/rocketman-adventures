@@ -90,12 +90,12 @@ bool pickupCollectCheck(Pickup *p, Soldier *r){
     return 0;
 }
 
-void drawTextFull(const char *text, short x, short y, unsigned short fontSize){
+void drawTextFull(const char *text, short x, short y, us fontSize){
     DrawText(text,x,y,fontSize,BLACK);
     DrawText(text,x+7,y+7,fontSize,WHITE);
 }
 
-void drawTextFullCenter(const char *text, short y, unsigned short fontSize){
+void drawTextFullCenter(const char *text, short y, us fontSize){
     drawTextFull(
         text,
         (int)(SCREENWIDTH/2)-(int)(MeasureTextEx(GetFontDefault(),text,fontSize,10).x/2),
