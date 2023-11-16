@@ -152,8 +152,8 @@ int main(void){
                     
                         Particle newParticle={
                             .tx=LoadTextureFromImage(Images.particleSmoke),
-                            .x=rockets[i].x+(int)(rockets[i].tx.width/2)+rand()%(50-(-50)+1)-50,
-                            .y=rockets[i].y+(int)(rockets[i].tx.width/2)+rand()%(50-(-50)+1)-50,
+                            .x=rockets[i].x+MIDDLEX(rockets[i])+rand()%(50-(-50)+1)-50,
+                            .y=rockets[i].y+MIDDLEY(rockets[i])+rand()%(50-(-50)+1)-50,
                             .rotation=rand()%361,
                             .alpha=255
                         };
