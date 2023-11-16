@@ -179,12 +179,15 @@ int main(void){
                         particles=buffer;
                     }
 
-                    //rocket jump
                     if(abs(redSoldier.x+MIDDLEX(redSoldier)-rockets[i].x-MIDDLEX(rockets[i]))<100 
-                    && abs(redSoldier.y+MIDDLEY(redSoldier)-rockets[i].y-MIDDLEY(rockets[i]))<100
-                    && gameState!=2){
+                    && abs(redSoldier.y+MIDDLEY(redSoldier)-rockets[i].y-MIDDLEY(rockets[i]))<100){
+                        //rocket jump
                         redSoldier.speedX=redSoldier.critBoost*-1*rockets[i].speedX;
                         redSoldier.speedY=redSoldier.critBoost*-1*rockets[i].speedY; 
+                    
+                        //damage
+                        if(gameState==1)
+                            redSoldier.hp-=20;
                     }
 
                     if(redSoldier.pickupActive==2)
@@ -545,8 +548,9 @@ int main(void){
                 drawTextFullCenter("START JUMPING TO BEGIN",400,64);
                 break;
             case 1: //game in progress
+                sprintf(healthHUD.text,"%u",redSoldier.hp);
                 DrawTexture(healthHUD.tx,healthHUD.x,healthHUD.y,WHITE);
-                drawTextFull(healthHUD.text,healthHUD.x+30,healthHUD.y+30,100); 
+                drawTextFull(healthHUD.text,healthHUD.x+40,healthHUD.y+30,100); 
                 
                 drawTextFull("SCORE:", 10, 10, 64);
                 drawTextFull(scoreString,250, 10, 64);
