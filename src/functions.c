@@ -36,14 +36,6 @@ void soldierBorderCheck(Soldier *s){
     else if(s->x+s->tx.width>SCREENWIDTH){
         s->x=SCREENWIDTH-s->tx.width;
     }
-
-    //vertical
-    /*if(s->y<0){
-        s->y=0;
-    }*/
-    /*else if(s->y+s->tx.height>SCREENHEIGHT){
-        s->y=SCREENHEIGHT-s->tx.height;
-    }*/
 }
 
 void platformCollisionCheckS(Platform *p, Soldier *s){
