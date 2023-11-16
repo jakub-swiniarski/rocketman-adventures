@@ -12,6 +12,6 @@ static const unsigned short SCREENWIDTH=1920;
 static const unsigned short SCREENHEIGHT=1080;
 static const char *VERSION="1.3.2";
 
-#define MIDDLE(X) (int)(SCREENHEIGHT/2)-(int)(X.tx.height/2)
+#define SCREENMIDDLE(X) (int)(SCREENHEIGHT/2)-(int)(X.tx.height/2)
 
 #endif
