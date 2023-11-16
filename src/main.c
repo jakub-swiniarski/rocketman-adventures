@@ -12,7 +12,7 @@
 int main(void){
     InitWindow(SCREENWIDTH,SCREENHEIGHT,"Rocketman Adventures");
     
-    uint8_t display=GetCurrentMonitor();
+    ui8 display=GetCurrentMonitor();
     SetWindowSize(GetMonitorWidth(display),GetMonitorHeight(display));
     ToggleFullscreen();
 
@@ -21,7 +21,7 @@ int main(void){
     SetTargetFPS(60);
     float dt=1.f;
 
-    uint8_t gameState=0; //0 - not started, 1 - in progress, 2 - game over
+    ui8 gameState=0; //0 - not started, 1 - in progress, 2 - game over
 
     //load and resize images
     Images.redSoldier=LoadImage(pathToFile("red_soldier.png"));
@@ -76,7 +76,7 @@ int main(void){
     //parachute
     Texture parachute=LoadTextureFromImage(Images.parachute);
     UnloadImage(Images.parachute);
-    int8_t rotationParachute=0; 
+    i8 rotationParachute=0; 
 
     //rocket launcher
     Launcher rl={
@@ -91,7 +91,7 @@ int main(void){
     //background
     Texture backgrounds[2];
     short bgY[2]; 
-    for(uint8_t i=0; i<2; i++){
+    for(ui8 i=0; i<2; i++){
         backgrounds[i]=LoadTextureFromImage(Images.backgrounds[i]);
         UnloadImage(Images.backgrounds[i]);
         bgY[i]=-i*SCREENHEIGHT;
@@ -99,15 +99,15 @@ int main(void){
 
     srand(time(NULL));
 
-    uint8_t numRockets=0;
+    ui8 numRockets=0;
     Rocket* rockets=malloc(numRockets*sizeof(Rocket));
 
-    uint8_t numParticles=0;
+    ui8 numParticles=0;
     Particle* particles=malloc(numParticles*sizeof(Particle));
 
-    uint8_t numPlatforms=5;
+    ui8 numPlatforms=5;
     Platform platforms[numPlatforms];
-    for(uint8_t i=0; i<numPlatforms; i++){
+    for(ui8 i=0; i<numPlatforms; i++){
         Platform newPlatform={
             .tx=LoadTextureFromImage(Images.platform),
             .x=rand()%(SCREENWIDTH/2+1)+SCREENWIDTH/4, //this is also used for random x when moving platform to the top
@@ -127,7 +127,7 @@ int main(void){
         .id=1
     };
 
-    unsigned short score=0;
+    us score=0;
     char scoreString[5];
 
     PlayMusicStream(music);
@@ -137,7 +137,7 @@ int main(void){
         dt=GetFrameTime();
         UpdateMusicStream(music);
 
-        for(uint8_t i=0; i<numRockets; i++){
+        for(ui8 i=0; i<numRockets; i++){
             rocketBorderCheck(&rockets[i]);
 
             if(rockets[i].collided){
@@ -146,7 +146,7 @@ int main(void){
 
                 //smoke particles
                 if(rockets[i].shouldExplode){
-                    for(uint8_t j=0; j<3; j++){
+                    for(ui8 j=0; j<3; j++){
                         numParticles++;
                         Particle *buffer=malloc(sizeof(Particle)*numParticles);
                     
@@ -158,7 +158,7 @@ int main(void){
                             .alpha=255
                         };
 
-                        for(uint8_t i=0; i<numParticles-1; i++)
+                        for(ui8 i=0; i<numParticles-1; i++)
                             buffer[i]=particles[i];
 
                         buffer[numParticles-1]=newParticle;
@@ -181,12 +181,12 @@ int main(void){
                 numRockets--; 
 
                 //shift elements in array
-                for(uint8_t j=i; j<numRockets; j++)
+                for(ui8 j=i; j<numRockets; j++)
                     rockets[j]=rockets[j+1];
                
                 //TEMPORARY SOLUTION 
                 Rocket* buffer=malloc(sizeof(Rocket)*numRockets);
-                for(uint8_t j=0; j<numRockets; j++)
+                for(ui8 j=0; j<numRockets; j++)
                     buffer[j]=rockets[j];
                 rockets=buffer;
 
@@ -195,16 +195,16 @@ int main(void){
         }
 
         //delete particles
-        for(uint8_t i=0; i<numParticles; i++){
+        for(ui8 i=0; i<numParticles; i++){
             if(particles[i].alpha<5){
                 numParticles--;
 
                 //shift elements in array
-                for(uint8_t j=i; j<numParticles; j++)
+                for(ui8 j=i; j<numParticles; j++)
                     particles[j]=particles[j+1];
 
                 Particle* buffer=malloc(sizeof(Particle)*numParticles);
-                for(uint8_t j=0; j<numParticles; j++)
+                for(ui8 j=0; j<numParticles; j++)
                     buffer[j]=particles[j];
                 particles=buffer;
 
@@ -298,7 +298,7 @@ int main(void){
             newRocket.speedX=-1.2*cos(newRocket.rotation*PI/180)*800;
             newRocket.speedY=-1.2*sin(newRocket.rotation*PI/180)*800;
             
-            for(uint8_t i=0; i<numRockets-1; i++)
+            for(ui8 i=0; i<numRockets-1; i++)
                 buffer[i]=rockets[i];
 
             buffer[numRockets-1]=newRocket;
@@ -321,7 +321,7 @@ int main(void){
         redSoldier.cooldown-=150*GetFrameTime();
 
         //update rockets
-        for(uint8_t i=0; i<numRockets; i++){
+        for(ui8 i=0; i<numRockets; i++){
             //position
             rockets[i].x+=rockets[i].speedX*dt;
             rockets[i].y+=rockets[i].speedY*dt;
@@ -350,7 +350,7 @@ int main(void){
 
         //update background
         bgShift=redSoldier.speedY*dt/2;
-        for(uint8_t i=0; i<2; i++){
+        for(ui8 i=0; i<2; i++){
             //parallax scrolling
             if(bgY[i]>SCREENHEIGHT){
                 bgY[i]=-SCREENHEIGHT;
@@ -364,7 +364,7 @@ int main(void){
         }
 
         //update platforms
-        for(uint8_t i=0; i<numPlatforms; i++){
+        for(ui8 i=0; i<numPlatforms; i++){
             //soldier collisions
             if(redSoldier.speedY>0)
                 platformCollisionCheckS(&platforms[i],&redSoldier);
@@ -373,7 +373,7 @@ int main(void){
                 platforms[i].y-=redSoldier.speedY*dt;
 
             //rocket collisions
-            for(uint8_t j=0; j<numRockets; j++)
+            for(ui8 j=0; j<numRockets; j++)
                 platformCollisionCheckR(&platforms[i],&rockets[j]);
 
             if(platforms[i].y>SCREENHEIGHT){
@@ -439,7 +439,7 @@ int main(void){
         DrawTexture(redSoldier.tx,redSoldier.x,redSoldier.y,WHITE);
 
         //draw rockets
-        for(uint8_t i=0; i<numRockets; i++){
+        for(ui8 i=0; i<numRockets; i++){
             DrawTexturePro(
                 rockets[i].tx,
                 (Rectangle){ //src
@@ -487,7 +487,7 @@ int main(void){
         ); 
 
         //update particles
-        for(uint8_t i=0; i<numParticles; i++){
+        for(ui8 i=0; i<numParticles; i++){
             if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2) && redSoldier.speedY<0)
                 particles[i].y-=redSoldier.speedY*dt;
 
@@ -555,11 +555,11 @@ int main(void){
 
     //unload textures
     UnloadTexture(redSoldier.tx); 
-    for(uint8_t i=0; i<numRockets; i++)
+    for(ui8 i=0; i<numRockets; i++)
         UnloadTexture(rockets[i].tx); 
-    for(uint8_t i=0; i<numParticles; i++)
+    for(ui8 i=0; i<numParticles; i++)
         UnloadTexture(particles[i].tx);
-    for(uint8_t i=0; i<numPlatforms; i++)
+    for(ui8 i=0; i<numPlatforms; i++)
         UnloadTexture(platforms[i].tx);
     UnloadTexture(pickup.tx);
     UnloadTexture(parachute);
