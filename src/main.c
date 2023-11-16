@@ -254,12 +254,12 @@ int main(void){
         else
             redSoldier.y+=redSoldier.speedY*dt; 
 
-        if(redSoldier.y<(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2)){
+        if(redSoldier.y<MIDDLE(redSoldier)){
             //score
             score-=redSoldier.speedY*dt;
             sprintf(scoreString, "%hu", score);
 
-            redSoldier.y=(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2); 
+            redSoldier.y=MIDDLE(redSoldier); 
            
             if(gameState==0)
                 gameState=1;
@@ -356,7 +356,7 @@ int main(void){
                 bgY[i]=-SCREENHEIGHT;
                 bgY[1-i]=0;
             } 
-            if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2) && redSoldier.speedY<0)
+            if(redSoldier.y==MIDDLE(redSoldier) && redSoldier.speedY<0)
                 bgY[i]-=bgShift;
 
             //draw background
@@ -369,7 +369,7 @@ int main(void){
             if(redSoldier.speedY>0)
                 platformCollisionCheckS(&platforms[i],&redSoldier);
 
-            if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2) && redSoldier.speedY<0)
+            if(redSoldier.y==MIDDLE(redSoldier) && redSoldier.speedY<0)
                 platforms[i].y-=redSoldier.speedY*dt;
 
             //rocket collisions
@@ -405,7 +405,7 @@ int main(void){
 
         //update pickup
         if(pickupCollectCheck(&pickup, &redSoldier)) PlaySound(fxPickup); 
-        if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2) && redSoldier.speedY<0)
+        if(redSoldier.y==MIDDLE(redSoldier) && redSoldier.speedY<0)
             pickup.y-=redSoldier.speedY*dt; 
         if(pickupVisible(&pickup))
             DrawTexture(pickup.tx,pickup.x,pickup.y,WHITE);
@@ -488,7 +488,7 @@ int main(void){
 
         //update particles
         for(ui8 i=0; i<numParticles; i++){
-            if(redSoldier.y==(int)(SCREENHEIGHT/2)-(int)(redSoldier.tx.height/2) && redSoldier.speedY<0)
+            if(redSoldier.y==MIDDLE(redSoldier) && redSoldier.speedY<0)
                 particles[i].y-=redSoldier.speedY*dt;
 
             //fade away 
