@@ -180,14 +180,15 @@ int main(void){
                     }
 
                     if(abs(redSoldier.x+MIDDLEX(redSoldier)-rockets[i].x-MIDDLEX(rockets[i]))<100 
-                    && abs(redSoldier.y+MIDDLEY(redSoldier)-rockets[i].y-MIDDLEY(rockets[i]))<100){
+                    && abs(redSoldier.y+MIDDLEY(redSoldier)-rockets[i].y-MIDDLEY(rockets[i]))<100
+                    && gameState!=2){
                         //rocket jump
                         redSoldier.speedX=redSoldier.critBoost*-1*rockets[i].speedX;
                         redSoldier.speedY=redSoldier.critBoost*-1*rockets[i].speedY; 
                     
                         //damage
                         if(gameState==1){
-                            redSoldier.hp-=20;
+                            redSoldier.hp-=20*redSoldier.critBoost;
                             if(redSoldier.hp<=0)
                                 gameState=2;
                         }
@@ -268,7 +269,7 @@ int main(void){
         //update player position
         redSoldier.x+=redSoldier.speedX*dt;
         if(redSoldier.speedY>0){
-            if(redSoldier.falling)
+            if(redSoldier.falling && gameState!=2)
                 redSoldier.y+=redSoldier.speedY*dt*redSoldier.slowfall; 
         }
         else
