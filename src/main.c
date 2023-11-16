@@ -54,6 +54,9 @@ int main(void){
     Images.critPickup=LoadImage(pathToFile("crit_pickup.png"));
     ImageResizeNN(&Images.critPickup,9*8,13*8);
 
+    Images.hud=LoadImage(pathToFile("hud.png"));
+    ImageResizeNN(&Images.hud,64*5,32*5);
+
     //sfx
     Sound fxExplosion=LoadSound(pathToFile("explosion.ogg"));
     Sound fxPickup=LoadSound(pathToFile("pickup.ogg"));
@@ -67,7 +70,8 @@ int main(void){
         .cooldown=0,
         .falling=0,
         .slowfall=1,
-        .critBoost=1
+        .critBoost=1,
+        .hp=200,
     };
     redSoldier.x=(int)(SCREENWIDTH/2)-redSoldier.tx.width;
     redSoldier.y=SCREENHEIGHT-redSoldier.tx.height;
@@ -129,6 +133,16 @@ int main(void){
 
     us score=0;
     char scoreString[5];
+
+    //HUD
+    HUD healthHUD={
+        .tx=LoadTextureFromImage(Images.hud),
+        .x=5,
+        .y=SCREENHEIGHT-Images.hud.height-5,
+        .text="0"
+    };
+    UnloadImage(Images.hud);
+    sprintf(healthHUD.text, "%u", redSoldier.hp);
 
     PlayMusicStream(music);
 
@@ -523,7 +537,7 @@ int main(void){
             );
         } 
     
-        //text
+        //text and hud
         switch(gameState){
             case 0: //game not started
                 drawTextFullCenter("ROCKETMAN ADVENTURES",200, 100);
@@ -531,6 +545,9 @@ int main(void){
                 drawTextFullCenter("START JUMPING TO BEGIN",400,64);
                 break;
             case 1: //game in progress
+                DrawTexture(healthHUD.tx,healthHUD.x,healthHUD.y,WHITE);
+                drawTextFull(healthHUD.text,healthHUD.x+30,healthHUD.y+30,100); 
+                
                 drawTextFull("SCORE:", 10, 10, 64);
                 drawTextFull(scoreString,250, 10, 64);
                 break;
@@ -563,6 +580,7 @@ int main(void){
         UnloadTexture(platforms[i].tx);
     UnloadTexture(pickup.tx);
     UnloadTexture(parachute);
+    UnloadTexture(healthHUD.tx);
 
     CloseAudioDevice();
     CloseWindow();
