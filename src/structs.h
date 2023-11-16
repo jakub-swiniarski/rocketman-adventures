@@ -1,6 +1,7 @@
 #ifndef STRUCTS_H
 #define STRUCTS_H
 
+#include "globals.h"
 #include <raylib.h>
 #include <stdint.h>
 
@@ -20,17 +21,17 @@ typedef struct{
     Texture tx;
     short x,y;
     short speedX, speedY; //used for gravity and jumping
-    int8_t cooldown;
+    i8 cooldown;
     bool falling;
-    uint8_t pickup, pickupActive;
+    ui8 pickup, pickupActive;
     float slowfall; //1 means no slowfall
-    uint8_t critBoost;
+    ui8 critBoost;
 } Soldier;
 
 typedef struct{
     Texture tx;
     short x,y;
-    unsigned short rotation;
+    us rotation;
     short speedX,speedY;
     bool collided;
     bool shouldExplode;
@@ -39,16 +40,16 @@ typedef struct{
 typedef struct{
     Texture tx;
     short x,y;
-    unsigned short rotation;
-    int8_t flip; //1 means befault, -1 means flipped
+    us rotation;
+    i8 flip; //1 means befault, -1 means flipped
     Color color;
 } Launcher;
 
 typedef struct{
     Texture tx;
     short x,y;
-    unsigned short rotation;
-    uint8_t alpha;
+    us rotation;
+    ui8 alpha;
 } Particle;
 
 typedef struct{
@@ -59,7 +60,7 @@ typedef struct{
 typedef struct{
     Texture tx;
     short x,y;
-    uint8_t id; //1 - parachute, 2 -crits
+    ui8 id; //1 - parachute, 2 -crits
 } Pickup;
 
 #endif
