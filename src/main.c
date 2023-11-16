@@ -166,8 +166,8 @@ int main(void){
                     }
 
                     //rocket jump
-                    if(abs((int)(redSoldier.x+(int)(redSoldier.tx.width/2)-rockets[i].x-(int)(rockets[i].tx.width/2)))<100 
-                    && abs((int)(redSoldier.y+(int)(redSoldier.tx.height/2)-rockets[i].y-(int)(rockets[i].tx.height/2)))<100
+                    if(abs(redSoldier.x+MIDDLEX(redSoldier)-rockets[i].x-MIDDLEX(rockets[i]))<100 
+                    && abs(redSoldier.y+MIDDLEY(redSoldier)-rockets[i].y-MIDDLEY(rockets[i]))<100
                     && gameState!=2){
                         redSoldier.speedX=redSoldier.critBoost*-1*rockets[i].speedX;
                         redSoldier.speedY=redSoldier.critBoost*-1*rockets[i].speedY; 
@@ -237,12 +237,12 @@ int main(void){
             }
 
             //update rocket launcher
-            rl.x=redSoldier.x+(int)(redSoldier.tx.width/2);
-            rl.y=redSoldier.y+(int)(redSoldier.tx.height/2); 
-            rl.rotation=270-atan2((redSoldier.x+(int)(redSoldier.tx.width/2)-GetMouseX()),(redSoldier.y+(int)(redSoldier.tx.height/2)-GetMouseY()))*180/PI; 
+            rl.x=redSoldier.x+MIDDLEX(redSoldier);
+            rl.y=redSoldier.y+MIDDLEY(redSoldier); 
+            rl.rotation=270-atan2((redSoldier.x+MIDDLEX(redSoldier)-GetMouseX()),(redSoldier.y+MIDDLEY(redSoldier)-GetMouseY()))*180/PI; 
         
             //flip the rocket launcher to prevent it from going upside down
-            rl.flip=GetMouseX()<redSoldier.x+(int)(redSoldier.tx.width/2)?-1:1;
+            rl.flip=GetMouseX()<redSoldier.x+MIDDLEX(redSoldier)?-1:1;
         }
 
         //update player position
@@ -288,9 +288,9 @@ int main(void){
 
             Rocket newRocket={
                 .tx=LoadTextureFromImage(Images.rocket),
-                .x=redSoldier.x+(int)(redSoldier.tx.width/2),
-                .y=redSoldier.y+(int)(redSoldier.tx.height/2),
-                .rotation=90-atan2((redSoldier.x+(int)(redSoldier.tx.width/2)-GetMouseX()),(redSoldier.y+(int)(redSoldier.tx.height/2)-GetMouseY()))*180/PI,
+                .x=redSoldier.x+MIDDLEX(redSoldier),
+                .y=redSoldier.y+MIDDLEY(redSoldier),
+                .rotation=90-atan2((redSoldier.x+MIDDLEX(redSoldier)-GetMouseX()),(redSoldier.y+MIDDLEY(redSoldier)-GetMouseY()))*180/PI,
                 .collided=0,
                 .shouldExplode=1
             };
@@ -421,14 +421,14 @@ int main(void){
                     .height=parachute.height
                 },
                 (Rectangle){ //dest
-                    .x=redSoldier.x+(int)(redSoldier.tx.width/2),
+                    .x=redSoldier.x+MIDDLEX(redSoldier),
                     .y=redSoldier.y,
                     .width=parachute.width,
                     .height=parachute.height
                 },
                 (Vector2){ //origin
                     .x=(int)(parachute.width/2),
-                    .y=(int)(parachute.height)
+                    .y=parachute.height
                 },
                 rotationParachute,
                 WHITE
@@ -455,8 +455,8 @@ int main(void){
                     .height=rockets[i].tx.height
                 },
                 (Vector2){ //origin
-                    .x=(int)(rockets[i].tx.width/2),
-                    .y=(int)(rockets[i].tx.height/2)
+                    .x=MIDDLEX(rockets[i]),
+                    .y=MIDDLEY(rockets[i])
                 },
                 rockets[i].rotation,
                 WHITE
@@ -479,8 +479,8 @@ int main(void){
                 .height=rl.tx.height
             },
             (Vector2){ //origin
-                .x=(int)(rl.tx.width/2),
-                .y=(int)(rl.tx.height/2)
+                .x=MIDDLEX(rl),
+                .y=MIDDLEY(rl)
             },
             rl.rotation,
             rl.color
@@ -510,8 +510,8 @@ int main(void){
                     .height=particles[i].tx.height
                 },
                 (Vector2){ //origin
-                    .x=(int)(particles[i].tx.width/2),
-                    .y=(int)(particles[i].tx.height/2)
+                    .x=MIDDLEX(particles[i]),
+                    .y=MIDDLEY(particles[i])
                 },
                 particles[i].rotation, //rotataion
                 (Color){
