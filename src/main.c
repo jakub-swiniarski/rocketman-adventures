@@ -60,6 +60,7 @@ int main(void){
     //sfx
     Sound fxExplosion=LoadSound(pathToFile("explosion.ogg"));
     Sound fxPickup=LoadSound(pathToFile("pickup.ogg"));
+    Music musicMenu=LoadMusicStream(pathToFile("soundtrack3.ogg"));
     Music music=LoadMusicStream(pathToFile("soundtrack0.ogg"));
 
     //player
@@ -145,11 +146,11 @@ int main(void){
     sprintf(healthHUD.text, "%u", redSoldier.hp);
 
     PlayMusicStream(music);
+    PlayMusicStream(musicMenu);   
 
     //game loop
     while(!WindowShouldClose()){
         dt=GetFrameTime();
-        UpdateMusicStream(music);
 
         for(ui8 i=0; i<numRockets; i++){
             rocketBorderCheck(&rockets[i]);
@@ -547,11 +548,15 @@ int main(void){
         //text and hud
         switch(gameState){
             case 0: //game not started
+                UpdateMusicStream(musicMenu);
+
                 drawTextFullCenter("ROCKETMAN ADVENTURES",200, 100);
                 drawTextFullCenter(VERSION, 300,64); 
                 drawTextFullCenter("START JUMPING TO BEGIN",400,64);
                 break;
             case 1: //game in progress
+                UpdateMusicStream(music);
+
                 sprintf(healthHUD.text,"%u",redSoldier.hp);
                 DrawTexture(healthHUD.tx,healthHUD.x,healthHUD.y,WHITE);
                 drawTextFull(healthHUD.text,healthHUD.x+40,healthHUD.y+30,100); 
