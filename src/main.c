@@ -58,7 +58,7 @@ int main(void){
     ImageResizeNN(&Images.hud,64*5,32*5);
 
     Images.healthPack=LoadImage(pathToFile("health_pack.png"));
-    ImageResizeNN(&Images.healthPack,12*8,12*8);
+    ImageResizeNN(&Images.healthPack,12*6,12*6);
 
     //sfx
     Sound fxExplosion=LoadSound(pathToFile("explosion.ogg"));
@@ -118,7 +118,7 @@ int main(void){
     for(ui8 i=0; i<numPlatforms; i++){
         Platform newPlatform={
             .tx=LoadTextureFromImage(Images.platform),
-            .x=rand()%(SCREENWIDTH-Images.platform.width), //this is also used for random x when moving platform to the top
+            .x=rand()%(SCREENWIDTH-Images.platform.width-100)+50, //this is also used for random x when moving platform to the top
             .y=SCREENHEIGHT-(i+1)*100
         };
 
@@ -415,7 +415,7 @@ int main(void){
                 platformCollisionCheckR(&platforms[i],&rockets[j]);
 
             if(platforms[i].y>SCREENHEIGHT){
-                platforms[i].x=rand()%(SCREENWIDTH-platforms[i].tx.width);
+                platforms[i].x=rand()%(SCREENWIDTH-platforms[i].tx.width-100)+50;
                 platforms[i].y=-platforms[i].tx.height;
                 
                 //random pickups and health packs
