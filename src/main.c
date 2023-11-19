@@ -118,7 +118,7 @@ int main(void){
     for(ui8 i=0; i<numPlatforms; i++){
         Platform newPlatform={
             .tx=LoadTextureFromImage(Images.platform),
-            .x=rand()%(SCREENWIDTH-Images.platform.width-200)+100, //this is also used for random x when moving platform to the top
+            .x=rand()%(SCREENWIDTH-Images.platform.width-400)+200, //this is also used for random x when moving platform to the top
             .y=SCREENHEIGHT-(i+1)*100
         };
 
@@ -200,8 +200,8 @@ int main(void){
                     && abs(redSoldier.y+MIDDLEY(redSoldier)-rockets[i].y-MIDDLEY(rockets[i]))<100
                     && gameState!=2){
                         //rocket jump
-                        redSoldier.speedX=redSoldier.critBoost*-1.2*rockets[i].speedX;
-                        redSoldier.speedY=redSoldier.critBoost*-1.2*rockets[i].speedY; 
+                        redSoldier.speedX=redSoldier.critBoost*-1*rockets[i].speedX;
+                        redSoldier.speedY=redSoldier.critBoost*-1*rockets[i].speedY; 
                     
                         //damage
                         if(gameState==1){
@@ -271,7 +271,7 @@ int main(void){
                 if(redSoldier.pickupActive==1)
                     redSoldier.pickupActive=0;
                 redSoldier.falling=0;
-                redSoldier.speedY=-300;
+                redSoldier.speedY=-400;
             }
 
             //update rocket launcher
@@ -415,7 +415,7 @@ int main(void){
                 platformCollisionCheckR(&platforms[i],&rockets[j]);
 
             if(platforms[i].y>SCREENHEIGHT){
-                platforms[i].x=rand()%(SCREENWIDTH-platforms[i].tx.width-200)+100;
+                platforms[i].x=rand()%(SCREENWIDTH-platforms[i].tx.width-400)+200;
                 platforms[i].y=-platforms[i].tx.height;
                 
                 //random pickups and health packs
