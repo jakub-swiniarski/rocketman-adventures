@@ -110,13 +110,13 @@ int main(void){
     ui8 numParticles=0;
     Particle* particles=malloc(numParticles*sizeof(Particle));
 
-    ui8 numPlatforms=5;
+    ui8 numPlatforms=10;
     Platform platforms[numPlatforms];
     for(ui8 i=0; i<numPlatforms; i++){
         Platform newPlatform={
             .tx=LoadTextureFromImage(Images.platform),
-            .x=rand()%(SCREENWIDTH/2+1)+SCREENWIDTH/4, //this is also used for random x when moving platform to the top
-            .y=SCREENHEIGHT-(i+1)*200
+            .x=rand()%SCREENWIDTH, //this is also used for random x when moving platform to the top
+            .y=SCREENHEIGHT-(i+1)*100
         };
 
         platforms[i]=newPlatform;
@@ -399,7 +399,7 @@ int main(void){
                 platformCollisionCheckR(&platforms[i],&rockets[j]);
 
             if(platforms[i].y>SCREENHEIGHT){
-                platforms[i].x=rand()%(SCREENWIDTH/2+1)+SCREENWIDTH/4;
+                platforms[i].x=rand()%SCREENWIDTH;
                 platforms[i].y=-platforms[i].tx.height;
                 if(!pickupVisible(&pickup)){
                     pickup.id=rand()%(2-1+1)+1;
