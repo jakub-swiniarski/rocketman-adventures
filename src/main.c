@@ -118,7 +118,7 @@ int main(void){
     for(ui8 i=0; i<numPlatforms; i++){
         Platform newPlatform={
             .tx=LoadTextureFromImage(Images.platform),
-            .x=rand()%SCREENWIDTH, //this is also used for random x when moving platform to the top
+            .x=rand()%(SCREENWIDTH-Images.platform.width), //this is also used for random x when moving platform to the top
             .y=SCREENHEIGHT-(i+1)*100
         };
 
@@ -415,7 +415,7 @@ int main(void){
                 platformCollisionCheckR(&platforms[i],&rockets[j]);
 
             if(platforms[i].y>SCREENHEIGHT){
-                platforms[i].x=rand()%SCREENWIDTH;
+                platforms[i].x=rand()%(SCREENWIDTH-platforms[i].tx.width);
                 platforms[i].y=-platforms[i].tx.height;
                 
                 //random pickups and health packs
