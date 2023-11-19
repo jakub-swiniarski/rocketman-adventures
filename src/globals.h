@@ -5,6 +5,7 @@
 
 typedef int8_t i8;
 typedef uint8_t ui8;
+typedef unsigned int ui;
 typedef unsigned short us;
 
 static const char *DIRECTORY="res/";
