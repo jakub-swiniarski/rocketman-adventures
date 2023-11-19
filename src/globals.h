@@ -7,10 +7,10 @@ typedef int8_t i8;
 typedef uint8_t ui8;
 typedef unsigned short us;
 
-static const char *DIRECTORY="res/";
+static const char *DIRECTORY="/usr/share/rocketman/";
 static const unsigned short SCREENWIDTH=1920;
 static const unsigned short SCREENHEIGHT=1080;
-static const char *VERSION="1.3.3";
+static const char *VERSION="1.4.0";
 
 #define SCREENMIDDLE(X) (int)(SCREENHEIGHT/2)-(int)(X.tx.height/2)
 #define MIDDLEX(X) ((int)(X.tx.width/2))
