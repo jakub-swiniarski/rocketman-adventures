@@ -40,8 +40,7 @@ void soldierBorderCheck(Soldier *s){
 
 void platformCollisionCheckS(Platform *p, Soldier *s){
     if(s->x+s->tx.width>p->x && s->x<p->x+p->tx.width){
-        if(s->y+s->tx.height>p->y
-        && s->y+s->tx.height<p->y+p->tx.height+50){
+        if(s->y+s->tx.height>p->y && s->y+s->tx.height<p->y+p->tx.height+10){ //add a constant number to prevent the player from falling through
             s->y=p->y-s->tx.height;
             s->speedY=0;
             s->falling=0;
@@ -58,19 +57,9 @@ void platformCollisionCheckR(Platform *p, Rocket *r){
     } 
 }
 
-bool pickupVisible(Pickup *p){
-    if(p->x+p->tx.width>0 && p->x<SCREENWIDTH){
-        if(p->y+p->tx.height>0 && p->y<SCREENHEIGHT){
-            return 1;
-        }
-    }
-    return 0;
-}
-
 bool pickupCollectCheck(Pickup *p, Soldier *r){
     if(r->x+r->tx.width>p->x && r->x<p->x+p->tx.width){
-        if(r->y+r->tx.height>p->y
-        && r->y<p->y+p->tx.height){
+        if(r->y+r->tx.height>p->y && r->y<p->y+p->tx.height){
             if(r->pickup==0){
                 r->pickup=p->id;
                 p->x=-100;
