@@ -54,9 +54,16 @@ int main(void){
     Images.critPickup=LoadImage(pathToFile("crit_pickup.png"));
     ImageResizeNN(&Images.critPickup,9*8,13*8);
 
+    Images.hud=LoadImage(pathToFile("hud.png"));
+    ImageResizeNN(&Images.hud,64*5,32*5);
+
+    Images.healthPack=LoadImage(pathToFile("health_pack.png"));
+    ImageResizeNN(&Images.healthPack,12*6,12*6);
+
     //sfx
     Sound fxExplosion=LoadSound(pathToFile("explosion.ogg"));
     Sound fxPickup=LoadSound(pathToFile("pickup.ogg"));
+    Music musicMenu=LoadMusicStream(pathToFile("soundtrack3.ogg"));
     Music music=LoadMusicStream(pathToFile("soundtrack0.ogg"));
 
     //player
@@ -67,7 +74,8 @@ int main(void){
         .cooldown=0,
         .falling=0,
         .slowfall=1,
-        .critBoost=1
+        .critBoost=1,
+        .hp=200,
     };
     redSoldier.x=(int)(SCREENWIDTH/2)-redSoldier.tx.width;
     redSoldier.y=SCREENHEIGHT-redSoldier.tx.height;
@@ -105,13 +113,13 @@ int main(void){
     ui8 numParticles=0;
     Particle* particles=malloc(numParticles*sizeof(Particle));
 
-    ui8 numPlatforms=5;
+    ui8 numPlatforms=10;
     Platform platforms[numPlatforms];
     for(ui8 i=0; i<numPlatforms; i++){
         Platform newPlatform={
             .tx=LoadTextureFromImage(Images.platform),
-            .x=rand()%(SCREENWIDTH/2+1)+SCREENWIDTH/4, //this is also used for random x when moving platform to the top
-            .y=SCREENHEIGHT-(i+1)*200
+            .x=rand()%(SCREENWIDTH-Images.platform.width-400)+200, //this is also used for random x when moving platform to the top
+            .y=SCREENHEIGHT-(i+1)*100
         };
 
         platforms[i]=newPlatform;
@@ -127,15 +135,38 @@ int main(void){
         .id=1
     };
 
+    //health packs
+    HealthPack healthPacks[2];
+    for(ui8 i=0; i<2; i++){
+        HealthPack newHealthPack={
+            .tx=LoadTextureFromImage(Images.healthPack),
+            .x=-100,
+            .y=-100
+        };
+
+        healthPacks[i]=newHealthPack=newHealthPack;
+    }
+    UnloadImage(Images.healthPack);
+
     us score=0;
     char scoreString[5];
 
+    //HUD
+    HUD healthHUD={
+        .tx=LoadTextureFromImage(Images.hud),
+        .x=5,
+        .y=SCREENHEIGHT-Images.hud.height-5,
+        .text="0"
+    };
+    UnloadImage(Images.hud);
+    sprintf(healthHUD.text, "%u", redSoldier.hp);
+
     PlayMusicStream(music);
+    PlayMusicStream(musicMenu);   
 
     //game loop
     while(!WindowShouldClose()){
         dt=GetFrameTime();
-        UpdateMusicStream(music);
 
         for(ui8 i=0; i<numRockets; i++){
             rocketBorderCheck(&rockets[i]);
@@ -165,12 +196,19 @@ int main(void){
                         particles=buffer;
                     }
 
-                    //rocket jump
                     if(abs(redSoldier.x+MIDDLEX(redSoldier)-rockets[i].x-MIDDLEX(rockets[i]))<100 
                     && abs(redSoldier.y+MIDDLEY(redSoldier)-rockets[i].y-MIDDLEY(rockets[i]))<100
                     && gameState!=2){
+                        //rocket jump
                         redSoldier.speedX=redSoldier.critBoost*-1*rockets[i].speedX;
                         redSoldier.speedY=redSoldier.critBoost*-1*rockets[i].speedY; 
+                    
+                        //damage
+                        if(gameState==1){
+                            redSoldier.hp-=20*redSoldier.critBoost;
+                            if(redSoldier.hp<=0)
+                                gameState=2;
+                        }
                     }
 
                     if(redSoldier.pickupActive==2)
@@ -233,7 +271,7 @@ int main(void){
                 if(redSoldier.pickupActive==1)
                     redSoldier.pickupActive=0;
                 redSoldier.falling=0;
-                redSoldier.speedY=-300;
+                redSoldier.speedY=-400;
             }
 
             //update rocket launcher
@@ -248,7 +286,7 @@ int main(void){
         //update player position
         redSoldier.x+=redSoldier.speedX*dt;
         if(redSoldier.speedY>0){
-            if(redSoldier.falling)
+            if(redSoldier.falling && gameState!=2)
                 redSoldier.y+=redSoldier.speedY*dt*redSoldier.slowfall; 
         }
         else
@@ -377,10 +415,13 @@ int main(void){
                 platformCollisionCheckR(&platforms[i],&rockets[j]);
 
             if(platforms[i].y>SCREENHEIGHT){
-                platforms[i].x=rand()%(SCREENWIDTH/2+1)+SCREENWIDTH/4;
+                platforms[i].x=rand()%(SCREENWIDTH-platforms[i].tx.width-400)+200;
                 platforms[i].y=-platforms[i].tx.height;
-                if(!pickupVisible(&pickup)){
-                    pickup.id=rand()%(2-1+1)+1;
+                
+                //random pickups and health packs
+                ui8 random=rand()%10;
+                if(random==0 && !VISIBLE(pickup)){ 
+                    pickup.id=rand()%2+1;
                     switch(pickup.id){
                         case 1:
                             pickup.tx=LoadTextureFromImage(Images.parachutePickup);
@@ -389,12 +430,17 @@ int main(void){
                         case 2:
                             pickup.tx=LoadTextureFromImage(Images.critPickup);
                         break;
-                    }
-
-                    int pickupRand=rand()%(10-1+1)+1;
-                    if(pickupRand==1){
-                        pickup.y=platforms[i].y-pickup.tx.height;
-                        pickup.x=platforms[i].x+platforms[i].tx.width/2-pickup.tx.width/2;
+                    } 
+                    pickup.x=platforms[i].x+MIDDLEX(platforms[i])-MIDDLEX(pickup); 
+                    pickup.y=platforms[i].y-pickup.tx.height; 
+                }
+                else if(random>7){
+                    for(ui8 j=0; j<2; j++){
+                        if(!VISIBLE(healthPacks[j])){
+                            healthPacks[j].x=platforms[i].x+MIDDLEX(platforms[i])-MIDDLEX(healthPacks[j]);
+                            healthPacks[j].y=platforms[i].y-healthPacks[j].tx.height;
+                            break;
+                        }
                     }
                 }
             }
@@ -407,8 +453,22 @@ int main(void){
         if(pickupCollectCheck(&pickup, &redSoldier)) PlaySound(fxPickup); 
         if(redSoldier.y==SCREENMIDDLE(redSoldier) && redSoldier.speedY<0)
             pickup.y-=redSoldier.speedY*dt; 
-        if(pickupVisible(&pickup))
+        if(VISIBLE(pickup))
             DrawTexture(pickup.tx,pickup.x,pickup.y,WHITE);
+
+        //update health packs
+        for(ui8 i=0; i<2; i++){
+            if(VISIBLE(healthPacks[i])){
+                DrawTexture(healthPacks[i].tx,healthPacks[i].x,healthPacks[i].y,WHITE);
+                if(COLLISION(healthPacks[i],redSoldier)){
+                    redSoldier.hp+=50;
+                    healthPacks[i].x=-100;
+                    healthPacks[i].y=-100;
+                }
+            }
+            if(redSoldier.y==SCREENMIDDLE(redSoldier) && redSoldier.speedY<0)
+                healthPacks[i].y-=redSoldier.speedY*dt;     
+        }
 
         //parachute
         if(redSoldier.slowfall<1){
@@ -523,14 +583,22 @@ int main(void){
             );
         } 
     
-        //text
+        //text and hud
         switch(gameState){
             case 0: //game not started
+                UpdateMusicStream(musicMenu);
+
                 drawTextFullCenter("ROCKETMAN ADVENTURES",200, 100);
                 drawTextFullCenter(VERSION, 300,64); 
                 drawTextFullCenter("START JUMPING TO BEGIN",400,64);
                 break;
             case 1: //game in progress
+                UpdateMusicStream(music);
+
+                sprintf(healthHUD.text,"%u",redSoldier.hp);
+                DrawTexture(healthHUD.tx,healthHUD.x,healthHUD.y,WHITE);
+                drawTextFull(healthHUD.text,healthHUD.x+40,healthHUD.y+30,100); 
+                
                 drawTextFull("SCORE:", 10, 10, 64);
                 drawTextFull(scoreString,250, 10, 64);
                 break;
@@ -561,8 +629,12 @@ int main(void){
         UnloadTexture(particles[i].tx);
     for(ui8 i=0; i<numPlatforms; i++)
         UnloadTexture(platforms[i].tx);
+    for(ui8 i=0; i<2; i++){
+        UnloadTexture(healthPacks[i].tx);
+    }
     UnloadTexture(pickup.tx);
     UnloadTexture(parachute);
+    UnloadTexture(healthHUD.tx);
 
     CloseAudioDevice();
     CloseWindow();

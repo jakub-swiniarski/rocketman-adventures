@@ -15,6 +15,8 @@ static struct{
     Image parachutePickup;
     Image parachute;
     Image critPickup;
+    Image hud;
+    Image healthPack;
 } Images;
 
 typedef struct{
@@ -26,6 +28,7 @@ typedef struct{
     ui8 pickup, pickupActive;
     float slowfall; //1 means no slowfall
     ui8 critBoost;
+    short hp;
 } Soldier;
 
 typedef struct{
@@ -62,5 +65,16 @@ typedef struct{
     short x,y;
     ui8 id; //1 - parachute, 2 -crits
 } Pickup;
+
+typedef struct{
+    Texture tx;
+    short x,y;
+} HealthPack;
+
+typedef struct{
+    Texture tx;
+    short x,y;
+    char text[5];
+} HUD;
 
 #endif
