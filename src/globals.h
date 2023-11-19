@@ -15,5 +15,6 @@ static const char *VERSION="1.3.3";
 #define SCREENMIDDLE(X) (int)(SCREENHEIGHT/2)-(int)(X.tx.height/2)
 #define MIDDLEX(X) ((int)(X.tx.width/2))
 #define MIDDLEY(X) ((int)(X.tx.height/2))
+#define VISIBLE(X) ((X.x+X.tx.width>0 && X.x<SCREENWIDTH) && (X.y+X.tx.height>0 && X.y<SCREENWIDTH))
 
 #endif

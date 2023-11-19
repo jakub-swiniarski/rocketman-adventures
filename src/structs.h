@@ -16,6 +16,7 @@ static struct{
     Image parachute;
     Image critPickup;
     Image hud;
+    Image healthPack;
 } Images;
 
 typedef struct{
