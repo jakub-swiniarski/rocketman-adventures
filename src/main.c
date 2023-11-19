@@ -138,12 +138,15 @@ int main(void){
     //health packs
     HealthPack healthPacks[2];
     for(ui8 i=0; i<2; i++){
-        HealthPack healthPack={
+        HealthPack newHealthPack={
             .tx=LoadTextureFromImage(Images.healthPack),
             .x=-100,
             .y=-100
         };
+
+        healthPacks[i]=newHealthPack=newHealthPack;
     }
+    UnloadImage(Images.healthPack);
 
     us score=0;
     char scoreString[5];
@@ -414,8 +417,13 @@ int main(void){
             if(platforms[i].y>SCREENHEIGHT){
                 platforms[i].x=rand()%SCREENWIDTH;
                 platforms[i].y=-platforms[i].tx.height;
-                if(!VISIBLE(pickup)){
-                    pickup.id=rand()%(2-1+1)+1;
+                
+                //random pickups and health packs
+                ui8 random=rand()%10;
+                if(random==1 && !VISIBLE(pickup)){
+                    pickup.x=platforms[i].x+MIDDLEX(platforms[i])-MIDDLEX(pickup); 
+                    pickup.y=platforms[i].y-pickup.tx.height; 
+                    pickup.id=rand()%2+1;
                     switch(pickup.id){
                         case 1:
                             pickup.tx=LoadTextureFromImage(Images.parachutePickup);
@@ -424,12 +432,15 @@ int main(void){
                         case 2:
                             pickup.tx=LoadTextureFromImage(Images.critPickup);
                         break;
-                    }
-
-                    int pickupRand=rand()%(10-1+1)+1;
-                    if(pickupRand==1){
-                        pickup.y=platforms[i].y-pickup.tx.height;
-                        pickup.x=platforms[i].x+platforms[i].tx.width/2-pickup.tx.width/2;
+                    } 
+                }
+                else if(random>3){
+                    for(ui8 i=0; i<2; i++){
+                        if(!VISIBLE(healthPacks[i])){
+                            healthPacks[i].x=platforms[i].x+MIDDLEX(platforms[i])-MIDDLEX(healthPacks[i]);
+                            healthPacks[i].y=platforms[i].y-healthPacks[i].tx.height;
+                            break;
+                        }
                     }
                 }
             }
@@ -444,6 +455,14 @@ int main(void){
             pickup.y-=redSoldier.speedY*dt; 
         if(VISIBLE(pickup))
             DrawTexture(pickup.tx,pickup.x,pickup.y,WHITE);
+
+        //update health packs
+        for(ui8 i=0; i<2; i++){
+            if(VISIBLE(healthPacks[i]))
+                DrawTexture(healthPacks[i].tx,healthPacks[i].x,healthPacks[i].y,WHITE);
+            if(redSoldier.y==SCREENMIDDLE(redSoldier) && redSoldier.speedY<0)
+                healthPacks[i].y-=redSoldier.speedY*dt;     
+        }
 
         //parachute
         if(redSoldier.slowfall<1){
@@ -604,6 +623,9 @@ int main(void){
         UnloadTexture(particles[i].tx);
     for(ui8 i=0; i<numPlatforms; i++)
         UnloadTexture(platforms[i].tx);
+    for(ui8 i=0; i<2; i++){
+        UnloadTexture(healthPacks[i].tx);
+    }
     UnloadTexture(pickup.tx);
     UnloadTexture(parachute);
     UnloadTexture(healthHUD.tx);
