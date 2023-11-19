@@ -148,7 +148,7 @@ int main(void){
     }
     UnloadImage(Images.healthPack);
 
-    ui score=0;
+    us score=0;
     char scoreString[5];
 
     //HUD
