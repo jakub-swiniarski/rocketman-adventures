@@ -148,7 +148,7 @@ int main(void){
     }
     UnloadImage(Images.healthPack);
 
-    us score=0;
+    ui score=0;
     char scoreString[5];
 
     //HUD
@@ -200,8 +200,8 @@ int main(void){
                     && abs(redSoldier.y+MIDDLEY(redSoldier)-rockets[i].y-MIDDLEY(rockets[i]))<100
                     && gameState!=2){
                         //rocket jump
-                        redSoldier.speedX=redSoldier.critBoost*-1*rockets[i].speedX;
-                        redSoldier.speedY=redSoldier.critBoost*-1*rockets[i].speedY; 
+                        redSoldier.speedX=redSoldier.critBoost*-1.2*rockets[i].speedX;
+                        redSoldier.speedY=redSoldier.critBoost*-1.2*rockets[i].speedY; 
                     
                         //damage
                         if(gameState==1){
