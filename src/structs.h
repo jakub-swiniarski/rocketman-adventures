@@ -68,6 +68,11 @@ typedef struct{
 typedef struct{
     Texture tx;
     short x,y;
+} HealthPack;
+
+typedef struct{
+    Texture tx;
+    short x,y;
     char text[5];
 } HUD;
 
