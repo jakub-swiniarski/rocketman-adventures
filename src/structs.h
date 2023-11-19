@@ -28,7 +28,7 @@ typedef struct{
     ui8 pickup, pickupActive;
     float slowfall; //1 means no slowfall
     ui8 critBoost;
-    ui8 hp;
+    short hp;
 } Soldier;
 
 typedef struct{

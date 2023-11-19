@@ -420,7 +420,7 @@ int main(void){
                 
                 //random pickups and health packs
                 ui8 random=rand()%10;
-                if(random==1 && !VISIBLE(pickup)){
+                if(random==0 && !VISIBLE(pickup)){
                     pickup.x=platforms[i].x+MIDDLEX(platforms[i])-MIDDLEX(pickup); 
                     pickup.y=platforms[i].y-pickup.tx.height; 
                     pickup.id=rand()%2+1;
@@ -434,11 +434,11 @@ int main(void){
                         break;
                     } 
                 }
-                else if(random>3){
-                    for(ui8 i=0; i<2; i++){
-                        if(!VISIBLE(healthPacks[i])){
-                            healthPacks[i].x=platforms[i].x+MIDDLEX(platforms[i])-MIDDLEX(healthPacks[i]);
-                            healthPacks[i].y=platforms[i].y-healthPacks[i].tx.height;
+                else if(random>6){
+                    for(ui8 j=0; j<2; j++){
+                        if(!VISIBLE(healthPacks[j])){
+                            healthPacks[j].x=platforms[i].x+MIDDLEX(platforms[i])-MIDDLEX(healthPacks[j]);
+                            healthPacks[j].y=platforms[i].y-healthPacks[j].tx.height;
                             break;
                         }
                     }
@@ -458,8 +458,14 @@ int main(void){
 
         //update health packs
         for(ui8 i=0; i<2; i++){
-            if(VISIBLE(healthPacks[i]))
+            if(VISIBLE(healthPacks[i])){
                 DrawTexture(healthPacks[i].tx,healthPacks[i].x,healthPacks[i].y,WHITE);
+                if(COLLISION(healthPacks[i],redSoldier)){
+                    redSoldier.hp+=50;
+                    healthPacks[i].x=-100;
+                    healthPacks[i].y=-100;
+                }
+            }
             if(redSoldier.y==SCREENMIDDLE(redSoldier) && redSoldier.speedY<0)
                 healthPacks[i].y-=redSoldier.speedY*dt;     
         }

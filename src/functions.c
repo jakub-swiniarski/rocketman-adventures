@@ -69,8 +69,7 @@ void platformCollisionCheckR(Platform *p, Rocket *r){
 
 bool pickupCollectCheck(Pickup *p, Soldier *r){
     if(r->x+r->tx.width>p->x && r->x<p->x+p->tx.width){
-        if(r->y+r->tx.height>p->y
-        && r->y<p->y+p->tx.height){
+        if(r->y+r->tx.height>p->y && r->y<p->y+p->tx.height){
             if(r->pickup==0){
                 r->pickup=p->id;
                 p->x=-100;
