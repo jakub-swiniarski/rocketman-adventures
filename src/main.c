@@ -118,7 +118,7 @@ int main(void){
     for(ui8 i=0; i<numPlatforms; i++){
         Platform newPlatform={
             .tx=LoadTextureFromImage(Images.platform),
-            .x=rand()%(SCREENWIDTH-Images.platform.width-100)+50, //this is also used for random x when moving platform to the top
+            .x=rand()%(SCREENWIDTH-Images.platform.width-200)+100, //this is also used for random x when moving platform to the top
             .y=SCREENHEIGHT-(i+1)*100
         };
 
@@ -415,14 +415,12 @@ int main(void){
                 platformCollisionCheckR(&platforms[i],&rockets[j]);
 
             if(platforms[i].y>SCREENHEIGHT){
-                platforms[i].x=rand()%(SCREENWIDTH-platforms[i].tx.width-100)+50;
+                platforms[i].x=rand()%(SCREENWIDTH-platforms[i].tx.width-200)+100;
                 platforms[i].y=-platforms[i].tx.height;
                 
                 //random pickups and health packs
                 ui8 random=rand()%10;
-                if(random==0 && !VISIBLE(pickup)){
-                    pickup.x=platforms[i].x+MIDDLEX(platforms[i])-MIDDLEX(pickup); 
-                    pickup.y=platforms[i].y-pickup.tx.height; 
+                if(random==0 && !VISIBLE(pickup)){ 
                     pickup.id=rand()%2+1;
                     switch(pickup.id){
                         case 1:
@@ -433,8 +431,10 @@ int main(void){
                             pickup.tx=LoadTextureFromImage(Images.critPickup);
                         break;
                     } 
+                    pickup.x=platforms[i].x+MIDDLEX(platforms[i])-MIDDLEX(pickup); 
+                    pickup.y=platforms[i].y-pickup.tx.height; 
                 }
-                else if(random>6){
+                else if(random>7){
                     for(ui8 j=0; j<2; j++){
                         if(!VISIBLE(healthPacks[j])){
                             healthPacks[j].x=platforms[i].x+MIDDLEX(platforms[i])-MIDDLEX(healthPacks[j]);

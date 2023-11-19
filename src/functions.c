@@ -40,8 +40,7 @@ void soldierBorderCheck(Soldier *s){
 
 void platformCollisionCheckS(Platform *p, Soldier *s){
     if(s->x+s->tx.width>p->x && s->x<p->x+p->tx.width){
-        if(s->y+s->tx.height>p->y
-        && s->y+s->tx.height<p->y+p->tx.height+50){
+        if(s->y+s->tx.height>p->y && s->y+s->tx.height<p->y+p->tx.height){
             s->y=p->y-s->tx.height;
             s->speedY=0;
             s->falling=0;
