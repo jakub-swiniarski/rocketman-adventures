@@ -57,6 +57,9 @@ int main(void){
     Images.hud=LoadImage(pathToFile("hud.png"));
     ImageResizeNN(&Images.hud,64*5,32*5);
 
+    Images.healthPack=LoadImage(pathToFile("health_pack.png"));
+    ImageResizeNN(&Images.healthPack,12*8,12*8);
+
     //sfx
     Sound fxExplosion=LoadSound(pathToFile("explosion.ogg"));
     Sound fxPickup=LoadSound(pathToFile("pickup.ogg"));
@@ -131,6 +134,16 @@ int main(void){
         .y=-100,
         .id=1
     };
+
+    //health packs
+    HealthPack healthPacks[2];
+    for(ui8 i=0; i<2; i++){
+        HealthPack healthPack={
+            .tx=LoadTextureFromImage(Images.healthPack),
+            .x=-100,
+            .y=-100
+        };
+    }
 
     us score=0;
     char scoreString[5];
@@ -401,7 +414,7 @@ int main(void){
             if(platforms[i].y>SCREENHEIGHT){
                 platforms[i].x=rand()%SCREENWIDTH;
                 platforms[i].y=-platforms[i].tx.height;
-                if(!pickupVisible(&pickup)){
+                if(!VISIBLE(pickup)){
                     pickup.id=rand()%(2-1+1)+1;
                     switch(pickup.id){
                         case 1:
@@ -429,7 +442,7 @@ int main(void){
         if(pickupCollectCheck(&pickup, &redSoldier)) PlaySound(fxPickup); 
         if(redSoldier.y==SCREENMIDDLE(redSoldier) && redSoldier.speedY<0)
             pickup.y-=redSoldier.speedY*dt; 
-        if(pickupVisible(&pickup))
+        if(VISIBLE(pickup))
             DrawTexture(pickup.tx,pickup.x,pickup.y,WHITE);
 
         //parachute
