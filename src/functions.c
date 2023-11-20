@@ -5,6 +5,7 @@
 
 #include "functions.h"
 #include "globals.h"
+#include "config.h"
 
 //function implementations
 char *pathToFile(char *str){
