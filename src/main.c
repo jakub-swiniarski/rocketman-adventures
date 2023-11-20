@@ -8,6 +8,7 @@
 #include "structs.h"
 #include "functions.h"
 #include "globals.h"
+#include "config.h"
 
 int main(void){
     InitWindow(SCREENWIDTH,SCREENHEIGHT,"Rocketman Adventures");
@@ -125,7 +126,8 @@ int main(void){
         platforms[i]=newPlatform;
     }
     UnloadImage(Images.platform);
-    short bgShift=0;
+    
+    short shift=0;
 
     //pickups
     Pickup pickup={
@@ -314,7 +316,7 @@ int main(void){
         }
         else{
             redSoldier.falling=1;
-            redSoldier.speedY+=15;
+            redSoldier.speedY+=1000*dt;
         }
 
         //input
@@ -383,11 +385,12 @@ int main(void){
             break;
         }
 
+        shift=redSoldier.speedY*dt;
+
         ClearBackground(BLACK); 
         BeginDrawing();
 
         //update background
-        bgShift=redSoldier.speedY*dt/2;
         for(ui8 i=0; i<2; i++){
             //parallax scrolling
             if(bgY[i]>SCREENHEIGHT){
@@ -395,7 +398,7 @@ int main(void){
                 bgY[1-i]=0;
             } 
             if(redSoldier.y==SCREENMIDDLE(redSoldier) && redSoldier.speedY<0)
-                bgY[i]-=bgShift;
+                bgY[i]-=shift/2;
 
             //draw background
             DrawTexture(backgrounds[i],0,bgY[i],WHITE);
@@ -408,7 +411,7 @@ int main(void){
                 platformCollisionCheckS(&platforms[i],&redSoldier);
 
             if(redSoldier.y==SCREENMIDDLE(redSoldier) && redSoldier.speedY<0)
-                platforms[i].y-=redSoldier.speedY*dt;
+                platforms[i].y-=shift;
 
             //rocket collisions
             for(ui8 j=0; j<numRockets; j++)
@@ -452,7 +455,7 @@ int main(void){
         //update pickup
         if(pickupCollectCheck(&pickup, &redSoldier)) PlaySound(fxPickup); 
         if(redSoldier.y==SCREENMIDDLE(redSoldier) && redSoldier.speedY<0)
-            pickup.y-=redSoldier.speedY*dt; 
+            pickup.y-=shift; 
         if(VISIBLE(pickup))
             DrawTexture(pickup.tx,pickup.x,pickup.y,WHITE);
 
@@ -467,7 +470,7 @@ int main(void){
                 }
             }
             if(redSoldier.y==SCREENMIDDLE(redSoldier) && redSoldier.speedY<0)
-                healthPacks[i].y-=redSoldier.speedY*dt;     
+                healthPacks[i].y-=shift;     
         }
 
         //parachute
@@ -549,7 +552,7 @@ int main(void){
         //update particles
         for(ui8 i=0; i<numParticles; i++){
             if(redSoldier.y==SCREENMIDDLE(redSoldier) && redSoldier.speedY<0)
-                particles[i].y-=redSoldier.speedY*dt;
+                particles[i].y-=shift;
 
             //fade away 
             particles[i].alpha-=2*dt;
