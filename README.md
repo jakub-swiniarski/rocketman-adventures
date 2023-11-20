@@ -37,5 +37,8 @@ Left mouse button or R - shoot <br/>
 Q - use the pickup <br/>
 Escape - exit the game
 
+## Configuration
+Edit the config file (src/config.h) to change the settings. Remember to recompile the game for the changes to take effect.
+
 ## Credits
 SFX by [Boper](https://github.com/boprr)
