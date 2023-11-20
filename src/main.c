@@ -8,6 +8,7 @@
 #include "structs.h"
 #include "functions.h"
 #include "globals.h"
+#include "config.h"
 
 int main(void){
     InitWindow(SCREENWIDTH,SCREENHEIGHT,"Rocketman Adventures");

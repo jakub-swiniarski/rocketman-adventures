@@ -8,8 +8,6 @@ typedef uint8_t ui8;
 typedef unsigned short us;
 
 static const char *DIRECTORY="res/";
-static const unsigned short SCREENWIDTH=1920;
-static const unsigned short SCREENHEIGHT=1080;
 static const char *VERSION="1.4.0";
 
 #define SCREENMIDDLE(X) (int)(SCREENHEIGHT/2)-(int)(X.tx.height/2)
