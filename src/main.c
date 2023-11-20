@@ -19,7 +19,7 @@ int main(void){
 
     InitAudioDevice();
 
-    SetTargetFPS(60);
+    SetTargetFPS(FPS);
     float dt=1.f;
 
     ui8 gameState=0; //0 - not started, 1 - in progress, 2 - game over
