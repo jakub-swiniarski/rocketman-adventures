@@ -254,22 +254,22 @@ int main(void){
 
         //movement
         if(gameState!=2){
-            if(IsKeyDown(KEY_D) && !IsKeyDown(KEY_A)){
+            if(IsKeyDown(MOVERIGHT) && !IsKeyDown(MOVELEFT)){
                 redSoldier.x+=150*dt;
 
                 if(redSoldier.pickupActive==1 && rotationParachute>-30)
                     rotationParachute-=60*dt;
             }
-            if(IsKeyDown(KEY_A) && !IsKeyDown(KEY_D)){
+            if(IsKeyDown(MOVELEFT) && !IsKeyDown(MOVERIGHT)){
                 redSoldier.x-=150*dt;
             
                 if(redSoldier.pickupActive==1 && rotationParachute<30)
                     rotationParachute+=60*dt;
             }
             //reset parachute rotation
-            if(!IsKeyDown(KEY_A) && !IsKeyDown(KEY_D)) //if not moving horizontally
+            if(!IsKeyDown(MOVELEFT) && !IsKeyDown(MOVERIGHT)) //if not moving horizontally
                 rotationParachute+=rotationParachute>0?-100*dt:100*dt;
-            if(IsKeyDown(KEY_SPACE) && !redSoldier.falling){
+            if(IsKeyDown(JUMP) && !redSoldier.falling){
                 if(redSoldier.pickupActive==1)
                     redSoldier.pickupActive=0;
                 redSoldier.falling=0;
@@ -320,7 +320,7 @@ int main(void){
         }
 
         //input
-        if((IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_R)) && redSoldier.cooldown<0 && gameState!=2){
+        if((IsMouseButtonPressed(SHOOT) || IsKeyPressed(SHOOT_ALT)) && redSoldier.cooldown<0 && gameState!=2){
             redSoldier.cooldown=120;
             numRockets++;
 
@@ -345,7 +345,7 @@ int main(void){
             rockets=buffer;
         }
         //ACTIVATE PICKUP
-        if(IsKeyPressed(KEY_Q)){
+        if(IsKeyPressed(USEPICKUP)){
             redSoldier.pickupActive=redSoldier.pickup;
             redSoldier.pickup=0;
         }
