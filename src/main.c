@@ -61,6 +61,12 @@ int main(void){
     Images.healthPack=LoadImage(pathToFile("health_pack.png"));
     ImageResizeNN(&Images.healthPack,12*6,12*6);
 
+    Images.button[0]=LoadImage(pathToFile("button_normal.png"));
+    ImageResizeNN(&Images.button[0], 500, 200);
+
+    Images.button[1]=LoadImage(pathToFile("button_hover.png"));
+    ImageResizeNN(&Images.button[1], 500, 200);
+
     //sfx
     Sound fxExplosion=LoadSound(pathToFile("explosion.ogg"));
     Sound fxPickup=LoadSound(pathToFile("pickup.ogg"));
@@ -162,6 +168,17 @@ int main(void){
     };
     UnloadImage(Images.hud);
     sprintf(healthHUD.text, "%u", redSoldier.hp);
+
+    //buttons
+    Button tryAgainButton={
+        .tx[0]=LoadTextureFromImage(Images.button[0]),
+        .tx[1]=LoadTextureFromImage(Images.button[1]),
+        .x=SCREENWIDTH/2-Images.button[0].width/2,
+        .y=500,
+        .state=0
+    };
+    for(ui8 i=0; i<2; i++)
+        UnloadImage(Images.button[i]);
 
     PlayMusicStream(music);
     PlayMusicStream(musicMenu);   
@@ -617,6 +634,7 @@ int main(void){
                 drawTextFullCenter("GAME OVER",200,100, WHITE);
                 drawTextFullCenter("SCORE:",300,64, WHITE);
                 drawTextFullCenter(scoreString,375,64, WHITE);
+                DrawTexture(tryAgainButton.tx[tryAgainButton.state],tryAgainButton.x,tryAgainButton.y,WHITE);
                 break;
             default:
                 drawTextFull("ERROR", 100, 100, 120, WHITE);
@@ -639,9 +657,10 @@ int main(void){
         UnloadTexture(particles[i].tx);
     for(ui8 i=0; i<numPlatforms; i++)
         UnloadTexture(platforms[i].tx);
-    for(ui8 i=0; i<2; i++){
+    for(ui8 i=0; i<2; i++)
         UnloadTexture(healthPacks[i].tx);
-    }
+    for(ui8 i=0; i<2; i++)
+        UnloadTexture(tryAgainButton.tx[i]);
     UnloadTexture(pickup.tx);
     UnloadTexture(parachute);
     UnloadTexture(healthHUD.tx);
