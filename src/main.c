@@ -181,12 +181,16 @@ int main(void){
     for(ui8 i=0; i<2; i++)
         UnloadImage(Images.button[i]);
 
+    Vector2 mouse;
+
     PlayMusicStream(music);
     PlayMusicStream(musicMenu);   
 
     //game loop
     while(!WindowShouldClose()){
         dt=GetFrameTime();
+        mouse.x=GetMouseX();
+        mouse.y=GetMouseY();
 
         for(ui8 i=0; i<numRockets; i++){
             rocketBorderCheck(&rockets[i]);
@@ -297,10 +301,10 @@ int main(void){
             //update rocket launcher
             rl.x=redSoldier.x+MIDDLEX(redSoldier);
             rl.y=redSoldier.y+MIDDLEY(redSoldier); 
-            rl.rotation=270-atan2((redSoldier.x+MIDDLEX(redSoldier)-GetMouseX()),(redSoldier.y+MIDDLEY(redSoldier)-GetMouseY()))*180/PI; 
+            rl.rotation=270-atan2((redSoldier.x+MIDDLEX(redSoldier)-mouse.x),(redSoldier.y+MIDDLEY(redSoldier)-mouse.y))*180/PI; 
         
             //flip the rocket launcher to prevent it from going upside down
-            rl.flip=GetMouseX()<redSoldier.x+MIDDLEX(redSoldier)?-1:1;
+            rl.flip=mouse.x<redSoldier.x+MIDDLEX(redSoldier)?-1:1;
         }
 
         //update player position
@@ -348,7 +352,7 @@ int main(void){
                 .tx=LoadTextureFromImage(Images.rocket),
                 .x=redSoldier.x+MIDDLEX(redSoldier),
                 .y=redSoldier.y+MIDDLEY(redSoldier),
-                .rotation=90-atan2((redSoldier.x+MIDDLEX(redSoldier)-GetMouseX()),(redSoldier.y+MIDDLEY(redSoldier)-GetMouseY()))*180/PI,
+                .rotation=90-atan2((redSoldier.x+MIDDLEX(redSoldier)-mouse.x),(redSoldier.y+MIDDLEY(redSoldier)-mouse.y))*180/PI,
                 .collided=0,
                 .shouldExplode=1
             };
