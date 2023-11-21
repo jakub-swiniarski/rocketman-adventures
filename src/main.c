@@ -22,7 +22,7 @@ int main(void){
     SetTargetFPS(FPS);
     float dt=1.f;
 
-    ui8 gameState=0; //0 - not started, 1 - in progress, 2 - game over
+    START:
 
     //load and resize images
     Images.redSoldier=LoadImage(pathToFile("red_soldier.png"));
@@ -72,6 +72,8 @@ int main(void){
     Sound fxPickup=LoadSound(pathToFile("pickup.ogg"));
     Music musicMenu=LoadMusicStream(pathToFile("soundtrack3.ogg"));
     Music music=LoadMusicStream(pathToFile("soundtrack0.ogg"));
+
+    ui8 gameState=0; //0 - not started, 1 - in progress, 2 - game over
 
     //player
     Soldier redSoldier={
@@ -635,7 +637,13 @@ int main(void){
                 break;
             case 2: //game over
                 //update buttons
-                tryAgainButton.state=MOUSEHOVERBUTTON(tryAgainButton,mouse)?1:0;
+                if(MOUSEHOVERBUTTON(tryAgainButton,mouse)){
+                    tryAgainButton.state=1;
+                    if(IsMouseButtonPressed(SHOOT))
+                        goto START;
+                }
+                else
+                    tryAgainButton.state=0;
 
                 DrawRectangle(0,0,SCREENWIDTH,SCREENHEIGHT,(Color){0,0,0,150});
                 drawTextFullCenter("GAME OVER",200,100, WHITE);
