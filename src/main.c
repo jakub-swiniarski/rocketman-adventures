@@ -175,7 +175,8 @@ int main(void){
         .tx[1]=LoadTextureFromImage(Images.button[1]),
         .x=SCREENWIDTH/2-Images.button[0].width/2,
         .y=500,
-        .state=0
+        .state=0,
+        .text="TRY AGAIN"
     };
     for(ui8 i=0; i<2; i++)
         UnloadImage(Images.button[i]);
@@ -602,7 +603,7 @@ int main(void){
                 }
             );
         } 
-    
+   
         //text and hud
         switch(gameState){
             case 0: //game not started
@@ -630,11 +631,13 @@ int main(void){
                 drawTextFull(scoreString,250, 10, 64, WHITE);
                 break;
             case 2: //game over
+                //update buttons
                 DrawRectangle(0,0,SCREENWIDTH,SCREENHEIGHT,(Color){0,0,0,150});
                 drawTextFullCenter("GAME OVER",200,100, WHITE);
                 drawTextFullCenter("SCORE:",300,64, WHITE);
                 drawTextFullCenter(scoreString,375,64, WHITE);
                 DrawTexture(tryAgainButton.tx[tryAgainButton.state],tryAgainButton.x,tryAgainButton.y,WHITE);
+                drawTextFull(tryAgainButton.text, tryAgainButton.x+55, tryAgainButton.y+60, 64, WHITE);
                 break;
             default:
                 drawTextFull("ERROR", 100, 100, 120, WHITE);
