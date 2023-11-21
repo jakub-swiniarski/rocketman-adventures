@@ -254,22 +254,22 @@ int main(void){
 
         //movement
         if(gameState!=2){
-            if(IsKeyDown(KEY_D) && !IsKeyDown(KEY_A)){
+            if(IsKeyDown(MOVERIGHT) && !IsKeyDown(MOVELEFT)){
                 redSoldier.x+=150*dt;
 
                 if(redSoldier.pickupActive==1 && rotationParachute>-30)
                     rotationParachute-=60*dt;
             }
-            if(IsKeyDown(KEY_A) && !IsKeyDown(KEY_D)){
+            if(IsKeyDown(MOVELEFT) && !IsKeyDown(MOVERIGHT)){
                 redSoldier.x-=150*dt;
             
                 if(redSoldier.pickupActive==1 && rotationParachute<30)
                     rotationParachute+=60*dt;
             }
             //reset parachute rotation
-            if(!IsKeyDown(KEY_A) && !IsKeyDown(KEY_D)) //if not moving horizontally
+            if(!IsKeyDown(MOVELEFT) && !IsKeyDown(MOVERIGHT)) //if not moving horizontally
                 rotationParachute+=rotationParachute>0?-100*dt:100*dt;
-            if(IsKeyDown(KEY_SPACE) && !redSoldier.falling){
+            if(IsKeyDown(JUMP) && !redSoldier.falling){
                 if(redSoldier.pickupActive==1)
                     redSoldier.pickupActive=0;
                 redSoldier.falling=0;
@@ -320,7 +320,7 @@ int main(void){
         }
 
         //input
-        if((IsMouseButtonPressed(MOUSE_LEFT_BUTTON) || IsKeyPressed(KEY_R)) && redSoldier.cooldown<0 && gameState!=2){
+        if((IsMouseButtonPressed(SHOOT) || IsKeyPressed(SHOOT_ALT)) && redSoldier.cooldown<0 && gameState!=2){
             redSoldier.cooldown=120;
             numRockets++;
 
@@ -345,7 +345,7 @@ int main(void){
             rockets=buffer;
         }
         //ACTIVATE PICKUP
-        if(IsKeyPressed(KEY_Q)){
+        if(IsKeyPressed(USEPICKUP)){
             redSoldier.pickupActive=redSoldier.pickup;
             redSoldier.pickup=0;
         }
@@ -591,28 +591,38 @@ int main(void){
             case 0: //game not started
                 UpdateMusicStream(musicMenu);
 
-                drawTextFullCenter("ROCKETMAN ADVENTURES",200, 100);
-                drawTextFullCenter(VERSION, 300,64); 
-                drawTextFullCenter("START JUMPING TO BEGIN",400,64);
+                drawTextFullCenter("ROCKETMAN ADVENTURES",200, 100, WHITE);
+                drawTextFullCenter(VERSION, 300,64, WHITE); 
+                drawTextFullCenter("START JUMPING TO BEGIN",400,64, WHITE);
                 break;
             case 1: //game in progress
                 UpdateMusicStream(music);
 
+                if(redSoldier.hp<50){
+                    healthHUD.textColor=TEXTCOLOR[0];
+                }
+                else if(redSoldier.hp>200){
+                    healthHUD.textColor=TEXTCOLOR[2];
+                }
+                else{
+                    healthHUD.textColor=TEXTCOLOR[1];
+                }
+
                 sprintf(healthHUD.text,"%u",redSoldier.hp);
                 DrawTexture(healthHUD.tx,healthHUD.x,healthHUD.y,WHITE);
-                drawTextFull(healthHUD.text,healthHUD.x+40,healthHUD.y+30,100); 
+                drawTextFull(healthHUD.text,healthHUD.x+40,healthHUD.y+30,100, healthHUD.textColor); 
                 
-                drawTextFull("SCORE:", 10, 10, 64);
-                drawTextFull(scoreString,250, 10, 64);
+                drawTextFull("SCORE:", 10, 10, 64, WHITE);
+                drawTextFull(scoreString,250, 10, 64, WHITE);
                 break;
             case 2: //game over
                 DrawRectangle(0,0,SCREENWIDTH,SCREENHEIGHT,(Color){0,0,0,150});
-                drawTextFullCenter("GAME OVER",200,100);
-                drawTextFullCenter("SCORE:",300,64);
-                drawTextFullCenter(scoreString,375,64);
+                drawTextFullCenter("GAME OVER",200,100, WHITE);
+                drawTextFullCenter("SCORE:",300,64, WHITE);
+                drawTextFullCenter(scoreString,375,64, WHITE);
                 break;
             default:
-                drawTextFull("ERROR", 100, 100, 120);
+                drawTextFull("ERROR", 100, 100, 120, WHITE);
         } 
 
         EndDrawing();
