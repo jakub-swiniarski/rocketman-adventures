@@ -29,7 +29,7 @@ Go inside the cloned repository and run: <br/>
 sudo make clean uninstall
 ```
 
-## Controls
+## Default Controls
 A - move left <br/>
 D - move right <br/>
 Space - jump <br/>
