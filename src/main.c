@@ -73,6 +73,8 @@ int main(void){
     Music musicMenu=LoadMusicStream(pathToFile("soundtrack3.ogg"));
     Music music=LoadMusicStream(pathToFile("soundtrack0.ogg"));
 
+    SetMasterVolume((float)MASTER_VOLUME / 255);                             
+
     ui8 gameState=0; //0 - not started, 1 - in progress, 2 - game over
 
     //player

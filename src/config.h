@@ -20,7 +20,7 @@ static const KeyboardKey MOVERIGHT=KEY_D;
 static const KeyboardKey JUMP=KEY_SPACE;
 static const KeyboardKey SHOOT_ALT=KEY_R;
 static const KeyboardKey USEPICKUP=KEY_Q;
-
+static const ui8 MASTER_VOLUME = 255; // 0 - muted 255 - full volume
 //mouse controls
 static const MouseButton SHOOT=MOUSE_LEFT_BUTTON;
 
