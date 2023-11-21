@@ -80,9 +80,10 @@ typedef struct{
 } HUD;
 
 typedef struct{
-    Texture tx;
+    Texture tx[2];
     short x,y;
     char text[12];
+    ui8 state; //0 - normal, 1 - hover
 } Button;
 
 #endif
