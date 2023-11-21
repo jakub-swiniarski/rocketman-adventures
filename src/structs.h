@@ -17,6 +17,7 @@ static struct{
     Image critPickup;
     Image hud;
     Image healthPack;
+    Image button[2];
 } Images;
 
 typedef struct{
@@ -77,5 +78,12 @@ typedef struct{
     char text[5];
     Color textColor;
 } HUD;
+
+typedef struct{
+    Texture tx[2];
+    short x,y;
+    char text[12];
+    ui8 state; //0 - normal, 1 - hover
+} Button;
 
 #endif

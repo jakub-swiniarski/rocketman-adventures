@@ -22,7 +22,7 @@ int main(void){
     SetTargetFPS(FPS);
     float dt=1.f;
 
-    ui8 gameState=0; //0 - not started, 1 - in progress, 2 - game over
+    START:
 
     //load and resize images
     Images.redSoldier=LoadImage(pathToFile("red_soldier.png"));
@@ -61,11 +61,19 @@ int main(void){
     Images.healthPack=LoadImage(pathToFile("health_pack.png"));
     ImageResizeNN(&Images.healthPack,12*6,12*6);
 
+    Images.button[0]=LoadImage(pathToFile("button_normal.png"));
+    ImageResizeNN(&Images.button[0], 500, 200);
+
+    Images.button[1]=LoadImage(pathToFile("button_hover.png"));
+    ImageResizeNN(&Images.button[1], 500, 200);
+
     //sfx
     Sound fxExplosion=LoadSound(pathToFile("explosion.ogg"));
     Sound fxPickup=LoadSound(pathToFile("pickup.ogg"));
     Music musicMenu=LoadMusicStream(pathToFile("soundtrack3.ogg"));
     Music music=LoadMusicStream(pathToFile("soundtrack0.ogg"));
+
+    ui8 gameState=0; //0 - not started, 1 - in progress, 2 - game over
 
     //player
     Soldier redSoldier={
@@ -163,12 +171,27 @@ int main(void){
     UnloadImage(Images.hud);
     sprintf(healthHUD.text, "%u", redSoldier.hp);
 
+    //buttons
+    Button tryAgainButton={
+        .tx[0]=LoadTextureFromImage(Images.button[0]),
+        .tx[1]=LoadTextureFromImage(Images.button[1]),
+        .x=SCREENWIDTH/2-Images.button[0].width/2,
+        .y=500,
+        .text="TRY AGAIN"
+    };
+    for(ui8 i=0; i<2; i++)
+        UnloadImage(Images.button[i]);
+    
+    Vector2 mouse;
+
     PlayMusicStream(music);
     PlayMusicStream(musicMenu);   
 
     //game loop
     while(!WindowShouldClose()){
         dt=GetFrameTime();
+        mouse.x=GetMouseX();
+        mouse.y=GetMouseY();
 
         for(ui8 i=0; i<numRockets; i++){
             rocketBorderCheck(&rockets[i]);
@@ -279,10 +302,10 @@ int main(void){
             //update rocket launcher
             rl.x=redSoldier.x+MIDDLEX(redSoldier);
             rl.y=redSoldier.y+MIDDLEY(redSoldier); 
-            rl.rotation=270-atan2((redSoldier.x+MIDDLEX(redSoldier)-GetMouseX()),(redSoldier.y+MIDDLEY(redSoldier)-GetMouseY()))*180/PI; 
+            rl.rotation=270-atan2((redSoldier.x+MIDDLEX(redSoldier)-mouse.x),(redSoldier.y+MIDDLEY(redSoldier)-mouse.y))*180/PI; 
         
             //flip the rocket launcher to prevent it from going upside down
-            rl.flip=GetMouseX()<redSoldier.x+MIDDLEX(redSoldier)?-1:1;
+            rl.flip=mouse.x<redSoldier.x+MIDDLEX(redSoldier)?-1:1;
         }
 
         //update player position
@@ -330,7 +353,7 @@ int main(void){
                 .tx=LoadTextureFromImage(Images.rocket),
                 .x=redSoldier.x+MIDDLEX(redSoldier),
                 .y=redSoldier.y+MIDDLEY(redSoldier),
-                .rotation=90-atan2((redSoldier.x+MIDDLEX(redSoldier)-GetMouseX()),(redSoldier.y+MIDDLEY(redSoldier)-GetMouseY()))*180/PI,
+                .rotation=90-atan2((redSoldier.x+MIDDLEX(redSoldier)-mouse.x),(redSoldier.y+MIDDLEY(redSoldier)-mouse.y))*180/PI,
                 .collided=0,
                 .shouldExplode=1
             };
@@ -585,7 +608,7 @@ int main(void){
                 }
             );
         } 
-    
+   
         //text and hud
         switch(gameState){
             case 0: //game not started
@@ -598,15 +621,12 @@ int main(void){
             case 1: //game in progress
                 UpdateMusicStream(music);
 
-                if(redSoldier.hp<50){
+                if(redSoldier.hp<50)
                     healthHUD.textColor=TEXTCOLOR[0];
-                }
-                else if(redSoldier.hp>200){
+                else if(redSoldier.hp>200)
                     healthHUD.textColor=TEXTCOLOR[2];
-                }
-                else{
+                else
                     healthHUD.textColor=TEXTCOLOR[1];
-                }
 
                 sprintf(healthHUD.text,"%u",redSoldier.hp);
                 DrawTexture(healthHUD.tx,healthHUD.x,healthHUD.y,WHITE);
@@ -616,10 +636,21 @@ int main(void){
                 drawTextFull(scoreString,250, 10, 64, WHITE);
                 break;
             case 2: //game over
+                //update buttons
+                if(MOUSEHOVERBUTTON(tryAgainButton,mouse)){
+                    tryAgainButton.state=1;
+                    if(IsMouseButtonPressed(SHOOT))
+                        goto START;
+                }
+                else
+                    tryAgainButton.state=0;
+
                 DrawRectangle(0,0,SCREENWIDTH,SCREENHEIGHT,(Color){0,0,0,150});
                 drawTextFullCenter("GAME OVER",200,100, WHITE);
                 drawTextFullCenter("SCORE:",300,64, WHITE);
                 drawTextFullCenter(scoreString,375,64, WHITE);
+                DrawTexture(tryAgainButton.tx[tryAgainButton.state],tryAgainButton.x,tryAgainButton.y,WHITE);
+                drawTextFull(tryAgainButton.text, tryAgainButton.x+55, tryAgainButton.y+60, 64, WHITE);
                 break;
             default:
                 drawTextFull("ERROR", 100, 100, 120, WHITE);
@@ -633,7 +664,7 @@ int main(void){
     UnloadImage(Images.particleSmoke);
     UnloadImage(Images.parachutePickup);
     UnloadImage(Images.critPickup);
-
+    
     //unload textures
     UnloadTexture(redSoldier.tx); 
     for(ui8 i=0; i<numRockets; i++)
@@ -642,8 +673,10 @@ int main(void){
         UnloadTexture(particles[i].tx);
     for(ui8 i=0; i<numPlatforms; i++)
         UnloadTexture(platforms[i].tx);
-    for(ui8 i=0; i<2; i++){
+    for(ui8 i=0; i<2; i++)
         UnloadTexture(healthPacks[i].tx);
+    for(ui8 i=0; i<2; i++){
+        UnloadTexture(tryAgainButton.tx[i]);
     }
     UnloadTexture(pickup.tx);
     UnloadTexture(parachute);
