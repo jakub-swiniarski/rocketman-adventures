@@ -4,8 +4,8 @@
 #include "globals.h"
 
 //screen resolution
-static const unsigned short SCREENWIDTH=1920;
-static const unsigned short SCREENHEIGHT=1080;
+static const us SCREENWIDTH=1920;
+static const us SCREENHEIGHT=1080;
 
 //frames per second
 static const us FPS=60;
