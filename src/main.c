@@ -591,28 +591,38 @@ int main(void){
             case 0: //game not started
                 UpdateMusicStream(musicMenu);
 
-                drawTextFullCenter("ROCKETMAN ADVENTURES",200, 100);
-                drawTextFullCenter(VERSION, 300,64); 
-                drawTextFullCenter("START JUMPING TO BEGIN",400,64);
+                drawTextFullCenter("ROCKETMAN ADVENTURES",200, 100, WHITE);
+                drawTextFullCenter(VERSION, 300,64, WHITE); 
+                drawTextFullCenter("START JUMPING TO BEGIN",400,64, WHITE);
                 break;
             case 1: //game in progress
                 UpdateMusicStream(music);
 
+                if(redSoldier.hp<50){
+                    healthHUD.textColor=TEXTCOLOR[0];
+                }
+                else if(redSoldier.hp>200){
+                    healthHUD.textColor=TEXTCOLOR[2];
+                }
+                else{
+                    healthHUD.textColor=TEXTCOLOR[1];
+                }
+
                 sprintf(healthHUD.text,"%u",redSoldier.hp);
                 DrawTexture(healthHUD.tx,healthHUD.x,healthHUD.y,WHITE);
-                drawTextFull(healthHUD.text,healthHUD.x+40,healthHUD.y+30,100); 
+                drawTextFull(healthHUD.text,healthHUD.x+40,healthHUD.y+30,100, healthHUD.textColor); 
                 
-                drawTextFull("SCORE:", 10, 10, 64);
-                drawTextFull(scoreString,250, 10, 64);
+                drawTextFull("SCORE:", 10, 10, 64, WHITE);
+                drawTextFull(scoreString,250, 10, 64, WHITE);
                 break;
             case 2: //game over
                 DrawRectangle(0,0,SCREENWIDTH,SCREENHEIGHT,(Color){0,0,0,150});
-                drawTextFullCenter("GAME OVER",200,100);
-                drawTextFullCenter("SCORE:",300,64);
-                drawTextFullCenter(scoreString,375,64);
+                drawTextFullCenter("GAME OVER",200,100, WHITE);
+                drawTextFullCenter("SCORE:",300,64, WHITE);
+                drawTextFullCenter(scoreString,375,64, WHITE);
                 break;
             default:
-                drawTextFull("ERROR", 100, 100, 120);
+                drawTextFull("ERROR", 100, 100, 120, WHITE);
         } 
 
         EndDrawing();

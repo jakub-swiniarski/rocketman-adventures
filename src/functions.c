@@ -72,16 +72,17 @@ bool pickupCollectCheck(Pickup *p, Soldier *r){
     return 0;
 }
 
-void drawTextFull(const char *text, short x, short y, us fontSize){
+void drawTextFull(const char *text, short x, short y, us fontSize, Color color){
     DrawText(text,x,y,fontSize,BLACK);
-    DrawText(text,x+7,y+7,fontSize,WHITE);
+    DrawText(text,x+7,y+7,fontSize,color);
 }
 
-void drawTextFullCenter(const char *text, short y, us fontSize){
+void drawTextFullCenter(const char *text, short y, us fontSize, Color color){
     drawTextFull(
         text,
         (int)(SCREENWIDTH/2)-(int)(MeasureTextEx(GetFontDefault(),text,fontSize,10).x/2),
         y,
-        fontSize
+        fontSize,
+        color
     );
 }
