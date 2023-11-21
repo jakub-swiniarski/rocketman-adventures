@@ -171,16 +171,12 @@ int main(void){
 
     //buttons
     Button tryAgainButton={
-        .tx[0]=LoadTextureFromImage(Images.button[0]),
-        .tx[1]=LoadTextureFromImage(Images.button[1]),
+        .tx=LoadTextureFromImage(Images.button[0]),
         .x=SCREENWIDTH/2-Images.button[0].width/2,
         .y=500,
-        .state=0,
         .text="TRY AGAIN"
     };
-    for(ui8 i=0; i<2; i++)
-        UnloadImage(Images.button[i]);
-
+    
     Vector2 mouse;
 
     PlayMusicStream(music);
@@ -636,11 +632,16 @@ int main(void){
                 break;
             case 2: //game over
                 //update buttons
+                if(MOUSEHOVER(tryAgainButton,mouse))
+                    tryAgainButton.tx=LoadTextureFromImage(Images.button[1]);
+                else
+                    tryAgainButton.tx=LoadTextureFromImage(Images.button[0]);
+
                 DrawRectangle(0,0,SCREENWIDTH,SCREENHEIGHT,(Color){0,0,0,150});
                 drawTextFullCenter("GAME OVER",200,100, WHITE);
                 drawTextFullCenter("SCORE:",300,64, WHITE);
                 drawTextFullCenter(scoreString,375,64, WHITE);
-                DrawTexture(tryAgainButton.tx[tryAgainButton.state],tryAgainButton.x,tryAgainButton.y,WHITE);
+                DrawTexture(tryAgainButton.tx,tryAgainButton.x,tryAgainButton.y,WHITE);
                 drawTextFull(tryAgainButton.text, tryAgainButton.x+55, tryAgainButton.y+60, 64, WHITE);
                 break;
             default:
@@ -655,6 +656,8 @@ int main(void){
     UnloadImage(Images.particleSmoke);
     UnloadImage(Images.parachutePickup);
     UnloadImage(Images.critPickup);
+    for(ui8 i=0; i<2; i++)
+        UnloadImage(Images.button[i]);
 
     //unload textures
     UnloadTexture(redSoldier.tx); 
@@ -666,8 +669,7 @@ int main(void){
         UnloadTexture(platforms[i].tx);
     for(ui8 i=0; i<2; i++)
         UnloadTexture(healthPacks[i].tx);
-    for(ui8 i=0; i<2; i++)
-        UnloadTexture(tryAgainButton.tx[i]);
+    UnloadTexture(tryAgainButton.tx);
     UnloadTexture(pickup.tx);
     UnloadTexture(parachute);
     UnloadTexture(healthHUD.tx);
