@@ -75,6 +75,7 @@ typedef struct{
     Texture tx;
     short x,y;
     char text[5];
+    Color textColor;
 } HUD;
 
 #endif
