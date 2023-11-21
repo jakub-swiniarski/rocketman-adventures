@@ -598,15 +598,12 @@ int main(void){
             case 1: //game in progress
                 UpdateMusicStream(music);
 
-                if(redSoldier.hp<50){
+                if(redSoldier.hp<50)
                     healthHUD.textColor=TEXTCOLOR[0];
-                }
-                else if(redSoldier.hp>200){
+                else if(redSoldier.hp>200)
                     healthHUD.textColor=TEXTCOLOR[2];
-                }
-                else{
+                else
                     healthHUD.textColor=TEXTCOLOR[1];
-                }
 
                 sprintf(healthHUD.text,"%u",redSoldier.hp);
                 DrawTexture(healthHUD.tx,healthHUD.x,healthHUD.y,WHITE);
