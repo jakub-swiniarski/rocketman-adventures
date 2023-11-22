@@ -64,10 +64,10 @@ int main(void){
     ImageResizeNN(&Images.healthPack,12*6,12*6);
 
     Images.button[0]=LoadImage(pathToFile("button_normal.png"));
-    ImageResizeNN(&Images.button[0], 500, 200);
+    ImageResizeNN(&Images.button[0], 50*8, 20*8);
 
     Images.button[1]=LoadImage(pathToFile("button_hover.png"));
-    ImageResizeNN(&Images.button[1], 500, 200);
+    ImageResizeNN(&Images.button[1], 50*8, 20*8);
 
     //sfx
     Sound fxExplosion=LoadSound(pathToFile("explosion.ogg"));
@@ -666,7 +666,7 @@ int main(void){
                 drawTextFullCenter("SCORE:",300,64, WHITE);
                 drawTextFullCenter(scoreString,375,64, WHITE);
                 DrawTexture(tryAgainButton.tx[tryAgainButton.state],tryAgainButton.x,tryAgainButton.y,WHITE);
-                drawTextFull(tryAgainButton.text, tryAgainButton.x+55, tryAgainButton.y+60, 64, WHITE);
+                drawTextFull(tryAgainButton.text, tryAgainButton.x+12, tryAgainButton.y+45, 64, WHITE);
                 break;
             default:
                 drawTextFull("ERROR", 100, 100, 120, WHITE);
