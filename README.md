@@ -35,6 +35,9 @@ D - move right <br/>
 Space - jump <br/>
 Left mouse button or R - shoot <br/>
 Q - use the pickup <br/>
+F1 - mute the sound <br/>
+F2 - decrease the volume <br/>
+F3 - increase the volume <br/>
 Escape - exit the game
 
 ## Configuration
