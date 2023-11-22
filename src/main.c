@@ -196,12 +196,12 @@ int main(void){
         mouse.y=GetMouseY();
 
         //volume control
-        if(IsKeyDown(VOLUP) && volume<=95){
-            volume+=5;
+        if(IsKeyPressed(VOLUP) && volume<=95){
+            volume+=10;
             SetMasterVolume((float)volume/100);
         }
-        else if(IsKeyDown(VOLDOWN) && volume>=5){
-            volume-=5;
+        else if(IsKeyPressed(VOLDOWN) && volume>=5){
+            volume-=10;
             SetMasterVolume((float)volume/100);
         }
         //MUTE
