@@ -689,9 +689,9 @@ int main(void){
         UnloadTexture(particles[i].tx);
     for(ui8 i=0; i<numPlatforms; i++)
         UnloadTexture(platforms[i].tx);
-    for(ui8 i=0; i<2; i++)
-        UnloadTexture(healthPacks[i].tx);
     for(ui8 i=0; i<2; i++){
+        UnloadTexture(backgrounds[i]);
+        UnloadTexture(healthPacks[i].tx);
         UnloadTexture(tryAgainButton.tx[i]);
     }
     UnloadTexture(pickup.tx);
