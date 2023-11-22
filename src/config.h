@@ -23,6 +23,9 @@ static const KeyboardKey MOVERIGHT=KEY_D;
 static const KeyboardKey JUMP=KEY_SPACE;
 static const KeyboardKey SHOOT_ALT=KEY_R;
 static const KeyboardKey USEPICKUP=KEY_Q;
+static const KeyboardKey MUTE=KEY_F1;
+static const KeyboardKey VOLUP=KEY_F3;
+static const KeyboardKey VOLDOWN=KEY_F2;
 
 //mouse controls
 static const MouseButton SHOOT=MOUSE_LEFT_BUTTON;

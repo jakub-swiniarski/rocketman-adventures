@@ -195,6 +195,17 @@ int main(void){
         mouse.x=GetMouseX();
         mouse.y=GetMouseY();
 
+        //volume control
+        if(IsKeyDown(VOLUP) && volume<=95){
+            volume+=5;
+            SetMasterVolume((float)volume/100);
+        }
+        else if(IsKeyDown(VOLDOWN) && volume>=5){
+            volume-=5;
+            SetMasterVolume((float)volume/100);
+        }
+        //MUTE
+
         for(ui8 i=0; i<numRockets; i++){
             rocketBorderCheck(&rockets[i]);
 
