@@ -11,6 +11,9 @@ static const us SCREENHEIGHT=1080;
 //frames per second
 static const us FPS=60;
 
+//sound
+static ui8 volume=100;
+
 //HUD
 static const Color TEXTCOLOR[3]={RED,WHITE,GREEN}; //low, normal, high
 
