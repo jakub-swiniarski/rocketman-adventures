@@ -13,6 +13,7 @@ static const us FPS=60;
 
 //sound
 static ui8 volume=100;
+static bool muted=0;
 
 //HUD
 static const Color TEXTCOLOR[3]={RED,WHITE,GREEN}; //low, normal, high
