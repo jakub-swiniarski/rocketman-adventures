@@ -22,6 +22,8 @@ int main(void){
     SetTargetFPS(FPS);
     float dt=1.f;
 
+    SetMasterVolume((float)volume/100);
+
     START:
 
     //load and resize images
