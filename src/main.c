@@ -204,7 +204,10 @@ int main(void){
             volume-=10;
             SetMasterVolume((float)volume/100);
         }
-        //MUTE
+        else if(IsKeyPressed(MUTE)){
+            muted=!muted;
+            SetMasterVolume(muted?0:(float)volume/100);
+        }
 
         for(ui8 i=0; i<numRockets; i++){
             rocketBorderCheck(&rockets[i]);
