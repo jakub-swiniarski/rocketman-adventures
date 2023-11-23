@@ -163,15 +163,24 @@ int main(void){
     us score=0;
     char scoreString[5];
 
-    //HUD
+    //hp hud
     HUD healthHUD={
         .tx=LoadTextureFromImage(Images.hud),
         .x=5,
         .y=SCREENHEIGHT-Images.hud.height-5,
         .text="0"
-    };
-    UnloadImage(Images.hud);
+    }; 
     sprintf(healthHUD.text, "%u", redSoldier.hp);
+
+    //pickup hud
+    HUD pickupHUD={
+        .tx=LoadTextureFromImage(Images.hud),
+        .x=SCREENWIDTH-Images.hud.width-5,
+        .y=SCREENHEIGHT-Images.hud.height-5,
+        .text="Q"
+    };
+
+    UnloadImage(Images.hud); 
 
     //buttons
     Button tryAgainButton={
@@ -644,10 +653,35 @@ int main(void){
                 else
                     healthHUD.textColor=TEXTCOLOR[1];
 
+                //hp hud
                 sprintf(healthHUD.text,"%u",redSoldier.hp);
                 DrawTexture(healthHUD.tx,healthHUD.x,healthHUD.y,WHITE);
                 drawTextFull(healthHUD.text,healthHUD.x+40,healthHUD.y+30,100, healthHUD.textColor); 
-                
+               
+                //pickup hud
+                DrawTexturePro(
+                    pickupHUD.tx,
+                    (Rectangle){ //src
+                        .x=0,
+                        .y=0,
+                        .width=-1*pickupHUD.tx.width,
+                        .height=pickupHUD.tx.height
+                    },
+                    (Rectangle){ //dest
+                        .x=pickupHUD.x,
+                        .y=pickupHUD.y,
+                        .width=pickupHUD.tx.width,
+                        .height=pickupHUD.tx.height
+                    },
+                    (Vector2){ //origin
+                        .x=0,
+                        .y=0
+                    },
+                    0,
+                    WHITE
+                );
+
+                //score
                 drawTextFull("SCORE:", 10, 10, 64, WHITE);
                 drawTextFull(scoreString,250, 10, 64, WHITE);
                 break;
@@ -697,6 +731,7 @@ int main(void){
     UnloadTexture(pickup.tx);
     UnloadTexture(parachute);
     UnloadTexture(healthHUD.tx);
+    UnloadTexture(pickupHUD.tx);
 
     CloseAudioDevice();
     CloseWindow();
