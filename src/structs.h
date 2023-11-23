@@ -63,6 +63,7 @@ typedef struct{
 
 typedef struct{
     Texture tx;
+    Texture txs[2];
     short x,y;
     ui8 id; //1 - parachute, 2 -crits
 } Pickup;
@@ -75,7 +76,7 @@ typedef struct{
 typedef struct{
     Texture tx;
     short x,y;
-    char text[5];
+    char text[16];
     Color textColor;
 } HUD;
 
