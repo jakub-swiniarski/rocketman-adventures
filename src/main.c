@@ -141,12 +141,14 @@ int main(void){
 
     //pickups
     Pickup pickup={
+        .txs[0]=LoadTextureFromImage(Images.parachutePickup),
+        .txs[1]=LoadTextureFromImage(Images.critPickup),
         .tx=LoadTextureFromImage(Images.parachutePickup),
         .x=-100,
         .y=-100,
         .id=1
     };
-
+        
     //health packs
     HealthPack healthPacks[2];
     for(ui8 i=0; i<2; i++){
@@ -177,9 +179,8 @@ int main(void){
         .tx=LoadTextureFromImage(Images.hud),
         .x=SCREENWIDTH-Images.hud.width-5,
         .y=SCREENHEIGHT-Images.hud.height-5,
-        .text="Q"
+        .text="EMPTY"
     };
-
     UnloadImage(Images.hud); 
 
     //buttons
@@ -680,6 +681,10 @@ int main(void){
                     0,
                     WHITE
                 );
+                if(redSoldier.pickup==1 || redSoldier.pickup==2)
+                    DrawTexture(pickup.txs[redSoldier.pickup-1],pickupHUD.x+150, pickupHUD.y+25, WHITE);
+                else
+                    drawTextFull(pickupHUD.text,pickupHUD.x+65,pickupHUD.y+40,64,WHITE);
 
                 //score
                 drawTextFull("SCORE:", 10, 10, 64, WHITE);
@@ -714,7 +719,7 @@ int main(void){
     UnloadImage(Images.particleSmoke);
     UnloadImage(Images.parachutePickup);
     UnloadImage(Images.critPickup);
-    
+
     //unload textures
     UnloadTexture(redSoldier.tx); 
     for(ui8 i=0; i<numRockets; i++)
