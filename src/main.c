@@ -474,15 +474,7 @@ int main(void){
                 ui8 random=rand()%10;
                 if(random==0 && !VISIBLE(pickup)){ 
                     pickup.id=rand()%2+1;
-                    switch(pickup.id){
-                        case 1:
-                            pickup.tx=LoadTextureFromImage(Images.parachutePickup);
-                        break;
-                        
-                        case 2:
-                            pickup.tx=LoadTextureFromImage(Images.critPickup);
-                        break;
-                    } 
+                    pickup.tx=pickup.txs[pickup.id-1];
                     pickup.x=platforms[i].x+MIDDLEX(platforms[i])-MIDDLEX(pickup); 
                     pickup.y=platforms[i].y-pickup.tx.height; 
                 }
