@@ -27,53 +27,53 @@ int main(void){
     START:
 
     //load and resize images
-    Images.redSoldier=LoadImage(pathToFile("red_soldier.png"));
+    Images.redSoldier=LoadImage(PATH("red_soldier.png"));
     ImageResizeNN(&Images.redSoldier,12*5,20*5);
 
-    Images.rocket=LoadImage(pathToFile("rocket.png"));
+    Images.rocket=LoadImage(PATH("rocket.png"));
     ImageResizeNN(&Images.rocket,30*3,8*3);
 
-    Images.launcher=LoadImage(pathToFile("launcher.png"));
+    Images.launcher=LoadImage(PATH("launcher.png"));
     ImageResizeNN(&Images.launcher,20*5,8*5);
 
-    Images.particleSmoke=LoadImage(pathToFile("particle_smoke.png"));
+    Images.particleSmoke=LoadImage(PATH("particle_smoke.png"));
     ImageResizeNN(&Images.particleSmoke,12*10,12*10);
 
-    Images.backgrounds[0]=LoadImage(pathToFile("background0.png"));
+    Images.backgrounds[0]=LoadImage(PATH("background0.png"));
     ImageResizeNN(&Images.backgrounds[0],SCREENWIDTH,SCREENHEIGHT);
 
-    Images.backgrounds[1]=LoadImage(pathToFile("background1.png"));
+    Images.backgrounds[1]=LoadImage(PATH("background1.png"));
     ImageResizeNN(&Images.backgrounds[1],SCREENWIDTH,SCREENHEIGHT);
 
-    Images.platform=LoadImage(pathToFile("platform.png"));
+    Images.platform=LoadImage(PATH("platform.png"));
     ImageResizeNN(&Images.platform,30*5,2*5);
 
-    Images.parachutePickup=LoadImage(pathToFile("parachute_pickup.png"));
+    Images.parachutePickup=LoadImage(PATH("parachute_pickup.png"));
     ImageResizeNN(&Images.parachutePickup, 16*4, 20*4);
 
-    Images.parachute=LoadImage(pathToFile("parachute.png"));
+    Images.parachute=LoadImage(PATH("parachute.png"));
     ImageResizeNN(&Images.parachute, 13*8, 11*8);
 
-    Images.critPickup=LoadImage(pathToFile("crit_pickup.png"));
+    Images.critPickup=LoadImage(PATH("crit_pickup.png"));
     ImageResizeNN(&Images.critPickup,9*8,13*8);
 
-    Images.hud=LoadImage(pathToFile("hud.png"));
+    Images.hud=LoadImage(PATH("hud.png"));
     ImageResizeNN(&Images.hud,64*5,32*5);
 
-    Images.healthPack=LoadImage(pathToFile("health_pack.png"));
+    Images.healthPack=LoadImage(PATH("health_pack.png"));
     ImageResizeNN(&Images.healthPack,12*6,12*6);
 
-    Images.button[0]=LoadImage(pathToFile("button_normal.png"));
+    Images.button[0]=LoadImage(PATH("button_normal.png"));
     ImageResizeNN(&Images.button[0], 50*8, 20*8);
 
-    Images.button[1]=LoadImage(pathToFile("button_hover.png"));
+    Images.button[1]=LoadImage(PATH("button_hover.png"));
     ImageResizeNN(&Images.button[1], 50*8, 20*8);
 
     //sfx
-    Sound fxExplosion=LoadSound(pathToFile("explosion.ogg"));
-    Sound fxPickup=LoadSound(pathToFile("pickup.ogg"));
-    Music musicMenu=LoadMusicStream(pathToFile("soundtrack3.ogg"));
-    Music music=LoadMusicStream(pathToFile("soundtrack0.ogg"));
+    Sound fxExplosion=LoadSound(PATH("explosion.ogg"));
+    Sound fxPickup=LoadSound(PATH("pickup.ogg"));
+    Music musicMenu=LoadMusicStream(PATH("soundtrack3.ogg"));
+    Music music=LoadMusicStream(PATH("soundtrack0.ogg"));
 
     ui8 gameState=0; //0 - not started, 1 - in progress, 2 - game over
 
