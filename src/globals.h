@@ -7,7 +7,6 @@ typedef int8_t i8;
 typedef uint8_t ui8;
 typedef unsigned short us;
 
-static const char *DIRECTORY="res/";
 static const char *VERSION="1.4.6";
 
 #define PATH(X) "res/" X

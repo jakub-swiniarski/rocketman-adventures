@@ -4,7 +4,6 @@
 #include "globals.h"
 #include "structs.h"
 
-char *pathToFile(char *str);
 void rocketBorderCheck(Rocket *r);
 void soldierBorderCheck(Soldier *s);
 void platformCollisionCheckS(Platform *p, Soldier *s);

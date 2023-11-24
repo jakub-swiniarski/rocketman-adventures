@@ -7,15 +7,6 @@
 #include "globals.h"
 #include "config.h"
 
-//function implementations
-char *pathToFile(char *str){
-    char *path=malloc(sizeof(char)*strlen(DIRECTORY)+strlen(str)+1);
-    strcpy(path,DIRECTORY);
-    strcat(path,str);
-    
-    return path;
-}
-
 void rocketBorderCheck(Rocket *r){
     if(r->y+r->tx.height>=SCREENHEIGHT)
         r->collided=1;
