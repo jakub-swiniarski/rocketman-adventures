@@ -148,7 +148,9 @@ int main(void){
         .y=-100,
         .id=1
     };
-        
+    UnloadImage(Images.parachutePickup);
+    UnloadImage(Images.critPickup);
+
     //health packs
     HealthPack healthPacks[2];
     for(ui8 i=0; i<2; i++){
@@ -709,9 +711,7 @@ int main(void){
     //unload images
     UnloadImage(Images.rocket);
     UnloadImage(Images.particleSmoke);
-    UnloadImage(Images.parachutePickup);
-    UnloadImage(Images.critPickup);
-
+    
     //unload textures
     UnloadTexture(redSoldier.tx); 
     for(ui8 i=0; i<numRockets; i++)
