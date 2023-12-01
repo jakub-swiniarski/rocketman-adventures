@@ -9,7 +9,7 @@ typedef unsigned short us;
 
 static const char *VERSION="1.4.7";
 
-#define PATH(X) "/usr/share/rocketman/" X
+#define PATH(X) "res/" X
 #define SCREENMIDDLE(X) (int)(SCREENHEIGHT/2)-(int)(X.tx.height/2)
 #define MIDDLEX(X) ((int)(X.tx.width/2))
 #define MIDDLEY(X) ((int)(X.tx.height/2))
