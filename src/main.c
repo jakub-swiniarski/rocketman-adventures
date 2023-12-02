@@ -275,8 +275,13 @@ int main(void){
                         //damage
                         if(gameState==1){
                             redSoldier.hp-=20*redSoldier.critBoost;
-                            if(redSoldier.hp<=0)
+                            if(redSoldier.hp<=0){
                                 gameState=2;
+                                
+                                //reset soundtrack
+                                SeekMusicStream(music,0);
+                                SeekMusicStream(musicMenu,0);
+                            }
                         }
                     }
 
@@ -377,7 +382,13 @@ int main(void){
                 redSoldier.speedY=0;
                 redSoldier.falling=0;
             }
-            else gameState=2;
+            else{
+                gameState=2;
+            
+                //reset soundtrack
+                SeekMusicStream(music,0);
+                SeekMusicStream(musicMenu,0);
+            }
         }
         else{
             redSoldier.falling=1;
