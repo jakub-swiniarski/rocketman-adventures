@@ -200,7 +200,7 @@ int main(void){
 
     for(ui8 i=0; i<NUM_PLATFORMS; i++){
         platforms[i].x=rand()%(SCREENWIDTH-Images.platform.width-400)+200; //this is also used for random x when moving platform to the top
-        platforms[i].y=SCREENHEIGHT-(i+1)*100;
+        platforms[i].y=SCREENHEIGHT-(i+1)*1000/NUM_PLATFORMS;
     } 
 
     pickup.x=-100;
