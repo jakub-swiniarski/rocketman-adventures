@@ -323,9 +323,9 @@ int main(void){
                 break;
             }
         }
-
-        //movement
+ 
         if(gameState!=2){
+            //movement 
             if(IsKeyDown(MOVERIGHT) && !IsKeyDown(MOVELEFT)){
                 redSoldier.x+=150*dt;
 
@@ -373,53 +373,53 @@ int main(void){
                 if(gameState==0)
                     gameState=1;
             } 
-        }
-
-        //gravity
-        if(redSoldier.y+redSoldier.tx.height>=SCREENHEIGHT){
-            if(gameState!=1){
-                redSoldier.y=SCREENHEIGHT-redSoldier.tx.height;
-                redSoldier.speedY=0;
-                redSoldier.falling=0;
+        
+            //gravity
+            if(redSoldier.y+redSoldier.tx.height>=SCREENHEIGHT){
+                if(gameState!=1){
+                    redSoldier.y=SCREENHEIGHT-redSoldier.tx.height;
+                    redSoldier.speedY=0;
+                    redSoldier.falling=0;
+                }
+                else{
+                    gameState=2;
+            
+                    //reset soundtrack
+                    SeekMusicStream(music,0);
+                    SeekMusicStream(musicMenu,0);
+                }
             }
             else{
-                gameState=2;
+                redSoldier.falling=1;
+                redSoldier.speedY+=1000*dt;
+            } 
+        
+            if((IsMouseButtonPressed(SHOOT) || IsKeyPressed(SHOOT_ALT)) && redSoldier.cooldown<0){
+                redSoldier.cooldown=120;
+                numRockets++;
+
+                Rocket *buffer=malloc(sizeof(Rocket)*numRockets);
+
+                Rocket newRocket={
+                    .tx=LoadTextureFromImage(Images.rocket),
+                    .x=redSoldier.x+MIDDLEX(redSoldier),
+                    .y=redSoldier.y+MIDDLEY(redSoldier),
+                    .rotation=90-atan2((redSoldier.x+MIDDLEX(redSoldier)-mouse.x),(redSoldier.y+MIDDLEY(redSoldier)-mouse.y))*180/PI,
+                    .collided=0,
+                    .shouldExplode=1
+                };
             
-                //reset soundtrack
-                SeekMusicStream(music,0);
-                SeekMusicStream(musicMenu,0);
-            }
-        }
-        else{
-            redSoldier.falling=1;
-            redSoldier.speedY+=1000*dt;
-        }
-
-        //input
-        if((IsMouseButtonPressed(SHOOT) || IsKeyPressed(SHOOT_ALT)) && redSoldier.cooldown<0 && gameState!=2){
-            redSoldier.cooldown=120;
-            numRockets++;
-
-            Rocket *buffer=malloc(sizeof(Rocket)*numRockets);
-
-            Rocket newRocket={
-                .tx=LoadTextureFromImage(Images.rocket),
-                .x=redSoldier.x+MIDDLEX(redSoldier),
-                .y=redSoldier.y+MIDDLEY(redSoldier),
-                .rotation=90-atan2((redSoldier.x+MIDDLEX(redSoldier)-mouse.x),(redSoldier.y+MIDDLEY(redSoldier)-mouse.y))*180/PI,
-                .collided=0,
-                .shouldExplode=1
-            };
+                newRocket.speedX=-1.2*cos(newRocket.rotation*PI/180)*800;
+                newRocket.speedY=-1.2*sin(newRocket.rotation*PI/180)*800;
             
-            newRocket.speedX=-1.2*cos(newRocket.rotation*PI/180)*800;
-            newRocket.speedY=-1.2*sin(newRocket.rotation*PI/180)*800;
-            
-            for(ui8 i=0; i<numRockets-1; i++)
-                buffer[i]=rockets[i];
+                for(ui8 i=0; i<numRockets-1; i++)
+                    buffer[i]=rockets[i];
 
-            buffer[numRockets-1]=newRocket;
-            rockets=buffer;
+                buffer[numRockets-1]=newRocket;
+                rockets=buffer;
+            } 
         }
+        
         //ACTIVATE PICKUP
         if(IsKeyPressed(USEPICKUP)){
             redSoldier.pickupActive=redSoldier.pickup;
