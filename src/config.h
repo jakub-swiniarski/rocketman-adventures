@@ -31,4 +31,8 @@ static const KeyboardKey VOLDOWN=KEY_F2;
 //mouse controls
 static const MouseButton SHOOT=MOUSE_LEFT_BUTTON;
 
+//gameplay
+static const ui8 NUM_PLATFORMS=10;
+static const ui8 NUM_HEALTHPACKS=2;
+
 #endif 
