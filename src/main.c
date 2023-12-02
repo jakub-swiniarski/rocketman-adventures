@@ -24,8 +24,6 @@ int main(void){
 
     SetMasterVolume((float)volume/100);
 
-    START:
-
     //load and resize images
     Images.redSoldier=LoadImage(PATH("red_soldier.png"));
     ImageResizeNN(&Images.redSoldier,12*5,20*5);
@@ -75,21 +73,12 @@ int main(void){
     Music musicMenu=LoadMusicStream(PATH("soundtrack3.ogg"));
     Music music=LoadMusicStream(PATH("soundtrack0.ogg"));
 
-    ui8 gameState=0; //0 - not started, 1 - in progress, 2 - game over
+    ui8 gameState; //0 - not started, 1 - in progress, 2 - game over
 
     //player
     Soldier redSoldier={
-        .tx=LoadTextureFromImage(Images.redSoldier),
-        .speedX=0,
-        .speedY=0,
-        .cooldown=0,
-        .falling=0,
-        .slowfall=1,
-        .critBoost=1,
-        .hp=200,
-    };
-    redSoldier.x=(int)(SCREENWIDTH/2)-redSoldier.tx.width;
-    redSoldier.y=SCREENHEIGHT-redSoldier.tx.height;
+        .tx=LoadTextureFromImage(Images.redSoldier), 
+    }; 
     UnloadImage(Images.redSoldier);  
 
     //parachute
@@ -113,26 +102,21 @@ int main(void){
     for(ui8 i=0; i<2; i++){
         backgrounds[i]=LoadTextureFromImage(Images.backgrounds[i]);
         UnloadImage(Images.backgrounds[i]);
-        bgY[i]=-i*SCREENHEIGHT;
     }
 
     srand(time(NULL));
 
-    ui8 numRockets=0;
-    Rocket* rockets=malloc(numRockets*sizeof(Rocket));
+    ui8 numRockets;
+    Rocket* rockets;
 
-    ui8 numParticles=0;
-    Particle* particles=malloc(numParticles*sizeof(Particle));
+    ui8 numParticles;
+    Particle* particles;
 
-    ui8 numPlatforms=10;
-    Platform platforms[numPlatforms];
-    for(ui8 i=0; i<numPlatforms; i++){
+    Platform platforms[NUM_PLATFORMS];
+    for(ui8 i=0; i<NUM_PLATFORMS; i++){
         Platform newPlatform={
             .tx=LoadTextureFromImage(Images.platform),
-            .x=rand()%(SCREENWIDTH-Images.platform.width-400)+200, //this is also used for random x when moving platform to the top
-            .y=SCREENHEIGHT-(i+1)*100
         };
-
         platforms[i]=newPlatform;
     }
     UnloadImage(Images.platform);
@@ -143,28 +127,22 @@ int main(void){
     Pickup pickup={
         .txs[0]=LoadTextureFromImage(Images.parachutePickup),
         .txs[1]=LoadTextureFromImage(Images.critPickup),
-        .tx=LoadTextureFromImage(Images.parachutePickup),
-        .x=-100,
-        .y=-100,
-        .id=1
+        .tx=LoadTextureFromImage(Images.parachutePickup), 
     };
     UnloadImage(Images.parachutePickup);
     UnloadImage(Images.critPickup);
 
     //health packs
-    HealthPack healthPacks[2];
-    for(ui8 i=0; i<2; i++){
+    HealthPack healthPacks[NUM_HEALTHPACKS];
+    for(ui8 i=0; i<NUM_HEALTHPACKS; i++){
         HealthPack newHealthPack={
             .tx=LoadTextureFromImage(Images.healthPack),
-            .x=-100,
-            .y=-100
         };
-
         healthPacks[i]=newHealthPack=newHealthPack;
     }
     UnloadImage(Images.healthPack);
 
-    us score=0;
+    us score;
     char scoreString[5];
 
     //hp hud
@@ -197,6 +175,44 @@ int main(void){
         UnloadImage(Images.button[i]);
     
     Vector2 mouse;
+    
+    START:
+    gameState=0;
+   
+    redSoldier.x=(int)(SCREENWIDTH/2)-redSoldier.tx.width;
+    redSoldier.y=SCREENHEIGHT-redSoldier.tx.height; 
+    redSoldier.speedX=0;
+    redSoldier.speedY=0;
+    redSoldier.cooldown=0;
+    redSoldier.falling=0;
+    redSoldier.slowfall=1;
+    redSoldier.critBoost=1;
+    redSoldier.hp=200;
+
+    for(ui8 i=0; i<2; i++)
+        bgY[i]=-i*SCREENHEIGHT;
+
+    numRockets=0;
+    rockets=malloc(numRockets*sizeof(Rocket));
+
+    numParticles=0;
+    particles=malloc(numParticles*sizeof(Particle)); 
+
+    for(ui8 i=0; i<NUM_PLATFORMS; i++){
+        platforms[i].x=rand()%(SCREENWIDTH-Images.platform.width-400)+200; //this is also used for random x when moving platform to the top
+        platforms[i].y=SCREENHEIGHT-(i+1)*1000/NUM_PLATFORMS;
+    } 
+
+    pickup.x=-100;
+    pickup.y=-100;
+    pickup.id=1;    
+
+    for(ui8 i=0; i<NUM_HEALTHPACKS; i++){
+        healthPacks[i].x=-100;
+        healthPacks[i].y=-100;
+    }
+
+    score=0;
 
     PlayMusicStream(music);
     PlayMusicStream(musicMenu);   
@@ -456,7 +472,7 @@ int main(void){
         }
 
         //update platforms
-        for(ui8 i=0; i<numPlatforms; i++){
+        for(ui8 i=0; i<NUM_PLATFORMS; i++){
             //soldier collisions
             if(redSoldier.speedY>0)
                 platformCollisionCheckS(&platforms[i],&redSoldier);
@@ -481,7 +497,7 @@ int main(void){
                     pickup.y=platforms[i].y-pickup.tx.height; 
                 }
                 else if(random>7){
-                    for(ui8 j=0; j<2; j++){
+                    for(ui8 j=0; j<NUM_HEALTHPACKS; j++){
                         if(!VISIBLE(healthPacks[j])){
                             healthPacks[j].x=platforms[i].x+MIDDLEX(platforms[i])-MIDDLEX(healthPacks[j]);
                             healthPacks[j].y=platforms[i].y-healthPacks[j].tx.height;
@@ -503,7 +519,7 @@ int main(void){
             DrawTexture(pickup.tx,pickup.x,pickup.y,WHITE);
 
         //update health packs
-        for(ui8 i=0; i<2; i++){
+        for(ui8 i=0; i<NUM_HEALTHPACKS; i++){
             if(VISIBLE(healthPacks[i])){
                 DrawTexture(healthPacks[i].tx,healthPacks[i].x,healthPacks[i].y,WHITE);
                 if(COLLISION(healthPacks[i],redSoldier)){
@@ -718,12 +734,14 @@ int main(void){
         UnloadTexture(rockets[i].tx); 
     for(ui8 i=0; i<numParticles; i++)
         UnloadTexture(particles[i].tx);
-    for(ui8 i=0; i<numPlatforms; i++)
+    for(ui8 i=0; i<NUM_PLATFORMS; i++)
         UnloadTexture(platforms[i].tx);
     for(ui8 i=0; i<2; i++){
         UnloadTexture(backgrounds[i]);
-        UnloadTexture(healthPacks[i].tx);
         UnloadTexture(tryAgainButton.tx[i]);
+    }
+    for(ui8 i=0; i<NUM_HEALTHPACKS; i++){
+        UnloadTexture(healthPacks[i].tx);
     }
     UnloadTexture(pickup.tx);
     UnloadTexture(parachute);
