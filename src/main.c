@@ -350,26 +350,24 @@ int main(void){
         
             //flip the rocket launcher to prevent it from going upside down
             rl.flip=mouse.x<redSoldier.x+MIDDLEX(redSoldier)?-1:1;
-        }
-
-        //update player position
-        redSoldier.x+=redSoldier.speedX*dt;
-        if(redSoldier.speedY>0){
-            if(redSoldier.falling && gameState!=2)
+            
+            //update player position
+            redSoldier.x+=redSoldier.speedX*dt;
+            if(redSoldier.speedY>0 && redSoldier.falling)
                 redSoldier.y+=redSoldier.speedY*dt*redSoldier.slowfall; 
-        }
-        else
-            redSoldier.y+=redSoldier.speedY*dt; 
+            else
+                redSoldier.y+=redSoldier.speedY*dt; 
 
-        if(redSoldier.y<SCREENMIDDLE(redSoldier)){
-            //score
-            score-=redSoldier.speedY*dt;
-            sprintf(scoreString, "%hu", score);
+            if(redSoldier.y<SCREENMIDDLE(redSoldier)){
+                //score
+                score-=redSoldier.speedY*dt;
+                sprintf(scoreString, "%hu", score);
 
-            redSoldier.y=SCREENMIDDLE(redSoldier); 
+                redSoldier.y=SCREENMIDDLE(redSoldier); 
            
-            if(gameState==0)
-                gameState=1;
+                if(gameState==0)
+                    gameState=1;
+            } 
         }
 
         //gravity
