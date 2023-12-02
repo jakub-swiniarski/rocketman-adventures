@@ -275,8 +275,13 @@ int main(void){
                         //damage
                         if(gameState==1){
                             redSoldier.hp-=20*redSoldier.critBoost;
-                            if(redSoldier.hp<=0)
+                            if(redSoldier.hp<=0){
                                 gameState=2;
+                                
+                                //reset soundtrack
+                                SeekMusicStream(music,0);
+                                SeekMusicStream(musicMenu,0);
+                            }
                         }
                     }
 
@@ -318,9 +323,9 @@ int main(void){
                 break;
             }
         }
-
-        //movement
+ 
         if(gameState!=2){
+            //movement 
             if(IsKeyDown(MOVERIGHT) && !IsKeyDown(MOVELEFT)){
                 redSoldier.x+=150*dt;
 
@@ -350,107 +355,111 @@ int main(void){
         
             //flip the rocket launcher to prevent it from going upside down
             rl.flip=mouse.x<redSoldier.x+MIDDLEX(redSoldier)?-1:1;
-        }
-
-        //update player position
-        redSoldier.x+=redSoldier.speedX*dt;
-        if(redSoldier.speedY>0){
-            if(redSoldier.falling && gameState!=2)
+            
+            //update player position
+            redSoldier.x+=redSoldier.speedX*dt;
+            if(redSoldier.speedY>0 && redSoldier.falling)
                 redSoldier.y+=redSoldier.speedY*dt*redSoldier.slowfall; 
-        }
-        else
-            redSoldier.y+=redSoldier.speedY*dt; 
+            else
+                redSoldier.y+=redSoldier.speedY*dt; 
 
-        if(redSoldier.y<SCREENMIDDLE(redSoldier)){
-            //score
-            score-=redSoldier.speedY*dt;
-            sprintf(scoreString, "%hu", score);
+            if(redSoldier.y<SCREENMIDDLE(redSoldier)){
+                //score
+                score-=redSoldier.speedY*dt;
+                sprintf(scoreString, "%hu", score);
 
-            redSoldier.y=SCREENMIDDLE(redSoldier); 
+                redSoldier.y=SCREENMIDDLE(redSoldier); 
            
-            if(gameState==0)
-                gameState=1;
-        }
-
-        //gravity
-        if(redSoldier.y+redSoldier.tx.height>=SCREENHEIGHT){
-            if(gameState!=1){
-                redSoldier.y=SCREENHEIGHT-redSoldier.tx.height;
-                redSoldier.speedY=0;
-                redSoldier.falling=0;
+                if(gameState==0)
+                    gameState=1;
+            } 
+        
+            //gravity
+            if(redSoldier.y+redSoldier.tx.height>=SCREENHEIGHT){
+                if(gameState!=1){
+                    redSoldier.y=SCREENHEIGHT-redSoldier.tx.height;
+                    redSoldier.speedY=0;
+                    redSoldier.falling=0;
+                }
+                else{
+                    gameState=2;
+            
+                    //reset soundtrack
+                    SeekMusicStream(music,0);
+                    SeekMusicStream(musicMenu,0);
+                }
             }
-            else gameState=2;
-        }
-        else{
-            redSoldier.falling=1;
-            redSoldier.speedY+=1000*dt;
-        }
+            else{
+                redSoldier.falling=1;
+                redSoldier.speedY+=1000*dt;
+            } 
+        
+            if((IsMouseButtonPressed(SHOOT) || IsKeyPressed(SHOOT_ALT)) && redSoldier.cooldown<0){
+                redSoldier.cooldown=120;
+                numRockets++;
 
-        //input
-        if((IsMouseButtonPressed(SHOOT) || IsKeyPressed(SHOOT_ALT)) && redSoldier.cooldown<0 && gameState!=2){
-            redSoldier.cooldown=120;
-            numRockets++;
+                Rocket *buffer=malloc(sizeof(Rocket)*numRockets);
 
-            Rocket *buffer=malloc(sizeof(Rocket)*numRockets);
-
-            Rocket newRocket={
-                .tx=LoadTextureFromImage(Images.rocket),
-                .x=redSoldier.x+MIDDLEX(redSoldier),
-                .y=redSoldier.y+MIDDLEY(redSoldier),
-                .rotation=90-atan2((redSoldier.x+MIDDLEX(redSoldier)-mouse.x),(redSoldier.y+MIDDLEY(redSoldier)-mouse.y))*180/PI,
-                .collided=0,
-                .shouldExplode=1
-            };
+                Rocket newRocket={
+                    .tx=LoadTextureFromImage(Images.rocket),
+                    .x=redSoldier.x+MIDDLEX(redSoldier),
+                    .y=redSoldier.y+MIDDLEY(redSoldier),
+                    .rotation=90-atan2((redSoldier.x+MIDDLEX(redSoldier)-mouse.x),(redSoldier.y+MIDDLEY(redSoldier)-mouse.y))*180/PI,
+                    .collided=0,
+                    .shouldExplode=1
+                };
             
-            newRocket.speedX=-1.2*cos(newRocket.rotation*PI/180)*800;
-            newRocket.speedY=-1.2*sin(newRocket.rotation*PI/180)*800;
+                newRocket.speedX=-1.2*cos(newRocket.rotation*PI/180)*800;
+                newRocket.speedY=-1.2*sin(newRocket.rotation*PI/180)*800;
             
-            for(ui8 i=0; i<numRockets-1; i++)
-                buffer[i]=rockets[i];
+                for(ui8 i=0; i<numRockets-1; i++)
+                    buffer[i]=rockets[i];
 
-            buffer[numRockets-1]=newRocket;
-            rockets=buffer;
-        }
-        //ACTIVATE PICKUP
-        if(IsKeyPressed(USEPICKUP)){
-            redSoldier.pickupActive=redSoldier.pickup;
-            redSoldier.pickup=0;
-        }
+                buffer[numRockets-1]=newRocket;
+                rockets=buffer;
+            }
+
+            //ACTIVATE PICKUP
+            if(IsKeyPressed(USEPICKUP)){
+                redSoldier.pickupActive=redSoldier.pickup;
+                redSoldier.pickup=0;
+            }
        
-        //horizontal friction
-        redSoldier.speedX+=redSoldier.speedX>0?-8:8;
-        if(redSoldier.speedX>-5 && redSoldier.speedX<5)
-            redSoldier.speedX=0;
+            //horizontal friction
+            redSoldier.speedX+=redSoldier.speedX>0?-8:8;
+            if(redSoldier.speedX>-5 && redSoldier.speedX<5)
+                redSoldier.speedX=0;
 
-        soldierBorderCheck(&redSoldier);
+            soldierBorderCheck(&redSoldier);
+    
+            //update cooldowns
+            redSoldier.cooldown-=150*GetFrameTime();
 
-        //update cooldowns
-        redSoldier.cooldown-=150*GetFrameTime();
+            //update rockets
+            for(ui8 i=0; i<numRockets; i++){
+                //position
+                rockets[i].x+=rockets[i].speedX*dt;
+                rockets[i].y+=rockets[i].speedY*dt;
+            }  
 
-        //update rockets
-        for(ui8 i=0; i<numRockets; i++){
-            //position
-            rockets[i].x+=rockets[i].speedX*dt;
-            rockets[i].y+=rockets[i].speedY*dt;
-        }  
+            //pickup effects
+            switch(redSoldier.pickupActive){
+                case 1:
+                    redSoldier.slowfall=0.2;
+                break;
+    
+                case 2:
+                    redSoldier.critBoost=2;
+                    rl.color=RED;    
+                break;
 
-        //pickup effects
-        switch(redSoldier.pickupActive){
-            case 1:
-                redSoldier.slowfall=0.2;
-            break;
-
-            case 2:
-                redSoldier.critBoost=2;
-                rl.color=RED;    
-            break;
-
-            default: //RESET
-                redSoldier.slowfall=1;
-                redSoldier.critBoost=1;
-                rl.color=WHITE;
-            break;
-        }
+                default: //RESET
+                    redSoldier.slowfall=1;
+                    redSoldier.critBoost=1;
+                    rl.color=WHITE;
+                break;
+            } 
+        } 
 
         shift=redSoldier.speedY*dt;
 
