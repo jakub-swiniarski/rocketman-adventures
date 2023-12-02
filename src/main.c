@@ -417,49 +417,49 @@ int main(void){
 
                 buffer[numRockets-1]=newRocket;
                 rockets=buffer;
-            } 
-        }
-        
-        //ACTIVATE PICKUP
-        if(IsKeyPressed(USEPICKUP)){
-            redSoldier.pickupActive=redSoldier.pickup;
-            redSoldier.pickup=0;
-        }
+            }
+
+            //ACTIVATE PICKUP
+            if(IsKeyPressed(USEPICKUP)){
+                redSoldier.pickupActive=redSoldier.pickup;
+                redSoldier.pickup=0;
+            }
        
-        //horizontal friction
-        redSoldier.speedX+=redSoldier.speedX>0?-8:8;
-        if(redSoldier.speedX>-5 && redSoldier.speedX<5)
-            redSoldier.speedX=0;
+            //horizontal friction
+            redSoldier.speedX+=redSoldier.speedX>0?-8:8;
+            if(redSoldier.speedX>-5 && redSoldier.speedX<5)
+                redSoldier.speedX=0;
 
-        soldierBorderCheck(&redSoldier);
+            soldierBorderCheck(&redSoldier);
+    
+            //update cooldowns
+            redSoldier.cooldown-=150*GetFrameTime();
 
-        //update cooldowns
-        redSoldier.cooldown-=150*GetFrameTime();
+            //update rockets
+            for(ui8 i=0; i<numRockets; i++){
+                //position
+                rockets[i].x+=rockets[i].speedX*dt;
+                rockets[i].y+=rockets[i].speedY*dt;
+            }  
 
-        //update rockets
-        for(ui8 i=0; i<numRockets; i++){
-            //position
-            rockets[i].x+=rockets[i].speedX*dt;
-            rockets[i].y+=rockets[i].speedY*dt;
-        }  
+            //pickup effects
+            switch(redSoldier.pickupActive){
+                case 1:
+                    redSoldier.slowfall=0.2;
+                break;
+    
+                case 2:
+                    redSoldier.critBoost=2;
+                    rl.color=RED;    
+                break;
 
-        //pickup effects
-        switch(redSoldier.pickupActive){
-            case 1:
-                redSoldier.slowfall=0.2;
-            break;
-
-            case 2:
-                redSoldier.critBoost=2;
-                rl.color=RED;    
-            break;
-
-            default: //RESET
-                redSoldier.slowfall=1;
-                redSoldier.critBoost=1;
-                rl.color=WHITE;
-            break;
-        }
+                default: //RESET
+                    redSoldier.slowfall=1;
+                    redSoldier.critBoost=1;
+                    rl.color=WHITE;
+                break;
+            } 
+        } 
 
         shift=redSoldier.speedY*dt;
 
