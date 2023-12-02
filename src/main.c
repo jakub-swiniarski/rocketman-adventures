@@ -112,9 +112,8 @@ int main(void){
     ui8 numParticles;
     Particle* particles;
 
-    ui8 numPlatforms=10;
-    Platform platforms[numPlatforms];
-    for(ui8 i=0; i<numPlatforms; i++){
+    Platform platforms[NUM_PLATFORMS];
+    for(ui8 i=0; i<NUM_PLATFORMS; i++){
         Platform newPlatform={
             .tx=LoadTextureFromImage(Images.platform),
         };
@@ -134,8 +133,8 @@ int main(void){
     UnloadImage(Images.critPickup);
 
     //health packs
-    HealthPack healthPacks[2];
-    for(ui8 i=0; i<2; i++){
+    HealthPack healthPacks[NUM_HEALTHPACKS];
+    for(ui8 i=0; i<NUM_HEALTHPACKS; i++){
         HealthPack newHealthPack={
             .tx=LoadTextureFromImage(Images.healthPack),
         };
@@ -199,7 +198,7 @@ int main(void){
     numParticles=0;
     particles=malloc(numParticles*sizeof(Particle)); 
 
-    for(ui8 i=0; i<numPlatforms; i++){
+    for(ui8 i=0; i<NUM_PLATFORMS; i++){
         platforms[i].x=rand()%(SCREENWIDTH-Images.platform.width-400)+200; //this is also used for random x when moving platform to the top
         platforms[i].y=SCREENHEIGHT-(i+1)*100;
     } 
@@ -208,7 +207,7 @@ int main(void){
     pickup.y=-100;
     pickup.id=1;    
 
-    for(ui8 i=0; i<2; i++){
+    for(ui8 i=0; i<NUM_HEALTHPACKS; i++){
         healthPacks[i].x=-100;
         healthPacks[i].y=-100;
     }
@@ -473,7 +472,7 @@ int main(void){
         }
 
         //update platforms
-        for(ui8 i=0; i<numPlatforms; i++){
+        for(ui8 i=0; i<NUM_PLATFORMS; i++){
             //soldier collisions
             if(redSoldier.speedY>0)
                 platformCollisionCheckS(&platforms[i],&redSoldier);
@@ -498,7 +497,7 @@ int main(void){
                     pickup.y=platforms[i].y-pickup.tx.height; 
                 }
                 else if(random>7){
-                    for(ui8 j=0; j<2; j++){
+                    for(ui8 j=0; j<NUM_HEALTHPACKS; j++){
                         if(!VISIBLE(healthPacks[j])){
                             healthPacks[j].x=platforms[i].x+MIDDLEX(platforms[i])-MIDDLEX(healthPacks[j]);
                             healthPacks[j].y=platforms[i].y-healthPacks[j].tx.height;
@@ -520,7 +519,7 @@ int main(void){
             DrawTexture(pickup.tx,pickup.x,pickup.y,WHITE);
 
         //update health packs
-        for(ui8 i=0; i<2; i++){
+        for(ui8 i=0; i<NUM_HEALTHPACKS; i++){
             if(VISIBLE(healthPacks[i])){
                 DrawTexture(healthPacks[i].tx,healthPacks[i].x,healthPacks[i].y,WHITE);
                 if(COLLISION(healthPacks[i],redSoldier)){
@@ -735,12 +734,14 @@ int main(void){
         UnloadTexture(rockets[i].tx); 
     for(ui8 i=0; i<numParticles; i++)
         UnloadTexture(particles[i].tx);
-    for(ui8 i=0; i<numPlatforms; i++)
+    for(ui8 i=0; i<NUM_PLATFORMS; i++)
         UnloadTexture(platforms[i].tx);
     for(ui8 i=0; i<2; i++){
         UnloadTexture(backgrounds[i]);
-        UnloadTexture(healthPacks[i].tx);
         UnloadTexture(tryAgainButton.tx[i]);
+    }
+    for(ui8 i=0; i<NUM_HEALTHPACKS; i++){
+        UnloadTexture(healthPacks[i].tx);
     }
     UnloadTexture(pickup.tx);
     UnloadTexture(parachute);
