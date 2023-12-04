@@ -37,10 +37,10 @@ int main(void){
     Images.particleSmoke=LoadImage(PATH("particle_smoke.png"));
     ImageResizeNN(&Images.particleSmoke,12*10,12*10);
 
-    Images.backgrounds[0]=LoadImage(PATH("background0.png"));
+    Images.backgrounds[0]=LoadImage(PATH("bg_sky0.png"));
     ImageResizeNN(&Images.backgrounds[0],SCREENWIDTH,SCREENHEIGHT);
 
-    Images.backgrounds[1]=LoadImage(PATH("background1.png"));
+    Images.backgrounds[1]=LoadImage(PATH("bg_sky1.png"));
     ImageResizeNN(&Images.backgrounds[1],SCREENWIDTH,SCREENHEIGHT);
 
     Images.platform=LoadImage(PATH("platform.png"));
@@ -70,8 +70,8 @@ int main(void){
     //sfx
     Sound fxExplosion=LoadSound(PATH("explosion.ogg"));
     Sound fxPickup=LoadSound(PATH("pickup.ogg"));
-    Music musicMenu=LoadMusicStream(PATH("soundtrack3.ogg"));
-    Music music=LoadMusicStream(PATH("soundtrack0.ogg"));
+    Music musicMenu=LoadMusicStream(PATH("soundtrack_menu.ogg"));
+    Music music=LoadMusicStream(PATH("soundtrack_normal.ogg"));
 
     ui8 gameState; //0 - not started, 1 - in progress, 2 - game over
 
