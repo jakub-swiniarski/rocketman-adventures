@@ -8,9 +8,8 @@ typedef uint8_t ui8;
 typedef unsigned short us;
 
 static const char *DIRECTORY="res/";
-static const char *VERSION="1.4.9";
+static const char *VERSION="1.5.0";
 
-#define PATH(X) "res/" X
 #define SCREENMIDDLE(X) (int)(SCREENHEIGHT/2)-(int)(X.tx.height/2)
 #define MIDDLEX(X) ((int)(X.tx.width/2))
 #define MIDDLEY(X) ((int)(X.tx.height/2))
