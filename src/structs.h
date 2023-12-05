@@ -6,18 +6,34 @@
 #include <stdint.h>
 
 static struct{
+    //soldier
     Image redSoldier;
     Image rocket;
     Image launcher;
-    Image particleSmoke;
-    Image backgrounds[2];
+    Image parachute; 
+    
+    //world
     Image platform;
+    
+    //pickups
     Image parachutePickup;
-    Image parachute;
     Image critPickup;
-    Image hud;
     Image healthPack;
+    
+    //hud
+    Image hud; 
     Image button[2];
+
+    //visuals
+    Image particleSmoke;
+ 
+    //backgrounds
+    Image bgForest;
+    Image bgSky[3];     
+    Image bgSkyStars;
+    Image bgStars;
+    Image bgStarsSpace;
+    Image bgSpace[2];
 } Images;
 
 typedef struct{

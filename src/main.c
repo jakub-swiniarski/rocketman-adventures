@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
+#include <string.h>
 
 #include "structs.h"
 #include "functions.h"
@@ -25,53 +26,101 @@ int main(void){
     SetMasterVolume((float)volume/100);
 
     //load and resize images
-    Images.redSoldier=LoadImage(PATH("red_soldier.png"));
+    Images.redSoldier=LoadImage(pathToFile("red_soldier.png"));
     ImageResizeNN(&Images.redSoldier,12*5,20*5);
 
-    Images.rocket=LoadImage(PATH("rocket.png"));
+    Images.rocket=LoadImage(pathToFile("rocket.png"));
     ImageResizeNN(&Images.rocket,30*3,8*3);
 
-    Images.launcher=LoadImage(PATH("launcher.png"));
+    Images.launcher=LoadImage(pathToFile("launcher.png"));
     ImageResizeNN(&Images.launcher,20*5,8*5);
 
-    Images.particleSmoke=LoadImage(PATH("particle_smoke.png"));
+    Images.particleSmoke=LoadImage(pathToFile("particle_smoke.png"));
     ImageResizeNN(&Images.particleSmoke,12*10,12*10);
 
-    Images.backgrounds[0]=LoadImage(PATH("background0.png"));
-    ImageResizeNN(&Images.backgrounds[0],SCREENWIDTH,SCREENHEIGHT);
-
-    Images.backgrounds[1]=LoadImage(PATH("background1.png"));
-    ImageResizeNN(&Images.backgrounds[1],SCREENWIDTH,SCREENHEIGHT);
-
-    Images.platform=LoadImage(PATH("platform.png"));
+    Images.platform=LoadImage(pathToFile("platform.png"));
     ImageResizeNN(&Images.platform,30*5,2*5);
 
-    Images.parachutePickup=LoadImage(PATH("parachute_pickup.png"));
+    Images.parachutePickup=LoadImage(pathToFile("parachute_pickup.png"));
     ImageResizeNN(&Images.parachutePickup, 16*4, 20*4);
 
-    Images.parachute=LoadImage(PATH("parachute.png"));
+    Images.parachute=LoadImage(pathToFile("parachute.png"));
     ImageResizeNN(&Images.parachute, 13*8, 11*8);
 
-    Images.critPickup=LoadImage(PATH("crit_pickup.png"));
+    Images.critPickup=LoadImage(pathToFile("crit_pickup.png"));
     ImageResizeNN(&Images.critPickup,9*8,13*8);
 
-    Images.hud=LoadImage(PATH("hud.png"));
+    Images.hud=LoadImage(pathToFile("hud.png"));
     ImageResizeNN(&Images.hud,64*5,32*5);
 
-    Images.healthPack=LoadImage(PATH("health_pack.png"));
+    Images.healthPack=LoadImage(pathToFile("health_pack.png"));
     ImageResizeNN(&Images.healthPack,12*6,12*6);
 
-    Images.button[0]=LoadImage(PATH("button_normal.png"));
+    Images.button[0]=LoadImage(pathToFile("button_normal.png"));
     ImageResizeNN(&Images.button[0], 50*8, 20*8);
 
-    Images.button[1]=LoadImage(PATH("button_hover.png"));
+    Images.button[1]=LoadImage(pathToFile("button_hover.png"));
     ImageResizeNN(&Images.button[1], 50*8, 20*8);
 
+    //BACKGROUNDS
+    Images.bgForest=LoadImage(pathToFile("bg_forest.png"));
+    ImageResizeNN(&Images.bgForest,SCREENWIDTH,SCREENHEIGHT);
+
+    for(ui8 i=0; i<3; i++){
+        char name[16]="bg_sky";
+        char num[2];
+        sprintf(num,"%d",i);
+        strcat(name,num);
+        strcat(name,".png");
+        Images.bgSky[i]=LoadImage(pathToFile(name));
+        ImageResizeNN(&Images.bgSky[i],SCREENWIDTH,SCREENHEIGHT);
+    }
+
+    Images.bgSkyStars=LoadImage(pathToFile("bg_sky_stars.png"));
+    ImageResizeNN(&Images.bgSkyStars,SCREENWIDTH,SCREENHEIGHT);
+
+    Images.bgStars=LoadImage(pathToFile("bg_stars.png"));
+    ImageResizeNN(&Images.bgStars,SCREENWIDTH,SCREENHEIGHT); 
+
+    Images.bgStarsSpace=LoadImage(pathToFile("bg_stars_space.png"));
+    ImageResizeNN(&Images.bgStarsSpace,SCREENWIDTH,SCREENHEIGHT);
+
+    for(ui8 i=0; i<2; i++){
+        char name[16]="bg_space";
+        char num[2];
+        sprintf(num,"%d",i);
+        strcat(name,num);
+        strcat(name,".png");
+        Images.bgSpace[i]=LoadImage(pathToFile(name));
+        ImageResizeNN(&Images.bgSpace[i],SCREENWIDTH,SCREENHEIGHT);
+    }  
+
+    Texture bgTxs[17];
+    bgTxs[0]=LoadTextureFromImage(Images.bgForest);
+    for(ui8 i=1; i<10; i++)
+        bgTxs[i]=LoadTextureFromImage(Images.bgSky[(i-1)%3]);
+    bgTxs[10]=LoadTextureFromImage(Images.bgSkyStars);
+    for(ui8 i=11; i<14; i++)
+        bgTxs[i]=LoadTextureFromImage(Images.bgStars);
+    bgTxs[14]=LoadTextureFromImage(Images.bgStarsSpace);
+    for(ui8 i=15; i<17; i++)
+        bgTxs[i]=LoadTextureFromImage(Images.bgSpace[(i-1)%2]);
+
+    //UNLOAD BACKGROUNDS
+    UnloadImage(Images.bgForest);
+    for(ui8 i=0; i<3; i++)
+        UnloadImage(Images.bgSky[i]);
+    UnloadImage(Images.bgSkyStars);
+    UnloadImage(Images.bgStars);
+    UnloadImage(Images.bgStarsSpace);
+    for(ui8 i=0; i<2; i++)
+        UnloadImage(Images.bgSpace[i]);
+
     //sfx
-    Sound fxExplosion=LoadSound(PATH("explosion.ogg"));
-    Sound fxPickup=LoadSound(PATH("pickup.ogg"));
-    Music musicMenu=LoadMusicStream(PATH("soundtrack3.ogg"));
-    Music music=LoadMusicStream(PATH("soundtrack0.ogg"));
+    Sound fxExplosion=LoadSound(pathToFile("explosion.ogg"));
+    Sound fxPickup=LoadSound(pathToFile("pickup.ogg"));
+    Music musicMenu=LoadMusicStream(pathToFile("soundtrack_menu.ogg"));
+    Music music=LoadMusicStream(pathToFile("soundtrack_normal.ogg"));
 
     ui8 gameState; //0 - not started, 1 - in progress, 2 - game over
 
@@ -97,12 +146,9 @@ int main(void){
     UnloadImage(Images.launcher);
 
     //background
-    Texture backgrounds[2];
-    short bgY[2]; 
-    for(ui8 i=0; i<2; i++){
-        backgrounds[i]=LoadTextureFromImage(Images.backgrounds[i]);
-        UnloadImage(Images.backgrounds[i]);
-    }
+    Texture bgs[2];
+    short bgY[2];  
+    ui8 level; //used for changing backgrounds
 
     srand(time(NULL));
 
@@ -178,7 +224,11 @@ int main(void){
     
     START:
     gameState=0;
-   
+    
+    level=1;
+    bgs[0]=bgTxs[0];
+    bgs[1]=bgTxs[1];
+
     redSoldier.x=(int)(SCREENWIDTH/2)-redSoldier.tx.width;
     redSoldier.y=SCREENHEIGHT-redSoldier.tx.height; 
     redSoldier.speedX=0;
@@ -472,12 +522,16 @@ int main(void){
             if(bgY[i]>SCREENHEIGHT){
                 bgY[i]=-SCREENHEIGHT;
                 bgY[1-i]=0;
+
+                level++;
+                if(level>16) level=16;
+                bgs[i]=bgTxs[level];
             } 
             if(redSoldier.y==SCREENMIDDLE(redSoldier) && redSoldier.speedY<0)
                 bgY[i]-=shift/2;
 
             //draw background
-            DrawTexture(backgrounds[i],0,bgY[i],WHITE);
+            DrawTexture(bgs[i],0,bgY[i],WHITE);
         }
 
         //update platforms
@@ -745,8 +799,10 @@ int main(void){
         UnloadTexture(particles[i].tx);
     for(ui8 i=0; i<NUM_PLATFORMS; i++)
         UnloadTexture(platforms[i].tx);
+    for(ui8 i=0; i<17; i++)
+        UnloadTexture(bgTxs[i]);
     for(ui8 i=0; i<2; i++){
-        UnloadTexture(backgrounds[i]);
+        UnloadTexture(bgs[i]);
         UnloadTexture(tryAgainButton.tx[i]);
     }
     for(ui8 i=0; i<NUM_HEALTHPACKS; i++){

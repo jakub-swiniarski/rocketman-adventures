@@ -1,7 +1,8 @@
 # Rocketman Adventures
 ## Screenshots
-![image](https://github.com/jakub-swiniarski/rocketman-adventures/assets/77209709/b219e0ed-07e4-4cff-a482-81aa55bbc8d5)
-![image](https://github.com/jakub-swiniarski/rocketman-adventures/assets/77209709/09a652b3-0355-493a-b2d8-a47b17cc2aaa)
+![image](https://github.com/jakub-swiniarski/rocketman-adventures/assets/77209709/3f56512e-3dc0-44a0-9ad9-c7fa0d7ab261)
+![image](https://github.com/jakub-swiniarski/rocketman-adventures/assets/77209709/a46876ce-20cc-4b01-9c5f-ae316cc0be3f)
+![image](https://github.com/jakub-swiniarski/rocketman-adventures/assets/77209709/800aafdf-5149-403b-a4c4-f5a3a1d7f053)
 
 ## How to install?
 ### Prerequisites:
