@@ -45,4 +45,4 @@ Escape - exit the game
 Edit the config file (src/config.h) to change the settings. Remember to recompile the game for the changes to take effect.
 
 ## Credits
-SFX by [Boper](https://github.com/boprr)
+SFX and background images by [Boper](https://github.com/boprr)
