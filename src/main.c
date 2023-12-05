@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
+#include <string.h>
 
 #include "structs.h"
 #include "functions.h"
@@ -37,12 +38,6 @@ int main(void){
     Images.particleSmoke=LoadImage(PATH("particle_smoke.png"));
     ImageResizeNN(&Images.particleSmoke,12*10,12*10);
 
-    Images.backgrounds[0]=LoadImage(PATH("bg_sky0.png"));
-    ImageResizeNN(&Images.backgrounds[0],SCREENWIDTH,SCREENHEIGHT);
-
-    Images.backgrounds[1]=LoadImage(PATH("bg_sky1.png"));
-    ImageResizeNN(&Images.backgrounds[1],SCREENWIDTH,SCREENHEIGHT);
-
     Images.platform=LoadImage(PATH("platform.png"));
     ImageResizeNN(&Images.platform,30*5,2*5);
 
@@ -66,6 +61,60 @@ int main(void){
 
     Images.button[1]=LoadImage(PATH("button_hover.png"));
     ImageResizeNN(&Images.button[1], 50*8, 20*8);
+
+    //BACKGROUNDS
+    Images.bgForest=LoadImage(PATH("bg_forest.png"));
+    ImageResizeNN(&Images.bgForest,SCREENWIDTH,SCREENHEIGHT);
+
+    for(ui8 i=0; i<3; i++){
+        char name[16]="bg_sky";
+        char num[2];
+        sprintf(num,"%d",i);
+        strcat(name,num);
+        strcat(name,".png");
+        Images.bgSky[i]=LoadImage(pathToFile(name));
+        ImageResizeNN(&Images.bgSky[i],SCREENWIDTH,SCREENHEIGHT);
+    }
+
+    Images.bgSkyStars=LoadImage(PATH("bg_sky_stars.png"));
+    ImageResizeNN(&Images.bgSkyStars,SCREENWIDTH,SCREENHEIGHT);
+
+    Images.bgStars=LoadImage(PATH("bg_stars.png"));
+    ImageResizeNN(&Images.bgStars,SCREENWIDTH,SCREENHEIGHT); 
+
+    Images.bgStarsSpace=LoadImage(PATH("bg_stars_space.png"));
+    ImageResizeNN(&Images.bgStarsSpace,SCREENWIDTH,SCREENHEIGHT);
+
+    for(ui8 i=0; i<2; i++){
+        char name[16]="bg_space";
+        char num[2];
+        sprintf(num,"%d",i);
+        strcat(name,num);
+        strcat(name,".png");
+        Images.bgSpace[i]=LoadImage(pathToFile(name));
+        ImageResizeNN(&Images.bgSpace[i],SCREENWIDTH,SCREENHEIGHT);
+    }  
+
+    Texture bgTxs[17];
+    bgTxs[0]=LoadTextureFromImage(Images.bgForest);
+    for(ui8 i=1; i<10; i++)
+        bgTxs[i]=LoadTextureFromImage(Images.bgSky[3&(i-1)]);
+    bgTxs[10]=LoadTextureFromImage(Images.bgSkyStars);
+    for(ui8 i=11; i<14; i++)
+        bgTxs[i]=LoadTextureFromImage(Images.bgStars);
+    bgTxs[14]=LoadTextureFromImage(Images.bgStarsSpace);
+    for(ui8 i=15; i<17; i++)
+        bgTxs[i]=LoadTextureFromImage(Images.bgSpace[2%(i-1)]);
+
+    //UNLOAD BACKGROUNDS
+    UnloadImage(Images.bgForest);
+    for(ui8 i=0; i<3; i++)
+        UnloadImage(Images.bgSky[i]);
+    UnloadImage(Images.bgSkyStars);
+    UnloadImage(Images.bgStars);
+    UnloadImage(Images.bgStarsSpace);
+    for(ui8 i=0; i<2; i++)
+        UnloadImage(Images.bgSpace[i]);
 
     //sfx
     Sound fxExplosion=LoadSound(PATH("explosion.ogg"));
@@ -97,12 +146,9 @@ int main(void){
     UnloadImage(Images.launcher);
 
     //background
-    Texture backgrounds[2];
-    short bgY[2]; 
-    for(ui8 i=0; i<2; i++){
-        backgrounds[i]=LoadTextureFromImage(Images.backgrounds[i]);
-        UnloadImage(Images.backgrounds[i]);
-    }
+    Texture bgs[2];
+    short bgY[2];  
+    ui8 level=1; //used for changing backgrounds
 
     srand(time(NULL));
 
@@ -179,6 +225,9 @@ int main(void){
     START:
     gameState=0;
    
+    bgs[0]=bgTxs[0];
+    bgs[1]=bgTxs[1];
+
     redSoldier.x=(int)(SCREENWIDTH/2)-redSoldier.tx.width;
     redSoldier.y=SCREENHEIGHT-redSoldier.tx.height; 
     redSoldier.speedX=0;
@@ -477,7 +526,7 @@ int main(void){
                 bgY[i]-=shift/2;
 
             //draw background
-            DrawTexture(backgrounds[i],0,bgY[i],WHITE);
+            DrawTexture(bgs[i],0,bgY[i],WHITE);
         }
 
         //update platforms
@@ -745,8 +794,10 @@ int main(void){
         UnloadTexture(particles[i].tx);
     for(ui8 i=0; i<NUM_PLATFORMS; i++)
         UnloadTexture(platforms[i].tx);
+    for(ui8 i=0; i<17; i++)
+        UnloadTexture(bgTxs[i]);
     for(ui8 i=0; i<2; i++){
-        UnloadTexture(backgrounds[i]);
+        UnloadTexture(bgs[i]);
         UnloadTexture(tryAgainButton.tx[i]);
     }
     for(ui8 i=0; i<NUM_HEALTHPACKS; i++){
