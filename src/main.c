@@ -320,7 +320,7 @@ int main(void){
                     && gameState!=2){
                         //rocket jump
                         redSoldier.speedX=redSoldier.critBoost*-1*rockets[i].speedX;
-                        redSoldier.speedY=10*redSoldier.critBoost*-1*rockets[i].speedY; 
+                        redSoldier.speedY=redSoldier.critBoost*-1*rockets[i].speedY; 
                     
                         //damage
                         if(gameState==1){
