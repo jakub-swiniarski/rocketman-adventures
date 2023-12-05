@@ -98,13 +98,13 @@ int main(void){
     Texture bgTxs[17];
     bgTxs[0]=LoadTextureFromImage(Images.bgForest);
     for(ui8 i=1; i<10; i++)
-        bgTxs[i]=LoadTextureFromImage(Images.bgSky[3&(i-1)]);
+        bgTxs[i]=LoadTextureFromImage(Images.bgSky[(i-1)%3]);
     bgTxs[10]=LoadTextureFromImage(Images.bgSkyStars);
     for(ui8 i=11; i<14; i++)
         bgTxs[i]=LoadTextureFromImage(Images.bgStars);
     bgTxs[14]=LoadTextureFromImage(Images.bgStarsSpace);
     for(ui8 i=15; i<17; i++)
-        bgTxs[i]=LoadTextureFromImage(Images.bgSpace[2%(i-1)]);
+        bgTxs[i]=LoadTextureFromImage(Images.bgSpace[(i-1)%2]);
 
     //UNLOAD BACKGROUNDS
     UnloadImage(Images.bgForest);
@@ -148,7 +148,7 @@ int main(void){
     //background
     Texture bgs[2];
     short bgY[2];  
-    ui8 level=1; //used for changing backgrounds
+    ui8 level; //used for changing backgrounds
 
     srand(time(NULL));
 
@@ -224,7 +224,8 @@ int main(void){
     
     START:
     gameState=0;
-   
+    
+    level=1;
     bgs[0]=bgTxs[0];
     bgs[1]=bgTxs[1];
 
@@ -319,7 +320,7 @@ int main(void){
                     && gameState!=2){
                         //rocket jump
                         redSoldier.speedX=redSoldier.critBoost*-1*rockets[i].speedX;
-                        redSoldier.speedY=redSoldier.critBoost*-1*rockets[i].speedY; 
+                        redSoldier.speedY=10*redSoldier.critBoost*-1*rockets[i].speedY; 
                     
                         //damage
                         if(gameState==1){
@@ -521,6 +522,10 @@ int main(void){
             if(bgY[i]>SCREENHEIGHT){
                 bgY[i]=-SCREENHEIGHT;
                 bgY[1-i]=0;
+
+                level++;
+                if(level>16) level=16;
+                bgs[i]=bgTxs[level];
             } 
             if(redSoldier.y==SCREENMIDDLE(redSoldier) && redSoldier.speedY<0)
                 bgY[i]-=shift/2;
