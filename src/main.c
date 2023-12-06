@@ -174,7 +174,7 @@ int main(void){
         .alpha=255,
         .isFree=1
     };
-    Particle particles[MAXROCKETS];
+    Particle particles[MAXPARTICLES];
     UnloadImage(Images.particleSmoke);
 
     Platform platforms[NUM_PLATFORMS];
@@ -264,7 +264,7 @@ int main(void){
     for(ui8 i=0; i<MAXROCKETS; i++)
         rockets[i]=newRocket;  
 
-    for(ui8 i=0; i<MAXROCKETS; i++)
+    for(ui8 i=0; i<MAXPARTICLES; i++)
         particles[i]=newParticle;
 
     for(ui8 i=0; i<NUM_PLATFORMS; i++){
@@ -315,7 +315,7 @@ int main(void){
 
                 //smoke particles
                 if(rockets[i].shouldExplode){
-                    for(ui8 j=0; j<MAXROCKETS; j++){
+                    for(ui8 j=0; j<MAXPARTICLES; j++){
                         if(particles[j].isFree){
                             particles[j].x=rockets[i].x;//MIDDLEX(rockets[i])+rand()%(50-(-50)+1)-50;
                             particles[j].y=rockets[i].y;//MIDDLEY(rockets[i])+rand()%(50-(-50)+1)-50;
@@ -355,7 +355,7 @@ int main(void){
         }
 
         //prepare particles for future use
-        for(ui8 i=0; i<MAXROCKETS; i++)
+        for(ui8 i=0; i<MAXPARTICLES; i++)
             if(!particles[i].isFree && particles[i].alpha<5)
                 particles[i]=newParticle;
  
@@ -648,7 +648,7 @@ int main(void){
         ); 
 
         //update particles
-        for(ui8 i=0; i<MAXROCKETS; i++){
+        for(ui8 i=0; i<MAXPARTICLES; i++){
             if(!particles[i].isFree){
                 if(redSoldier.y==SCREENMIDDLE(redSoldier) && redSoldier.speedY<0)
                     particles[i].y-=shift;
@@ -769,7 +769,7 @@ int main(void){
     UnloadTexture(redSoldier.tx); 
     for(ui8 i=0; i<MAXROCKETS; i++)
         UnloadTexture(rockets[i].tx); 
-    for(ui8 i=0; i<MAXROCKETS; i++)
+    for(ui8 i=0; i<MAXPARTICLES; i++)
         UnloadTexture(particles[i].tx);
     for(ui8 i=0; i<NUM_PLATFORMS; i++)
         UnloadTexture(platforms[i].tx);
