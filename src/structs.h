@@ -69,6 +69,7 @@ typedef struct{
     short x,y;
     us rotation;
     ui8 alpha;
+    bool isFree;
 } Particle;
 
 typedef struct{
