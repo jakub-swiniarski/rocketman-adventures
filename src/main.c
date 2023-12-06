@@ -152,8 +152,19 @@ int main(void){
 
     srand(time(NULL));
 
-    ui8 numRockets;
-    Rocket* rockets;
+    Rocket newRocket={
+        .tx=LoadTextureFromImage(Images.rocket),
+        .x=-100,
+        .y=-100,
+        .speedX=0,
+        .speedY=0,
+        .rotation=0,
+        .collided=0,
+        .shouldExplode=1,
+        .isFree=1
+    };
+    Rocket rockets[MAXROCKETS]; 
+    UnloadImage(Images.rocket);       
 
     ui8 numParticles;
     Particle* particles;
@@ -242,8 +253,8 @@ int main(void){
     for(ui8 i=0; i<2; i++)
         bgY[i]=-i*SCREENHEIGHT;
 
-    numRockets=0;
-    rockets=malloc(numRockets*sizeof(Rocket));
+    for(ui8 i=0; i<MAXROCKETS; i++)
+        rockets[i]=newRocket;  
 
     numParticles=0;
     particles=malloc(numParticles*sizeof(Particle)); 
@@ -287,12 +298,12 @@ int main(void){
             SetMasterVolume(muted?0:(float)volume/100);
         }
 
-        for(ui8 i=0; i<numRockets; i++){
+        for(ui8 i=0; i<MAXROCKETS; i++){
+            if(rockets[i].isFree) continue;
             rocketBorderCheck(&rockets[i]);
 
             if(rockets[i].collided){
                 PlaySound(fxExplosion);
-                UnloadTexture(rockets[i].tx);
 
                 //smoke particles
                 if(rockets[i].shouldExplode){
@@ -334,25 +345,13 @@ int main(void){
                             }
                         }
                     }
-
+                    
                     if(redSoldier.pickupActive==2)
                         redSoldier.pickupActive=0;
                 }
-
-                //delete rockets
-                numRockets--; 
-
-                //shift elements in array
-                for(ui8 j=i; j<numRockets; j++)
-                    rockets[j]=rockets[j+1];
-               
-                //TEMPORARY SOLUTION 
-                Rocket* buffer=malloc(sizeof(Rocket)*numRockets);
-                for(ui8 j=0; j<numRockets; j++)
-                    buffer[j]=rockets[j];
-                rockets=buffer;
-
-                break;
+                
+                //prepare for shooting again
+                rockets[i]=newRocket; 
             }
         }
 
@@ -446,27 +445,18 @@ int main(void){
         
             if((IsMouseButtonPressed(SHOOT) || IsKeyPressed(SHOOT_ALT)) && redSoldier.cooldown<0){
                 redSoldier.cooldown=120;
-                numRockets++;
 
-                Rocket *buffer=malloc(sizeof(Rocket)*numRockets);
-
-                Rocket newRocket={
-                    .tx=LoadTextureFromImage(Images.rocket),
-                    .x=redSoldier.x+MIDDLEX(redSoldier),
-                    .y=redSoldier.y+MIDDLEY(redSoldier),
-                    .rotation=90-atan2((redSoldier.x+MIDDLEX(redSoldier)-mouse.x),(redSoldier.y+MIDDLEY(redSoldier)-mouse.y))*180/PI,
-                    .collided=0,
-                    .shouldExplode=1
-                };
-            
-                newRocket.speedX=-1.2*cos(newRocket.rotation*PI/180)*800;
-                newRocket.speedY=-1.2*sin(newRocket.rotation*PI/180)*800;
-            
-                for(ui8 i=0; i<numRockets-1; i++)
-                    buffer[i]=rockets[i];
-
-                buffer[numRockets-1]=newRocket;
-                rockets=buffer;
+                for(ui8 i=0; i<MAXROCKETS; i++){
+                    if(rockets[i].isFree){
+                        rockets[i].isFree=0;
+                        rockets[i].x=redSoldier.x+MIDDLEX(rockets[i]);
+                        rockets[i].y=redSoldier.y+MIDDLEY(rockets[i]);
+                        rockets[i].rotation=90-atan2((redSoldier.x+MIDDLEX(redSoldier)-mouse.x),(redSoldier.y+MIDDLEY(redSoldier)-mouse.y))*180/PI;
+                        rockets[i].speedX=-1.2*cos(rockets[i].rotation*PI/180)*800;
+                        rockets[i].speedY=-1.2*sin(rockets[i].rotation*PI/180)*800; 
+                        break;
+                    }
+                }   
             }
 
             //ACTIVATE PICKUP
@@ -486,7 +476,7 @@ int main(void){
             redSoldier.cooldown-=150*GetFrameTime();
 
             //update rockets
-            for(ui8 i=0; i<numRockets; i++){
+            for(ui8 i=0; i<MAXROCKETS; i++){
                 //position
                 rockets[i].x+=rockets[i].speedX*dt;
                 rockets[i].y+=rockets[i].speedY*dt;
@@ -544,7 +534,7 @@ int main(void){
                 platforms[i].y-=shift;
 
             //rocket collisions
-            for(ui8 j=0; j<numRockets; j++)
+            for(ui8 j=0; j<MAXROCKETS; j++)
                 platformCollisionCheckR(&platforms[i],&rockets[j]);
 
             if(platforms[i].y>SCREENHEIGHT){
@@ -624,7 +614,7 @@ int main(void){
         DrawTexture(redSoldier.tx,redSoldier.x,redSoldier.y,WHITE);
 
         //draw rockets
-        for(ui8 i=0; i<numRockets; i++){
+        for(ui8 i=0; i<MAXROCKETS; i++){
             DrawTexturePro(
                 rockets[i].tx,
                 (Rectangle){ //src
@@ -788,12 +778,11 @@ int main(void){
     }
    
     //unload images
-    UnloadImage(Images.rocket);
     UnloadImage(Images.particleSmoke);
     
     //unload textures
     UnloadTexture(redSoldier.tx); 
-    for(ui8 i=0; i<numRockets; i++)
+    for(ui8 i=0; i<MAXROCKETS; i++)
         UnloadTexture(rockets[i].tx); 
     for(ui8 i=0; i<numParticles; i++)
         UnloadTexture(particles[i].tx);
