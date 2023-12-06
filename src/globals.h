@@ -7,8 +7,11 @@ typedef int8_t i8;
 typedef uint8_t ui8;
 typedef unsigned short us;
 
+static const ui8 MAXROCKETS=3;
+static const ui8 MAXPARTICLES=MAXROCKETS*2;
+
 static const char *DIRECTORY="/usr/share/rocketman/";
-static const char *VERSION="1.5.0";
+static const char *VERSION="1.5.1";
 
 #define SCREENMIDDLE(X) (int)(SCREENHEIGHT/2)-(int)(X.tx.height/2)
 #define MIDDLEX(X) ((int)(X.tx.width/2))
