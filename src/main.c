@@ -36,7 +36,7 @@ int main(void){
     ImageResizeNN(&Images.launcher,20*5,8*5);
 
     Images.particleSmoke=LoadImage(pathToFile("particle_smoke.png"));
-    ImageResizeNN(&Images.particleSmoke,12*10,12*10);
+    ImageResizeNN(&Images.particleSmoke,12*12,12*12);
 
     Images.platform=LoadImage(pathToFile("platform.png"));
     ImageResizeNN(&Images.platform,30*5,2*5);
