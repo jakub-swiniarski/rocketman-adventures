@@ -166,8 +166,16 @@ int main(void){
     Rocket rockets[MAXROCKETS]; 
     UnloadImage(Images.rocket);       
 
-    ui8 numParticles;
-    Particle* particles;
+    Particle newParticle={
+        .tx=LoadTextureFromImage(Images.particleSmoke),
+        .x=-100,
+        .y=-100,
+        .rotation=0,
+        .alpha=255,
+        .isFree=1
+    };
+    Particle particles[MAXROCKETS];
+    UnloadImage(Images.particleSmoke);
 
     Platform platforms[NUM_PLATFORMS];
     for(ui8 i=0; i<NUM_PLATFORMS; i++){
@@ -256,8 +264,8 @@ int main(void){
     for(ui8 i=0; i<MAXROCKETS; i++)
         rockets[i]=newRocket;  
 
-    numParticles=0;
-    particles=malloc(numParticles*sizeof(Particle)); 
+    for(ui8 i=0; i<MAXROCKETS; i++)
+        particles[i]=newParticle;
 
     for(ui8 i=0; i<NUM_PLATFORMS; i++){
         platforms[i].x=rand()%(SCREENWIDTH-Images.platform.width-400)+200; //this is also used for random x when moving platform to the top
@@ -307,23 +315,14 @@ int main(void){
 
                 //smoke particles
                 if(rockets[i].shouldExplode){
-                    for(ui8 j=0; j<3; j++){
-                        numParticles++;
-                        Particle *buffer=malloc(sizeof(Particle)*numParticles);
-                    
-                        Particle newParticle={
-                            .tx=LoadTextureFromImage(Images.particleSmoke),
-                            .x=rockets[i].x+MIDDLEX(rockets[i])+rand()%(50-(-50)+1)-50,
-                            .y=rockets[i].y+MIDDLEY(rockets[i])+rand()%(50-(-50)+1)-50,
-                            .rotation=rand()%361,
-                            .alpha=255
-                        };
-
-                        for(ui8 i=0; i<numParticles-1; i++)
-                            buffer[i]=particles[i];
-
-                        buffer[numParticles-1]=newParticle;
-                        particles=buffer;
+                    for(ui8 j=0; j<MAXROCKETS; j++){
+                        if(particles[j].isFree){
+                            particles[j].x=rockets[i].x;//MIDDLEX(rockets[i])+rand()%(50-(-50)+1)-50;
+                            particles[j].y=rockets[i].y;//MIDDLEY(rockets[i])+rand()%(50-(-50)+1)-50;
+                            particles[j].rotation=rand()%360;
+                            particles[j].isFree=0;
+                            break;
+                        }
                     }
 
                     if(abs(redSoldier.x+MIDDLEX(redSoldier)-rockets[i].x-MIDDLEX(rockets[i]))<100 
@@ -355,23 +354,10 @@ int main(void){
             }
         }
 
-        //delete particles
-        for(ui8 i=0; i<numParticles; i++){
-            if(particles[i].alpha<5){
-                numParticles--;
-
-                //shift elements in array
-                for(ui8 j=i; j<numParticles; j++)
-                    particles[j]=particles[j+1];
-
-                Particle* buffer=malloc(sizeof(Particle)*numParticles);
-                for(ui8 j=0; j<numParticles; j++)
-                    buffer[j]=particles[j];
-                particles=buffer;
-
-                break;
-            }
-        }
+        //prepare particles for future use
+        for(ui8 i=0; i<MAXROCKETS; i++)
+            if(!particles[i].isFree && particles[i].alpha<5)
+                particles[i]=newParticle;
  
         if(gameState!=2){
             //movement 
@@ -662,40 +648,42 @@ int main(void){
         ); 
 
         //update particles
-        for(ui8 i=0; i<numParticles; i++){
-            if(redSoldier.y==SCREENMIDDLE(redSoldier) && redSoldier.speedY<0)
-                particles[i].y-=shift;
+        for(ui8 i=0; i<MAXROCKETS; i++){
+            if(!particles[i].isFree){
+                if(redSoldier.y==SCREENMIDDLE(redSoldier) && redSoldier.speedY<0)
+                    particles[i].y-=shift;
 
-            //fade away 
-            particles[i].alpha-=2*dt;
-            
-            //draw
-            DrawTexturePro(
-                particles[i].tx,
-                (Rectangle){ //src
-                    .x=0,
-                    .y=0,
-                    .width=particles[i].tx.width,
-                    .height=particles[i].tx.height
-                },
-                (Rectangle){ //dest
-                    .x=particles[i].x,
-                    .y=particles[i].y,
-                    .width=particles[i].tx.width,
-                    .height=particles[i].tx.height
-                },
-                (Vector2){ //origin
-                    .x=MIDDLEX(particles[i]),
-                    .y=MIDDLEY(particles[i])
-                },
-                particles[i].rotation, //rotataion
-                (Color){
-                    255,
-                    255,
-                    255,
-                    particles[i].alpha
-                }
-            );
+                //fade away 
+                particles[i].alpha-=2*dt;
+                
+                //draw
+                DrawTexturePro(
+                    particles[i].tx,
+                    (Rectangle){ //src
+                        .x=0,
+                        .y=0,
+                        .width=particles[i].tx.width,
+                        .height=particles[i].tx.height
+                    },
+                    (Rectangle){ //dest
+                        .x=particles[i].x,
+                        .y=particles[i].y,
+                        .width=particles[i].tx.width,
+                        .height=particles[i].tx.height
+                    },
+                    (Vector2){ //origin
+                        .x=MIDDLEX(particles[i]),
+                        .y=MIDDLEY(particles[i])
+                    },
+                    particles[i].rotation, //rotataion
+                    (Color){
+                        255,
+                        255,
+                        255,
+                        particles[i].alpha
+                    }
+                );
+            }
         } 
    
         //text and hud
@@ -777,14 +765,11 @@ int main(void){
         EndDrawing();
     }
    
-    //unload images
-    UnloadImage(Images.particleSmoke);
-    
     //unload textures
     UnloadTexture(redSoldier.tx); 
     for(ui8 i=0; i<MAXROCKETS; i++)
         UnloadTexture(rockets[i].tx); 
-    for(ui8 i=0; i<numParticles; i++)
+    for(ui8 i=0; i<MAXROCKETS; i++)
         UnloadTexture(particles[i].tx);
     for(ui8 i=0; i<NUM_PLATFORMS; i++)
         UnloadTexture(platforms[i].tx);
