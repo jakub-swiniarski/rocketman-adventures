@@ -53,8 +53,7 @@ typedef struct{
     short x,y;
     us rotation;
     short speedX,speedY;
-    bool collided;
-    bool shouldExplode;
+    bool collided,shouldExplode,isFree;
 } Rocket;
 
 typedef struct{
@@ -70,6 +69,7 @@ typedef struct{
     short x,y;
     us rotation;
     ui8 alpha;
+    bool isFree;
 } Particle;
 
 typedef struct{
