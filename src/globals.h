@@ -7,6 +7,8 @@ typedef int8_t i8;
 typedef uint8_t ui8;
 typedef unsigned short us;
 
+static const ui8 MAXROCKETS=3;
+
 static const char *DIRECTORY="res/";
 static const char *VERSION="1.5.0";
 
