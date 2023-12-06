@@ -317,8 +317,8 @@ int main(void){
                 if(rockets[i].shouldExplode){
                     for(ui8 j=0; j<MAXPARTICLES; j++){
                         if(particles[j].isFree){
-                            particles[j].x=rockets[i].x;//MIDDLEX(rockets[i])+rand()%(50-(-50)+1)-50;
-                            particles[j].y=rockets[i].y;//MIDDLEY(rockets[i])+rand()%(50-(-50)+1)-50;
+                            particles[j].x=rockets[i].x;
+                            particles[j].y=rockets[i].y;
                             particles[j].rotation=rand()%360;
                             particles[j].isFree=0;
                             break;
