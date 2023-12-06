@@ -7,7 +7,7 @@ typedef int8_t i8;
 typedef uint8_t ui8;
 typedef unsigned short us;
 
-static const char *DIRECTORY="/usr/share/rocketman/";
+static const char *DIRECTORY="res/";
 static const char *VERSION="1.5.0";
 
 #define SCREENMIDDLE(X) (int)(SCREENHEIGHT/2)-(int)(X.tx.height/2)
