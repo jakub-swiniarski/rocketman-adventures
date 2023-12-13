@@ -121,6 +121,7 @@ int main(void){
     Sound fxPickup=LoadSound(pathToFile("pickup.ogg"));
     Music musicMenu=LoadMusicStream(pathToFile("soundtrack_menu.ogg"));
     Music musicNormal=LoadMusicStream(pathToFile("soundtrack_normal.ogg"));
+    Music musicSpace=LoadMusicStream(pathToFile("soundtrack_space.ogg"));
 
     ui8 gameState; //0 - not started, 1 - in progress, 2 - game over
 
@@ -285,6 +286,7 @@ int main(void){
 
     PlayMusicStream(musicNormal);
     PlayMusicStream(musicMenu);   
+    PlayMusicStream(musicSpace);
 
     //game loop
     while(!WindowShouldClose()){
@@ -338,9 +340,10 @@ int main(void){
                             if(redSoldier.hp<=0){
                                 gameState=2;
                                 
-                                //reset soundtrack
+                                //reset soundtrack - same thing happens when player hits the ground
                                 SeekMusicStream(musicNormal,0);
                                 SeekMusicStream(musicMenu,0);
+                                SeekMusicStream(musicSpace,0);
                             }
                         }
                     }
@@ -427,6 +430,7 @@ int main(void){
                     //reset soundtrack
                     SeekMusicStream(musicNormal,0);
                     SeekMusicStream(musicMenu,0);
+                    SeekMusicStream(musicSpace,0);
                 }
             }
             else{
