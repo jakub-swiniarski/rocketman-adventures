@@ -120,7 +120,8 @@ int main(void){
     Sound fxExplosion=LoadSound(pathToFile("explosion.ogg"));
     Sound fxPickup=LoadSound(pathToFile("pickup.ogg"));
     Music musicMenu=LoadMusicStream(pathToFile("soundtrack_menu.ogg"));
-    Music music=LoadMusicStream(pathToFile("soundtrack_normal.ogg"));
+    Music musicNormal=LoadMusicStream(pathToFile("soundtrack_normal.ogg"));
+    Music musicSpace=LoadMusicStream(pathToFile("soundtrack_space.ogg"));
 
     ui8 gameState; //0 - not started, 1 - in progress, 2 - game over
 
@@ -283,8 +284,9 @@ int main(void){
 
     score=0;
 
-    PlayMusicStream(music);
+    PlayMusicStream(musicNormal);
     PlayMusicStream(musicMenu);   
+    PlayMusicStream(musicSpace);
 
     //game loop
     while(!WindowShouldClose()){
@@ -338,15 +340,19 @@ int main(void){
                             if(redSoldier.hp<=0){
                                 gameState=2;
                                 
-                                //reset soundtrack
-                                SeekMusicStream(music,0);
+                                //reset soundtrack - same thing happens when player hits the ground
+                                SeekMusicStream(musicNormal,0);
                                 SeekMusicStream(musicMenu,0);
+                                SeekMusicStream(musicSpace,0);
                             }
                         }
                     }
                     
-                    if(redSoldier.pickupActive==2)
+                    if(redSoldier.pickupActive==2){
+                        redSoldier.critBoost=1;
+                        rl.color=WHITE;
                         redSoldier.pickupActive=0;
+                    }
                 }
                 
                 //prepare for shooting again
@@ -377,8 +383,10 @@ int main(void){
             if(!IsKeyDown(MOVELEFT) && !IsKeyDown(MOVERIGHT)) //if not moving horizontally
                 rotationParachute+=rotationParachute>0?-100*dt:100*dt;
             if(IsKeyDown(JUMP) && !redSoldier.falling){
-                if(redSoldier.pickupActive==1)
+                if(redSoldier.pickupActive==1){
+                    redSoldier.slowfall=1;                     
                     redSoldier.pickupActive=0;
+                }
                 redSoldier.falling=0;
                 redSoldier.speedY=-400;
             }
@@ -420,8 +428,9 @@ int main(void){
                     gameState=2;
             
                     //reset soundtrack
-                    SeekMusicStream(music,0);
+                    SeekMusicStream(musicNormal,0);
                     SeekMusicStream(musicMenu,0);
+                    SeekMusicStream(musicSpace,0);
                 }
             }
             else{
@@ -449,6 +458,16 @@ int main(void){
             if(IsKeyPressed(USEPICKUP)){
                 redSoldier.pickupActive=redSoldier.pickup;
                 redSoldier.pickup=0;
+                switch(redSoldier.pickupActive){
+                    case 1:
+                        redSoldier.slowfall=0.2;
+                    break;
+
+                    case 2:
+                        redSoldier.critBoost=2;
+                        rl.color=RED;    
+                    break; 
+                }
             }
        
             //horizontal friction
@@ -467,24 +486,6 @@ int main(void){
                 rockets[i].x+=rockets[i].speedX*dt;
                 rockets[i].y+=rockets[i].speedY*dt;
             }  
-
-            //pickup effects
-            switch(redSoldier.pickupActive){
-                case 1:
-                    redSoldier.slowfall=0.2;
-                break;
-    
-                case 2:
-                    redSoldier.critBoost=2;
-                    rl.color=RED;    
-                break;
-
-                default: //RESET
-                    redSoldier.slowfall=1;
-                    redSoldier.critBoost=1;
-                    rl.color=WHITE;
-                break;
-            } 
         } 
 
         shift=redSoldier.speedY*dt;
@@ -696,7 +697,10 @@ int main(void){
                 drawTextFullCenter("START JUMPING TO BEGIN",400,64, WHITE);
                 break;
             case 1: //game in progress
-                UpdateMusicStream(music);
+                if(level<15)
+                    UpdateMusicStream(musicNormal);
+                else
+                    UpdateMusicStream(musicSpace);
 
                 if(redSoldier.hp<50)
                     healthHUD.textColor=TEXTCOLOR[0];
@@ -786,6 +790,11 @@ int main(void){
     UnloadTexture(parachute);
     UnloadTexture(healthHUD.tx);
     UnloadTexture(pickupHUD.tx);
+
+    //unload music
+    UnloadMusicStream(musicMenu);
+    UnloadMusicStream(musicNormal);
+    UnloadMusicStream(musicSpace);
 
     CloseAudioDevice();
     CloseWindow();
