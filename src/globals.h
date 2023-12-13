@@ -10,7 +10,7 @@ typedef unsigned short us;
 static const ui8 MAXROCKETS=3;
 static const ui8 MAXPARTICLES=MAXROCKETS*2;
 
-static const char *DIRECTORY="res/";
+static const char *DIRECTORY="/usr/share/rocketman/";
 static const char *VERSION="1.5.2";
 
 #define SCREENMIDDLE(X) (int)(SCREENHEIGHT/2)-(int)(X.tx.height/2)
