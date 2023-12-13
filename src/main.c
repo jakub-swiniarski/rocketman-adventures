@@ -345,8 +345,11 @@ int main(void){
                         }
                     }
                     
-                    if(redSoldier.pickupActive==2)
+                    if(redSoldier.pickupActive==2){
+                        redSoldier.critBoost=1;
+                        rl.color=WHITE;
                         redSoldier.pickupActive=0;
+                    }
                 }
                 
                 //prepare for shooting again
@@ -377,8 +380,10 @@ int main(void){
             if(!IsKeyDown(MOVELEFT) && !IsKeyDown(MOVERIGHT)) //if not moving horizontally
                 rotationParachute+=rotationParachute>0?-100*dt:100*dt;
             if(IsKeyDown(JUMP) && !redSoldier.falling){
-                if(redSoldier.pickupActive==1)
+                if(redSoldier.pickupActive==1){
+                    redSoldier.slowfall=1;                     
                     redSoldier.pickupActive=0;
+                }
                 redSoldier.falling=0;
                 redSoldier.speedY=-400;
             }
@@ -449,6 +454,16 @@ int main(void){
             if(IsKeyPressed(USEPICKUP)){
                 redSoldier.pickupActive=redSoldier.pickup;
                 redSoldier.pickup=0;
+                switch(redSoldier.pickupActive){
+                    case 1:
+                        redSoldier.slowfall=0.2;
+                    break;
+
+                    case 2:
+                        redSoldier.critBoost=2;
+                        rl.color=RED;    
+                    break; 
+                }
             }
        
             //horizontal friction
@@ -467,24 +482,6 @@ int main(void){
                 rockets[i].x+=rockets[i].speedX*dt;
                 rockets[i].y+=rockets[i].speedY*dt;
             }  
-
-            //pickup effects
-            switch(redSoldier.pickupActive){
-                case 1:
-                    redSoldier.slowfall=0.2;
-                break;
-    
-                case 2:
-                    redSoldier.critBoost=2;
-                    rl.color=RED;    
-                break;
-
-                default: //RESET
-                    redSoldier.slowfall=1;
-                    redSoldier.critBoost=1;
-                    rl.color=WHITE;
-                break;
-            } 
         } 
 
         shift=redSoldier.speedY*dt;
