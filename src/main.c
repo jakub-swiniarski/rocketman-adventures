@@ -697,7 +697,10 @@ int main(void){
                 drawTextFullCenter("START JUMPING TO BEGIN",400,64, WHITE);
                 break;
             case 1: //game in progress
-                UpdateMusicStream(musicNormal);
+                if(level<15)
+                    UpdateMusicStream(musicNormal);
+                else
+                    UpdateMusicStream(musicSpace);
 
                 if(redSoldier.hp<50)
                     healthHUD.textColor=TEXTCOLOR[0];
