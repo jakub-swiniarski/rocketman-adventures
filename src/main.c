@@ -120,7 +120,7 @@ int main(void){
     Sound fxExplosion=LoadSound(pathToFile("explosion.ogg"));
     Sound fxPickup=LoadSound(pathToFile("pickup.ogg"));
     Music musicMenu=LoadMusicStream(pathToFile("soundtrack_menu.ogg"));
-    Music music=LoadMusicStream(pathToFile("soundtrack_normal.ogg"));
+    Music musicNormal=LoadMusicStream(pathToFile("soundtrack_normal.ogg"));
 
     ui8 gameState; //0 - not started, 1 - in progress, 2 - game over
 
@@ -283,7 +283,7 @@ int main(void){
 
     score=0;
 
-    PlayMusicStream(music);
+    PlayMusicStream(musicNormal);
     PlayMusicStream(musicMenu);   
 
     //game loop
@@ -339,7 +339,7 @@ int main(void){
                                 gameState=2;
                                 
                                 //reset soundtrack
-                                SeekMusicStream(music,0);
+                                SeekMusicStream(musicNormal,0);
                                 SeekMusicStream(musicMenu,0);
                             }
                         }
@@ -425,7 +425,7 @@ int main(void){
                     gameState=2;
             
                     //reset soundtrack
-                    SeekMusicStream(music,0);
+                    SeekMusicStream(musicNormal,0);
                     SeekMusicStream(musicMenu,0);
                 }
             }
@@ -693,7 +693,7 @@ int main(void){
                 drawTextFullCenter("START JUMPING TO BEGIN",400,64, WHITE);
                 break;
             case 1: //game in progress
-                UpdateMusicStream(music);
+                UpdateMusicStream(musicNormal);
 
                 if(redSoldier.hp<50)
                     healthHUD.textColor=TEXTCOLOR[0];
