@@ -788,6 +788,11 @@ int main(void){
     UnloadTexture(healthHUD.tx);
     UnloadTexture(pickupHUD.tx);
 
+    //unload music
+    UnloadMusicStream(musicMenu);
+    UnloadMusicStream(musicNormal);
+    UnloadMusicStream(musicSpace);
+
     CloseAudioDevice();
     CloseWindow();
 
