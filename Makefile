@@ -18,10 +18,10 @@ run: rocketman
 	./rocketman
 
 install: rocketman res
-	mkdir -p /usr/share/rocketman/
-	cp rocketman /usr/bin/
-	cp res/* /usr/share/rocketman/
+	mkdir -p /usr/local/share/rocketman/
+	cp rocketman /usr/local/bin/
+	cp res/* /usr/local/share/rocketman/
 
 uninstall:
-	rm /usr/bin/rocketman
-	rm -rf /usr/share/rocketman
+	rm /usr/local/bin/rocketman
+	rm -rf /usr/local/share/rocketman
