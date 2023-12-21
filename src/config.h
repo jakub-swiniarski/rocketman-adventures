@@ -1,18 +1,17 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include "globals.h"
 #include <raylib.h>
 
 //screen resolution
-static const us SCREENWIDTH=1920;
-static const us SCREENHEIGHT=1080;
+static const int SCREENWIDTH=1920;
+static const int SCREENHEIGHT=1080;
 
 //frames per second
-static const us FPS=60;
+static const int FPS=60;
 
 //sound
-static ui8 volume=100;
+static int volume=100;
 static bool muted=0;
 
 //HUD
@@ -32,7 +31,7 @@ static const KeyboardKey VOLDOWN=KEY_F2;
 static const MouseButton SHOOT=MOUSE_LEFT_BUTTON;
 
 //gameplay
-static const ui8 NUM_PLATFORMS=10;
-static const ui8 NUM_HEALTHPACKS=2;
+static const int NUM_PLATFORMS=10;
+static const int NUM_HEALTHPACKS=2;
 
 #endif 

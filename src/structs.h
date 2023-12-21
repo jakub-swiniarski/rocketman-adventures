@@ -38,69 +38,69 @@ static struct{
 
 typedef struct{
     Texture tx;
-    short x,y;
-    short speedX, speedY; //used for gravity and jumping
-    i8 cooldown;
+    int x,y;
+    int speedX, speedY; //used for gravity and jumping
+    int cooldown;
     bool falling;
-    ui8 pickup, pickupActive;
+    int pickup, pickupActive;
     float slowfall; //1 means no slowfall
-    ui8 critBoost;
-    short hp;
+    int critBoost;
+    int hp;
 } Soldier;
 
 typedef struct{
     Texture tx;
-    short x,y;
-    us rotation;
-    short speedX,speedY;
+    int x,y;
+    int rotation;
+    int speedX,speedY;
     bool collided,shouldExplode,isFree;
 } Rocket;
 
 typedef struct{
     Texture tx;
-    short x,y;
-    us rotation;
-    i8 flip; //1 means befault, -1 means flipped
+    int x,y;
+    int rotation;
+    int flip; //1 means befault, -1 means flipped
     Color color;
 } Launcher;
 
 typedef struct{
     Texture tx;
-    short x,y;
-    us rotation;
-    ui8 alpha;
+    int x,y;
+    int rotation;
+    int alpha;
     bool isFree;
 } Particle;
 
 typedef struct{
     Texture tx;
-    short x,y;
+    int x,y;
 } Platform;
 
 typedef struct{
     Texture tx;
     Texture txs[2];
-    short x,y;
-    ui8 id; //1 - parachute, 2 -crits
+    int x,y;
+    int id; //1 - parachute, 2 -crits
 } Pickup;
 
 typedef struct{
     Texture tx;
-    short x,y;
+    int x,y;
 } HealthPack;
 
 typedef struct{
     Texture tx;
-    short x,y;
+    int x,y;
     char text[16];
     Color textColor;
 } HUD;
 
 typedef struct{
     Texture tx[2];
-    short x,y;
+    int x,y;
     char text[12];
-    ui8 state; //0 - normal, 1 - hover
+    int state; //0 - normal, 1 - hover
 } Button;
 
 #endif
