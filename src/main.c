@@ -14,7 +14,7 @@
 int main(void){
     InitWindow(SCREENWIDTH,SCREENHEIGHT,"Rocketman Adventures");
     
-    ui8 display=GetCurrentMonitor();
+    int display=GetCurrentMonitor();
     SetWindowSize(GetMonitorWidth(display),GetMonitorHeight(display));
     ToggleFullscreen();
 
@@ -66,7 +66,7 @@ int main(void){
     Images.bgForest=LoadImage(pathToFile("bg_forest.png"));
     ImageResizeNN(&Images.bgForest,SCREENWIDTH,SCREENHEIGHT);
 
-    for(ui8 i=0; i<3; i++){
+    for(int i=0; i<3; i++){
         char name[16]="bg_sky";
         char num[2];
         sprintf(num,"%d",i);
@@ -85,7 +85,7 @@ int main(void){
     Images.bgStarsSpace=LoadImage(pathToFile("bg_stars_space.png"));
     ImageResizeNN(&Images.bgStarsSpace,SCREENWIDTH,SCREENHEIGHT);
 
-    for(ui8 i=0; i<2; i++){
+    for(int i=0; i<2; i++){
         char name[16]="bg_space";
         char num[2];
         sprintf(num,"%d",i);
@@ -97,23 +97,23 @@ int main(void){
 
     Texture bgTxs[17];
     bgTxs[0]=LoadTextureFromImage(Images.bgForest);
-    for(ui8 i=1; i<10; i++)
+    for(int i=1; i<10; i++)
         bgTxs[i]=LoadTextureFromImage(Images.bgSky[(i-1)%3]);
     bgTxs[10]=LoadTextureFromImage(Images.bgSkyStars);
-    for(ui8 i=11; i<14; i++)
+    for(int i=11; i<14; i++)
         bgTxs[i]=LoadTextureFromImage(Images.bgStars);
     bgTxs[14]=LoadTextureFromImage(Images.bgStarsSpace);
-    for(ui8 i=15; i<17; i++)
+    for(int i=15; i<17; i++)
         bgTxs[i]=LoadTextureFromImage(Images.bgSpace[(i-1)%2]);
 
     //UNLOAD BACKGROUNDS
     UnloadImage(Images.bgForest);
-    for(ui8 i=0; i<3; i++)
+    for(int i=0; i<3; i++)
         UnloadImage(Images.bgSky[i]);
     UnloadImage(Images.bgSkyStars);
     UnloadImage(Images.bgStars);
     UnloadImage(Images.bgStarsSpace);
-    for(ui8 i=0; i<2; i++)
+    for(int i=0; i<2; i++)
         UnloadImage(Images.bgSpace[i]);
 
     //sfx
@@ -123,7 +123,7 @@ int main(void){
     Music musicNormal=LoadMusicStream(pathToFile("soundtrack_normal.ogg"));
     Music musicSpace=LoadMusicStream(pathToFile("soundtrack_space.ogg"));
 
-    ui8 gameState; //0 - not started, 1 - in progress, 2 - game over
+    int gameState; //0 - not started, 1 - in progress, 2 - game over
 
     //player
     Soldier redSoldier={
@@ -134,7 +134,7 @@ int main(void){
     //parachute
     Texture parachute=LoadTextureFromImage(Images.parachute);
     UnloadImage(Images.parachute);
-    i8 rotationParachute=0; 
+    int rotationParachute=0; 
 
     //rocket launcher
     Launcher rl={
@@ -148,8 +148,8 @@ int main(void){
 
     //background
     Texture bgs[2];
-    short bgY[2];  
-    ui8 level; //used for changing backgrounds
+    int bgY[2];  
+    int level; //used for changing backgrounds
 
     srand(time(NULL));
 
@@ -179,7 +179,7 @@ int main(void){
     UnloadImage(Images.particleSmoke);
 
     Platform platforms[NUM_PLATFORMS];
-    for(ui8 i=0; i<NUM_PLATFORMS; i++){
+    for(int i=0; i<NUM_PLATFORMS; i++){
         Platform newPlatform={
             .tx=LoadTextureFromImage(Images.platform),
         };
@@ -187,7 +187,7 @@ int main(void){
     }
     UnloadImage(Images.platform);
     
-    short shift=0;
+    int shift=0;
 
     //pickups
     Pickup pickup={
@@ -200,7 +200,7 @@ int main(void){
 
     //health packs
     HealthPack healthPacks[NUM_HEALTHPACKS];
-    for(ui8 i=0; i<NUM_HEALTHPACKS; i++){
+    for(int i=0; i<NUM_HEALTHPACKS; i++){
         HealthPack newHealthPack={
             .tx=LoadTextureFromImage(Images.healthPack),
         };
@@ -208,7 +208,7 @@ int main(void){
     }
     UnloadImage(Images.healthPack);
 
-    us score;
+    int score;
     char scoreString[5];
 
     //hp hud
@@ -237,7 +237,7 @@ int main(void){
         .y=500,
         .text="TRY AGAIN"
     };
-    for(ui8 i=0; i<2; i++)
+    for(int i=0; i<2; i++)
         UnloadImage(Images.button[i]);
     
     Vector2 mouse;
@@ -259,16 +259,16 @@ int main(void){
     redSoldier.critBoost=1;
     redSoldier.hp=200;
 
-    for(ui8 i=0; i<2; i++)
+    for(int i=0; i<2; i++)
         bgY[i]=-i*SCREENHEIGHT;
 
-    for(ui8 i=0; i<MAXROCKETS; i++)
+    for(int i=0; i<MAXROCKETS; i++)
         rockets[i]=newRocket;  
 
-    for(ui8 i=0; i<MAXPARTICLES; i++)
+    for(int i=0; i<MAXPARTICLES; i++)
         particles[i]=newParticle;
 
-    for(ui8 i=0; i<NUM_PLATFORMS; i++){
+    for(int i=0; i<NUM_PLATFORMS; i++){
         platforms[i].x=rand()%(SCREENWIDTH-Images.platform.width-400)+200; //this is also used for random x when moving platform to the top
         platforms[i].y=SCREENHEIGHT-(i+1)*1000/NUM_PLATFORMS;
     } 
@@ -277,7 +277,7 @@ int main(void){
     pickup.y=-100;
     pickup.id=1;    
 
-    for(ui8 i=0; i<NUM_HEALTHPACKS; i++){
+    for(int i=0; i<NUM_HEALTHPACKS; i++){
         healthPacks[i].x=-100;
         healthPacks[i].y=-100;
     }
@@ -308,7 +308,7 @@ int main(void){
             SetMasterVolume(muted?0:(float)volume/100);
         }
 
-        for(ui8 i=0; i<MAXROCKETS; i++){
+        for(int i=0; i<MAXROCKETS; i++){
             if(rockets[i].isFree) continue;
             rocketBorderCheck(&rockets[i]);
 
@@ -317,7 +317,7 @@ int main(void){
 
                 //smoke particles
                 if(rockets[i].shouldExplode){
-                    for(ui8 j=0; j<MAXPARTICLES; j++){
+                    for(int j=0; j<MAXPARTICLES; j++){
                         if(particles[j].isFree){
                             particles[j].x=rockets[i].x;
                             particles[j].y=rockets[i].y;
@@ -361,7 +361,7 @@ int main(void){
         }
 
         //prepare particles for future use
-        for(ui8 i=0; i<MAXPARTICLES; i++)
+        for(int i=0; i<MAXPARTICLES; i++)
             if(!particles[i].isFree && particles[i].alpha<5)
                 particles[i]=newParticle;
  
@@ -441,7 +441,7 @@ int main(void){
             if((IsMouseButtonPressed(SHOOT) || IsKeyPressed(SHOOT_ALT)) && redSoldier.cooldown<0){
                 redSoldier.cooldown=120;
 
-                for(ui8 i=0; i<MAXROCKETS; i++){
+                for(int i=0; i<MAXROCKETS; i++){
                     if(rockets[i].isFree){
                         rockets[i].isFree=0;
                         rockets[i].x=redSoldier.x+MIDDLEX(rockets[i]);
@@ -481,7 +481,7 @@ int main(void){
             redSoldier.cooldown-=150*GetFrameTime();
 
             //update rockets
-            for(ui8 i=0; i<MAXROCKETS; i++){
+            for(int i=0; i<MAXROCKETS; i++){
                 //position
                 rockets[i].x+=rockets[i].speedX*dt;
                 rockets[i].y+=rockets[i].speedY*dt;
@@ -494,7 +494,7 @@ int main(void){
         BeginDrawing();
 
         //update background
-        for(ui8 i=0; i<2; i++){
+        for(int i=0; i<2; i++){
             //parallax scrolling
             if(bgY[i]>SCREENHEIGHT){
                 bgY[i]=-SCREENHEIGHT;
@@ -512,7 +512,7 @@ int main(void){
         }
 
         //update platforms
-        for(ui8 i=0; i<NUM_PLATFORMS; i++){
+        for(int i=0; i<NUM_PLATFORMS; i++){
             //soldier collisions
             if(redSoldier.speedY>0)
                 platformCollisionCheckS(&platforms[i],&redSoldier);
@@ -521,7 +521,7 @@ int main(void){
                 platforms[i].y-=shift;
 
             //rocket collisions
-            for(ui8 j=0; j<MAXROCKETS; j++)
+            for(int j=0; j<MAXROCKETS; j++)
                 platformCollisionCheckR(&platforms[i],&rockets[j]);
 
             if(platforms[i].y>SCREENHEIGHT){
@@ -529,7 +529,7 @@ int main(void){
                 platforms[i].y=-platforms[i].tx.height;
                 
                 //random pickups and health packs
-                ui8 random=rand()%10;
+                int random=rand()%10;
                 if(random==0 && !VISIBLE(pickup)){ 
                     pickup.id=rand()%2+1;
                     pickup.tx=pickup.txs[pickup.id-1];
@@ -537,7 +537,7 @@ int main(void){
                     pickup.y=platforms[i].y-pickup.tx.height; 
                 }
                 else if(random>7){
-                    for(ui8 j=0; j<NUM_HEALTHPACKS; j++){
+                    for(int j=0; j<NUM_HEALTHPACKS; j++){
                         if(!VISIBLE(healthPacks[j])){
                             healthPacks[j].x=platforms[i].x+MIDDLEX(platforms[i])-MIDDLEX(healthPacks[j]);
                             healthPacks[j].y=platforms[i].y-healthPacks[j].tx.height;
@@ -559,7 +559,7 @@ int main(void){
             DrawTexture(pickup.tx,pickup.x,pickup.y,WHITE);
 
         //update health packs
-        for(ui8 i=0; i<NUM_HEALTHPACKS; i++){
+        for(int i=0; i<NUM_HEALTHPACKS; i++){
             if(VISIBLE(healthPacks[i])){
                 DrawTexture(healthPacks[i].tx,healthPacks[i].x,healthPacks[i].y,WHITE);
                 if(COLLISION(healthPacks[i],redSoldier)){
@@ -601,7 +601,7 @@ int main(void){
         DrawTexture(redSoldier.tx,redSoldier.x,redSoldier.y,WHITE);
 
         //draw rockets
-        for(ui8 i=0; i<MAXROCKETS; i++){
+        for(int i=0; i<MAXROCKETS; i++){
             DrawTexturePro(
                 rockets[i].tx,
                 (Rectangle){ //src
@@ -649,7 +649,7 @@ int main(void){
         ); 
 
         //update particles
-        for(ui8 i=0; i<MAXPARTICLES; i++){
+        for(int i=0; i<MAXPARTICLES; i++){
             if(!particles[i].isFree){
                 if(redSoldier.y==SCREENMIDDLE(redSoldier) && redSoldier.speedY<0)
                     particles[i].y-=shift;
@@ -771,19 +771,19 @@ int main(void){
    
     //unload textures
     UnloadTexture(redSoldier.tx); 
-    for(ui8 i=0; i<MAXROCKETS; i++)
+    for(int i=0; i<MAXROCKETS; i++)
         UnloadTexture(rockets[i].tx); 
-    for(ui8 i=0; i<MAXPARTICLES; i++)
+    for(int i=0; i<MAXPARTICLES; i++)
         UnloadTexture(particles[i].tx);
-    for(ui8 i=0; i<NUM_PLATFORMS; i++)
+    for(int i=0; i<NUM_PLATFORMS; i++)
         UnloadTexture(platforms[i].tx);
-    for(ui8 i=0; i<17; i++)
+    for(int i=0; i<17; i++)
         UnloadTexture(bgTxs[i]);
-    for(ui8 i=0; i<2; i++){
+    for(int i=0; i<2; i++){
         UnloadTexture(bgs[i]);
         UnloadTexture(tryAgainButton.tx[i]);
     }
-    for(ui8 i=0; i<NUM_HEALTHPACKS; i++){
+    for(int i=0; i<NUM_HEALTHPACKS; i++){
         UnloadTexture(healthPacks[i].tx);
     }
     UnloadTexture(pickup.tx);
