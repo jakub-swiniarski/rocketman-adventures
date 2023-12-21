@@ -1,14 +1,8 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
-#include <stdint.h>
-
-typedef int8_t i8;
-typedef uint8_t ui8;
-typedef unsigned short us;
-
-static const ui8 MAXROCKETS=3;
-static const ui8 MAXPARTICLES=MAXROCKETS*2;
+static const int MAXROCKETS=3;
+static const int MAXPARTICLES=MAXROCKETS*2;
 
 static const char *DIRECTORY="/usr/local/share/rocketman/";
 static const char *VERSION="1.5.3";
