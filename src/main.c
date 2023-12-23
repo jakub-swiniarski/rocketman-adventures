@@ -62,59 +62,25 @@ int main(void){
     Images.button[1]=LoadImage(pathToFile("button_hover.png"));
     ImageResizeNN(&Images.button[1], 50*8, 20*8);
 
-    //BACKGROUNDS
-    Images.bgForest=LoadImage(pathToFile("bg_forest.png"));
-    ImageResizeNN(&Images.bgForest,SCREENWIDTH,SCREENHEIGHT);
-
-    for(int i=0; i<3; i++){
-        char name[16]="bg_sky";
+    //load background images
+    for(int i=0; i<NUMBG; i++){
+        char name[12]="bg";
         char num[2];
         sprintf(num,"%d",i);
         strcat(name,num);
         strcat(name,".png");
-        Images.bgSky[i]=LoadImage(pathToFile(name));
-        ImageResizeNN(&Images.bgSky[i],SCREENWIDTH,SCREENHEIGHT);
+        Images.bg[i]=LoadImage(pathToFile(name));
+        ImageResizeNN(&Images.bg[i],SCREENWIDTH,SCREENHEIGHT);
     }
 
-    Images.bgSkyStars=LoadImage(pathToFile("bg_sky_stars.png"));
-    ImageResizeNN(&Images.bgSkyStars,SCREENWIDTH,SCREENHEIGHT);
+    //load background images to textures
+    Texture bgTxs[NUMBG];
+    for(int i=0; i<NUMBG; i++)
+        bgTxs[i]=LoadTextureFromImage(Images.bg[i]);
 
-    Images.bgStars=LoadImage(pathToFile("bg_stars.png"));
-    ImageResizeNN(&Images.bgStars,SCREENWIDTH,SCREENHEIGHT); 
-
-    Images.bgStarsSpace=LoadImage(pathToFile("bg_stars_space.png"));
-    ImageResizeNN(&Images.bgStarsSpace,SCREENWIDTH,SCREENHEIGHT);
-
-    for(int i=0; i<2; i++){
-        char name[16]="bg_space";
-        char num[2];
-        sprintf(num,"%d",i);
-        strcat(name,num);
-        strcat(name,".png");
-        Images.bgSpace[i]=LoadImage(pathToFile(name));
-        ImageResizeNN(&Images.bgSpace[i],SCREENWIDTH,SCREENHEIGHT);
-    }  
-
-    Texture bgTxs[17];
-    bgTxs[0]=LoadTextureFromImage(Images.bgForest);
-    for(int i=1; i<10; i++)
-        bgTxs[i]=LoadTextureFromImage(Images.bgSky[(i-1)%3]);
-    bgTxs[10]=LoadTextureFromImage(Images.bgSkyStars);
-    for(int i=11; i<14; i++)
-        bgTxs[i]=LoadTextureFromImage(Images.bgStars);
-    bgTxs[14]=LoadTextureFromImage(Images.bgStarsSpace);
-    for(int i=15; i<17; i++)
-        bgTxs[i]=LoadTextureFromImage(Images.bgSpace[(i-1)%2]);
-
-    //UNLOAD BACKGROUNDS
-    UnloadImage(Images.bgForest);
-    for(int i=0; i<3; i++)
-        UnloadImage(Images.bgSky[i]);
-    UnloadImage(Images.bgSkyStars);
-    UnloadImage(Images.bgStars);
-    UnloadImage(Images.bgStarsSpace);
-    for(int i=0; i<2; i++)
-        UnloadImage(Images.bgSpace[i]);
+    //unload background images
+    for(int i=0; i<NUMBG; i++)
+        UnloadImage(Images.bg[i]);
 
     //sfx
     Sound fxExplosion=LoadSound(pathToFile("explosion.ogg"));
@@ -178,8 +144,8 @@ int main(void){
     Particle particles[MAXPARTICLES];
     UnloadImage(Images.particleSmoke);
 
-    Platform platforms[NUM_PLATFORMS];
-    for(int i=0; i<NUM_PLATFORMS; i++){
+    Platform platforms[NUMPLATFORMS];
+    for(int i=0; i<NUMPLATFORMS; i++){
         Platform newPlatform={
             .tx=LoadTextureFromImage(Images.platform),
         };
@@ -199,8 +165,8 @@ int main(void){
     UnloadImage(Images.critPickup);
 
     //health packs
-    HealthPack healthPacks[NUM_HEALTHPACKS];
-    for(int i=0; i<NUM_HEALTHPACKS; i++){
+    HealthPack healthPacks[NUMHEALTHPACKS];
+    for(int i=0; i<NUMHEALTHPACKS; i++){
         HealthPack newHealthPack={
             .tx=LoadTextureFromImage(Images.healthPack),
         };
@@ -268,16 +234,16 @@ int main(void){
     for(int i=0; i<MAXPARTICLES; i++)
         particles[i]=newParticle;
 
-    for(int i=0; i<NUM_PLATFORMS; i++){
+    for(int i=0; i<NUMPLATFORMS; i++){
         platforms[i].x=rand()%(SCREENWIDTH-Images.platform.width-400)+200; //this is also used for random x when moving platform to the top
-        platforms[i].y=SCREENHEIGHT-(i+1)*1000/NUM_PLATFORMS;
+        platforms[i].y=SCREENHEIGHT-(i+1)*1000/NUMPLATFORMS;
     } 
 
     pickup.x=-100;
     pickup.y=-100;
     pickup.id=1;    
 
-    for(int i=0; i<NUM_HEALTHPACKS; i++){
+    for(int i=0; i<NUMHEALTHPACKS; i++){
         healthPacks[i].x=-100;
         healthPacks[i].y=-100;
     }
@@ -291,8 +257,7 @@ int main(void){
     //game loop
     while(!WindowShouldClose()){
         dt=GetFrameTime();
-        mouse.x=GetMouseX();
-        mouse.y=GetMouseY();
+        mouse=GetMousePosition();
 
         //volume control
         if(IsKeyPressed(VOLUP) && volume<=95){
@@ -501,7 +466,7 @@ int main(void){
                 bgY[1-i]=0;
 
                 level++;
-                if(level>16) level=16;
+                if(level>NUMBG-1) level=NUMBG-1;
                 bgs[i]=bgTxs[level];
             } 
             if(redSoldier.y==SCREENMIDDLE(redSoldier) && redSoldier.speedY<0)
@@ -512,7 +477,7 @@ int main(void){
         }
 
         //update platforms
-        for(int i=0; i<NUM_PLATFORMS; i++){
+        for(int i=0; i<NUMPLATFORMS; i++){
             //soldier collisions
             if(redSoldier.speedY>0)
                 platformCollisionCheckS(&platforms[i],&redSoldier);
@@ -537,7 +502,7 @@ int main(void){
                     pickup.y=platforms[i].y-pickup.tx.height; 
                 }
                 else if(random>7){
-                    for(int j=0; j<NUM_HEALTHPACKS; j++){
+                    for(int j=0; j<NUMHEALTHPACKS; j++){
                         if(!VISIBLE(healthPacks[j])){
                             healthPacks[j].x=platforms[i].x+MIDDLEX(platforms[i])-MIDDLEX(healthPacks[j]);
                             healthPacks[j].y=platforms[i].y-healthPacks[j].tx.height;
@@ -559,7 +524,7 @@ int main(void){
             DrawTexture(pickup.tx,pickup.x,pickup.y,WHITE);
 
         //update health packs
-        for(int i=0; i<NUM_HEALTHPACKS; i++){
+        for(int i=0; i<NUMHEALTHPACKS; i++){
             if(VISIBLE(healthPacks[i])){
                 DrawTexture(healthPacks[i].tx,healthPacks[i].x,healthPacks[i].y,WHITE);
                 if(COLLISION(healthPacks[i],redSoldier)){
@@ -697,7 +662,7 @@ int main(void){
                 drawTextFullCenter("START JUMPING TO BEGIN",400,64, WHITE);
                 break;
             case 1: //game in progress
-                if(level<15)
+                if(level<7)
                     UpdateMusicStream(musicNormal);
                 else
                     UpdateMusicStream(musicSpace);
@@ -775,15 +740,15 @@ int main(void){
         UnloadTexture(rockets[i].tx); 
     for(int i=0; i<MAXPARTICLES; i++)
         UnloadTexture(particles[i].tx);
-    for(int i=0; i<NUM_PLATFORMS; i++)
+    for(int i=0; i<NUMPLATFORMS; i++)
         UnloadTexture(platforms[i].tx);
-    for(int i=0; i<17; i++)
+    for(int i=0; i<NUMBG; i++)
         UnloadTexture(bgTxs[i]);
     for(int i=0; i<2; i++){
         UnloadTexture(bgs[i]);
         UnloadTexture(tryAgainButton.tx[i]);
     }
-    for(int i=0; i<NUM_HEALTHPACKS; i++){
+    for(int i=0; i<NUMHEALTHPACKS; i++){
         UnloadTexture(healthPacks[i].tx);
     }
     UnloadTexture(pickup.tx);
