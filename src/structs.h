@@ -28,12 +28,7 @@ static struct{
     Image particleSmoke;
  
     //backgrounds
-    Image bgForest;
-    Image bgSky[3];     
-    Image bgSkyStars;
-    Image bgStars;
-    Image bgStarsSpace;
-    Image bgSpace[2];
+    Image bg[9];
 } Images;
 
 typedef struct{

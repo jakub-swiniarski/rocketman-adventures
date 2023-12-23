@@ -62,59 +62,25 @@ int main(void){
     Images.button[1]=LoadImage(pathToFile("button_hover.png"));
     ImageResizeNN(&Images.button[1], 50*8, 20*8);
 
-    //BACKGROUNDS
-    Images.bgForest=LoadImage(pathToFile("bg_forest.png"));
-    ImageResizeNN(&Images.bgForest,SCREENWIDTH,SCREENHEIGHT);
-
-    for(int i=0; i<3; i++){
-        char name[16]="bg_sky";
+    //load background images
+    for(int i=0; i<9; i++){
+        char name[12]="bg";
         char num[2];
         sprintf(num,"%d",i);
         strcat(name,num);
         strcat(name,".png");
-        Images.bgSky[i]=LoadImage(pathToFile(name));
-        ImageResizeNN(&Images.bgSky[i],SCREENWIDTH,SCREENHEIGHT);
+        Images.bg[i]=LoadImage(pathToFile(name));
+        ImageResizeNN(&Images.bg[i],SCREENWIDTH,SCREENHEIGHT);
     }
 
-    Images.bgSkyStars=LoadImage(pathToFile("bg_sky_stars.png"));
-    ImageResizeNN(&Images.bgSkyStars,SCREENWIDTH,SCREENHEIGHT);
+    //load background images to textures
+    Texture bgTxs[9];
+    for(int i=0; i<9; i++)
+        bgTxs[i]=LoadTextureFromImage(Images.bg[i]);
 
-    Images.bgStars=LoadImage(pathToFile("bg_stars.png"));
-    ImageResizeNN(&Images.bgStars,SCREENWIDTH,SCREENHEIGHT); 
-
-    Images.bgStarsSpace=LoadImage(pathToFile("bg_stars_space.png"));
-    ImageResizeNN(&Images.bgStarsSpace,SCREENWIDTH,SCREENHEIGHT);
-
-    for(int i=0; i<2; i++){
-        char name[16]="bg_space";
-        char num[2];
-        sprintf(num,"%d",i);
-        strcat(name,num);
-        strcat(name,".png");
-        Images.bgSpace[i]=LoadImage(pathToFile(name));
-        ImageResizeNN(&Images.bgSpace[i],SCREENWIDTH,SCREENHEIGHT);
-    }  
-
-    Texture bgTxs[17];
-    bgTxs[0]=LoadTextureFromImage(Images.bgForest);
-    for(int i=1; i<10; i++)
-        bgTxs[i]=LoadTextureFromImage(Images.bgSky[(i-1)%3]);
-    bgTxs[10]=LoadTextureFromImage(Images.bgSkyStars);
-    for(int i=11; i<14; i++)
-        bgTxs[i]=LoadTextureFromImage(Images.bgStars);
-    bgTxs[14]=LoadTextureFromImage(Images.bgStarsSpace);
-    for(int i=15; i<17; i++)
-        bgTxs[i]=LoadTextureFromImage(Images.bgSpace[(i-1)%2]);
-
-    //UNLOAD BACKGROUNDS
-    UnloadImage(Images.bgForest);
-    for(int i=0; i<3; i++)
-        UnloadImage(Images.bgSky[i]);
-    UnloadImage(Images.bgSkyStars);
-    UnloadImage(Images.bgStars);
-    UnloadImage(Images.bgStarsSpace);
-    for(int i=0; i<2; i++)
-        UnloadImage(Images.bgSpace[i]);
+    //unload background images
+    for(int i=0; i<9; i++)
+        UnloadImage(Images.bg[i]);
 
     //sfx
     Sound fxExplosion=LoadSound(pathToFile("explosion.ogg"));
@@ -776,7 +742,7 @@ int main(void){
         UnloadTexture(particles[i].tx);
     for(int i=0; i<NUM_PLATFORMS; i++)
         UnloadTexture(platforms[i].tx);
-    for(int i=0; i<17; i++)
+    for(int i=0; i<9; i++)
         UnloadTexture(bgTxs[i]);
     for(int i=0; i<2; i++){
         UnloadTexture(bgs[i]);
