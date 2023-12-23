@@ -291,8 +291,7 @@ int main(void){
     //game loop
     while(!WindowShouldClose()){
         dt=GetFrameTime();
-        mouse.x=GetMouseX();
-        mouse.y=GetMouseY();
+        mouse=GetMousePosition();
 
         //volume control
         if(IsKeyPressed(VOLUP) && volume<=95){
