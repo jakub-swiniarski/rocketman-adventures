@@ -63,7 +63,7 @@ int main(void){
     ImageResizeNN(&Images.button[1], 50*8, 20*8);
 
     //load background images
-    for(int i=0; i<9; i++){
+    for(int i=0; i<NUMBG; i++){
         char name[12]="bg";
         char num[2];
         sprintf(num,"%d",i);
@@ -74,12 +74,12 @@ int main(void){
     }
 
     //load background images to textures
-    Texture bgTxs[9];
-    for(int i=0; i<9; i++)
+    Texture bgTxs[NUMBG];
+    for(int i=0; i<NUMBG; i++)
         bgTxs[i]=LoadTextureFromImage(Images.bg[i]);
 
     //unload background images
-    for(int i=0; i<9; i++)
+    for(int i=0; i<NUMBG; i++)
         UnloadImage(Images.bg[i]);
 
     //sfx
@@ -466,7 +466,7 @@ int main(void){
                 bgY[1-i]=0;
 
                 level++;
-                if(level>8) level=8;
+                if(level>NUMBG-1) level=NUMBG-1;
                 bgs[i]=bgTxs[level];
             } 
             if(redSoldier.y==SCREENMIDDLE(redSoldier) && redSoldier.speedY<0)
@@ -742,7 +742,7 @@ int main(void){
         UnloadTexture(particles[i].tx);
     for(int i=0; i<NUMPLATFORMS; i++)
         UnloadTexture(platforms[i].tx);
-    for(int i=0; i<9; i++)
+    for(int i=0; i<NUMBG; i++)
         UnloadTexture(bgTxs[i]);
     for(int i=0; i<2; i++){
         UnloadTexture(bgs[i]);
