@@ -466,7 +466,7 @@ int main(void){
                 bgY[1-i]=0;
 
                 level++;
-                if(level>16) level=16;
+                if(level>8) level=8;
                 bgs[i]=bgTxs[level];
             } 
             if(redSoldier.y==SCREENMIDDLE(redSoldier) && redSoldier.speedY<0)
@@ -662,7 +662,7 @@ int main(void){
                 drawTextFullCenter("START JUMPING TO BEGIN",400,64, WHITE);
                 break;
             case 1: //game in progress
-                if(level<15)
+                if(level<7)
                     UpdateMusicStream(musicNormal);
                 else
                     UpdateMusicStream(musicSpace);
