@@ -28,12 +28,7 @@ static struct{
     Image particleSmoke;
  
     //backgrounds
-    Image bgForest;
-    Image bgSky[3];     
-    Image bgSkyStars;
-    Image bgStars;
-    Image bgStarsSpace;
-    Image bgSpace[2];
+    Image bg[9];
 } Images;
 
 typedef struct{
@@ -81,7 +76,7 @@ typedef struct{
     Texture tx;
     Texture txs[2];
     int x,y;
-    int id; //1 - parachute, 2 -crits
+    int id; //1 - parachute, 2 - crits
 } Pickup;
 
 typedef struct{

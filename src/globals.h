@@ -3,9 +3,10 @@
 
 static const int MAXROCKETS=3;
 static const int MAXPARTICLES=MAXROCKETS*2;
+static const int NUMBG=9;
 
 static const char *DIRECTORY="/usr/local/share/rocketman/";
-static const char *VERSION="1.5.4";
+static const char *VERSION="1.5.5";
 
 #define SCREENMIDDLE(X) (int)(SCREENHEIGHT/2)-(int)(X.tx.height/2)
 #define MIDDLEX(X) ((int)(X.tx.width/2))
