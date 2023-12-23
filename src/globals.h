@@ -4,7 +4,7 @@
 static const int MAXROCKETS=3;
 static const int MAXPARTICLES=MAXROCKETS*2;
 
-static const char *DIRECTORY="/usr/local/share/rocketman/";
+static const char *DIRECTORY="res/";
 static const char *VERSION="1.5.4";
 
 #define SCREENMIDDLE(X) (int)(SCREENHEIGHT/2)-(int)(X.tx.height/2)
