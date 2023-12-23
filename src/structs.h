@@ -76,7 +76,7 @@ typedef struct{
     Texture tx;
     Texture txs[2];
     int x,y;
-    int id; //1 - parachute, 2 -crits
+    int id; //1 - parachute, 2 - crits
 } Pickup;
 
 typedef struct{
