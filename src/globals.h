@@ -4,6 +4,7 @@
 static const int MAXROCKETS=3;
 static const int MAXPARTICLES=MAXROCKETS*2;
 
+
 static const char *DIRECTORY="res/";
 static const char *VERSION="1.5.4";
 

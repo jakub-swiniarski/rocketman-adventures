@@ -31,7 +31,7 @@ static const KeyboardKey VOLDOWN=KEY_F2;
 static const MouseButton SHOOT=MOUSE_LEFT_BUTTON;
 
 //gameplay
-static const int NUM_PLATFORMS=10;
-static const int NUM_HEALTHPACKS=2;
+static const int NUMPLATFORMS=10;
+static const int NUMHEALTHPACKS=2;
 
 #endif 
