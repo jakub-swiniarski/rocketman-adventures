@@ -9,6 +9,7 @@
 #include "structs.h"
 #include "functions.h"
 #include "globals.h"
+#include "macros.h"
 #include "config.h"
 
 int main(void){
