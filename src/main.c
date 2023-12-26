@@ -9,6 +9,7 @@
 #include "structs.h"
 #include "functions.h"
 #include "globals.h"
+#include "macros.h"
 #include "config.h"
 
 int main(void){
@@ -115,7 +116,7 @@ int main(void){
     //background
     Texture bgs[2];
     int bgY[2];  
-    int level; //used for changing backgrounds
+    int shift, level; //used for changing backgrounds
 
     srand(time(NULL));
 
@@ -153,8 +154,6 @@ int main(void){
     }
     UnloadImage(Images.platform);
     
-    int shift=0;
-
     //pickups
     Pickup pickup={
         .txs[0]=LoadTextureFromImage(Images.parachutePickup),
@@ -184,7 +183,7 @@ int main(void){
         .y=SCREENHEIGHT-Images.hud.height-5,
         .text="0"
     }; 
-    sprintf(healthHUD.text, "%u", redSoldier.hp);
+    sprintf(healthHUD.text, "%d", redSoldier.hp);
 
     //pickup hud
     HUD pickupHUD={
@@ -210,23 +209,18 @@ int main(void){
     
     START:
     gameState=0;
-    
     level=1;
-    bgs[0]=bgTxs[0];
-    bgs[1]=bgTxs[1];
 
     redSoldier.x=(int)(SCREENWIDTH/2)-redSoldier.tx.width;
     redSoldier.y=SCREENHEIGHT-redSoldier.tx.height; 
-    redSoldier.speedX=0;
-    redSoldier.speedY=0;
-    redSoldier.cooldown=0;
-    redSoldier.falling=0;
-    redSoldier.slowfall=1;
-    redSoldier.critBoost=1;
+    redSoldier.speedX=redSoldier.speedY=redSoldier.cooldown=redSoldier.falling=0;
+    redSoldier.slowfall=redSoldier.critBoost=1;
     redSoldier.hp=200;
 
-    for(int i=0; i<2; i++)
+    for(int i=0; i<2; i++){
         bgY[i]=-i*SCREENHEIGHT;
+        bgs[i]=bgTxs[i]; 
+    }
 
     for(int i=0; i<MAXROCKETS; i++)
         rockets[i]=newRocket;  
@@ -239,14 +233,11 @@ int main(void){
         platforms[i].y=SCREENHEIGHT-(i+1)*1000/NUMPLATFORMS;
     } 
 
-    pickup.x=-100;
-    pickup.y=-100;
+    pickup.x=pickup.y=-100;
     pickup.id=1;    
 
-    for(int i=0; i<NUMHEALTHPACKS; i++){
-        healthPacks[i].x=-100;
-        healthPacks[i].y=-100;
-    }
+    for(int i=0; i<NUMHEALTHPACKS; i++)
+        healthPacks[i].x=healthPacks[i].y=-100;
 
     score=0;
 
@@ -374,7 +365,7 @@ int main(void){
             if(redSoldier.y<SCREENMIDDLE(redSoldier)){
                 //score
                 score-=redSoldier.speedY*dt;
-                sprintf(scoreString, "%hu", score);
+                sprintf(scoreString, "%d", score);
 
                 redSoldier.y=SCREENMIDDLE(redSoldier); 
            
@@ -529,8 +520,7 @@ int main(void){
                 DrawTexture(healthPacks[i].tx,healthPacks[i].x,healthPacks[i].y,WHITE);
                 if(COLLISION(healthPacks[i],redSoldier)){
                     redSoldier.hp+=50;
-                    healthPacks[i].x=-100;
-                    healthPacks[i].y=-100;
+                    healthPacks[i].x=healthPacks[i].y=-100;
                 }
             }
             if(redSoldier.y==SCREENMIDDLE(redSoldier) && redSoldier.speedY<0)
@@ -615,41 +605,40 @@ int main(void){
 
         //update particles
         for(int i=0; i<MAXPARTICLES; i++){
-            if(!particles[i].isFree){
-                if(redSoldier.y==SCREENMIDDLE(redSoldier) && redSoldier.speedY<0)
-                    particles[i].y-=shift;
+            if(particles[i].isFree) continue;
+            if(redSoldier.y==SCREENMIDDLE(redSoldier) && redSoldier.speedY<0)
+                particles[i].y-=shift;
 
-                //fade away 
-                particles[i].alpha-=2*dt;
-                
-                //draw
-                DrawTexturePro(
-                    particles[i].tx,
-                    (Rectangle){ //src
-                        .x=0,
-                        .y=0,
-                        .width=particles[i].tx.width,
-                        .height=particles[i].tx.height
-                    },
-                    (Rectangle){ //dest
-                        .x=particles[i].x,
-                        .y=particles[i].y,
-                        .width=particles[i].tx.width,
-                        .height=particles[i].tx.height
-                    },
-                    (Vector2){ //origin
-                        .x=MIDDLEX(particles[i]),
-                        .y=MIDDLEY(particles[i])
-                    },
-                    particles[i].rotation, //rotataion
-                    (Color){
-                        255,
-                        255,
-                        255,
-                        particles[i].alpha
-                    }
-                );
-            }
+            //fade away 
+            particles[i].alpha-=2*dt;
+            
+            //draw
+            DrawTexturePro(
+                particles[i].tx,
+                (Rectangle){ //src
+                    .x=0,
+                    .y=0,
+                    .width=particles[i].tx.width,
+                    .height=particles[i].tx.height
+                },
+                (Rectangle){ //dest
+                    .x=particles[i].x,
+                    .y=particles[i].y,
+                    .width=particles[i].tx.width,
+                    .height=particles[i].tx.height
+                },
+                (Vector2){ //origin
+                    .x=MIDDLEX(particles[i]),
+                    .y=MIDDLEY(particles[i])
+                },
+                particles[i].rotation, //rotataion
+                (Color){
+                    255,
+                    255,
+                    255,
+                    particles[i].alpha
+                }
+            );
         } 
    
         //text and hud
@@ -675,7 +664,7 @@ int main(void){
                     healthHUD.textColor=TEXTCOLOR[1];
 
                 //hp hud
-                sprintf(healthHUD.text,"%u",redSoldier.hp);
+                sprintf(healthHUD.text,"%d",redSoldier.hp);
                 DrawTexture(healthHUD.tx,healthHUD.x,healthHUD.y,WHITE);
                 drawTextFull(healthHUD.text,healthHUD.x+40,healthHUD.y+30,100, healthHUD.textColor); 
                
