@@ -374,7 +374,7 @@ int main(void){
             if(redSoldier.y<SCREENMIDDLE(redSoldier)){
                 //score
                 score-=redSoldier.speedY*dt;
-                sprintf(scoreString, "%hu", score);
+                sprintf(scoreString, "%d", score);
 
                 redSoldier.y=SCREENMIDDLE(redSoldier); 
            
