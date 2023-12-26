@@ -184,7 +184,7 @@ int main(void){
         .y=SCREENHEIGHT-Images.hud.height-5,
         .text="0"
     }; 
-    sprintf(healthHUD.text, "%u", redSoldier.hp);
+    sprintf(healthHUD.text, "%d", redSoldier.hp);
 
     //pickup hud
     HUD pickupHUD={
@@ -675,7 +675,7 @@ int main(void){
                     healthHUD.textColor=TEXTCOLOR[1];
 
                 //hp hud
-                sprintf(healthHUD.text,"%u",redSoldier.hp);
+                sprintf(healthHUD.text,"%d",redSoldier.hp);
                 DrawTexture(healthHUD.tx,healthHUD.x,healthHUD.y,WHITE);
                 drawTextFull(healthHUD.text,healthHUD.x+40,healthHUD.y+30,100, healthHUD.textColor); 
                
