@@ -115,7 +115,7 @@ int main(void){
     //background
     Texture bgs[2];
     int bgY[2];  
-    int level; //used for changing backgrounds
+    int shift, level; //used for changing backgrounds
 
     srand(time(NULL));
 
@@ -153,8 +153,6 @@ int main(void){
     }
     UnloadImage(Images.platform);
     
-    int shift=0;
-
     //pickups
     Pickup pickup={
         .txs[0]=LoadTextureFromImage(Images.parachutePickup),
@@ -210,10 +208,7 @@ int main(void){
     
     START:
     gameState=0;
-    
     level=1;
-    bgs[0]=bgTxs[0];
-    bgs[1]=bgTxs[1];
 
     redSoldier.x=(int)(SCREENWIDTH/2)-redSoldier.tx.width;
     redSoldier.y=SCREENHEIGHT-redSoldier.tx.height; 
@@ -225,8 +220,10 @@ int main(void){
     redSoldier.critBoost=1;
     redSoldier.hp=200;
 
-    for(int i=0; i<2; i++)
+    for(int i=0; i<2; i++){
         bgY[i]=-i*SCREENHEIGHT;
+        bgs[i]=bgTxs[i]; 
+    }
 
     for(int i=0; i<MAXROCKETS; i++)
         rockets[i]=newRocket;  
