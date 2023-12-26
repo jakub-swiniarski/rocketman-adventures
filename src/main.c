@@ -212,12 +212,8 @@ int main(void){
 
     redSoldier.x=(int)(SCREENWIDTH/2)-redSoldier.tx.width;
     redSoldier.y=SCREENHEIGHT-redSoldier.tx.height; 
-    redSoldier.speedX=0;
-    redSoldier.speedY=0;
-    redSoldier.cooldown=0;
-    redSoldier.falling=0;
-    redSoldier.slowfall=1;
-    redSoldier.critBoost=1;
+    redSoldier.speedX=redSoldier.speedY=redSoldier.cooldown=redSoldier.falling=0;
+    redSoldier.slowfall=redSoldier.critBoost=1;
     redSoldier.hp=200;
 
     for(int i=0; i<2; i++){
@@ -236,14 +232,11 @@ int main(void){
         platforms[i].y=SCREENHEIGHT-(i+1)*1000/NUMPLATFORMS;
     } 
 
-    pickup.x=-100;
-    pickup.y=-100;
+    pickup.x=pickup.y=-100;
     pickup.id=1;    
 
-    for(int i=0; i<NUMHEALTHPACKS; i++){
-        healthPacks[i].x=-100;
-        healthPacks[i].y=-100;
-    }
+    for(int i=0; i<NUMHEALTHPACKS; i++)
+        healthPacks[i].x=healthPacks[i].y=-100;
 
     score=0;
 
@@ -526,8 +519,7 @@ int main(void){
                 DrawTexture(healthPacks[i].tx,healthPacks[i].x,healthPacks[i].y,WHITE);
                 if(COLLISION(healthPacks[i],redSoldier)){
                     redSoldier.hp+=50;
-                    healthPacks[i].x=-100;
-                    healthPacks[i].y=-100;
+                    healthPacks[i].x=healthPacks[i].y=-100;
                 }
             }
             if(redSoldier.y==SCREENMIDDLE(redSoldier) && redSoldier.speedY<0)
@@ -612,41 +604,40 @@ int main(void){
 
         //update particles
         for(int i=0; i<MAXPARTICLES; i++){
-            if(!particles[i].isFree){
-                if(redSoldier.y==SCREENMIDDLE(redSoldier) && redSoldier.speedY<0)
-                    particles[i].y-=shift;
+            if(particles[i].isFree) continue;
+            if(redSoldier.y==SCREENMIDDLE(redSoldier) && redSoldier.speedY<0)
+                particles[i].y-=shift;
 
-                //fade away 
-                particles[i].alpha-=2*dt;
-                
-                //draw
-                DrawTexturePro(
-                    particles[i].tx,
-                    (Rectangle){ //src
-                        .x=0,
-                        .y=0,
-                        .width=particles[i].tx.width,
-                        .height=particles[i].tx.height
-                    },
-                    (Rectangle){ //dest
-                        .x=particles[i].x,
-                        .y=particles[i].y,
-                        .width=particles[i].tx.width,
-                        .height=particles[i].tx.height
-                    },
-                    (Vector2){ //origin
-                        .x=MIDDLEX(particles[i]),
-                        .y=MIDDLEY(particles[i])
-                    },
-                    particles[i].rotation, //rotataion
-                    (Color){
-                        255,
-                        255,
-                        255,
-                        particles[i].alpha
-                    }
-                );
-            }
+            //fade away 
+            particles[i].alpha-=2*dt;
+            
+            //draw
+            DrawTexturePro(
+                particles[i].tx,
+                (Rectangle){ //src
+                    .x=0,
+                    .y=0,
+                    .width=particles[i].tx.width,
+                    .height=particles[i].tx.height
+                },
+                (Rectangle){ //dest
+                    .x=particles[i].x,
+                    .y=particles[i].y,
+                    .width=particles[i].tx.width,
+                    .height=particles[i].tx.height
+                },
+                (Vector2){ //origin
+                    .x=MIDDLEX(particles[i]),
+                    .y=MIDDLEY(particles[i])
+                },
+                particles[i].rotation, //rotataion
+                (Color){
+                    255,
+                    255,
+                    255,
+                    particles[i].alpha
+                }
+            );
         } 
    
         //text and hud
