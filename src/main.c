@@ -434,7 +434,7 @@ int main(void){
             soldierBorderCheck(&redSoldier);
     
             //update cooldowns
-            redSoldier.cooldown-=150*GetFrameTime();
+            redSoldier.cooldown-=150*dt;
 
             //update rockets
             for(int i=0; i<MAXROCKETS; i++){
