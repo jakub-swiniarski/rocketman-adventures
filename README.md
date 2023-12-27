@@ -2,6 +2,7 @@
 <img align="left" src="https://github.com/jakub-swiniarski/rocketman-adventures/assets/77209709/37e16421-faf1-4ed8-bd9f-b11413bae6a4" width="240px" height="240px">
 Rocketman Adventures is a simple video game built using C and Raylib. <br>
 The only goal of the game is to jump as high as possible. <br>
+The game is inspired by Team Fortress 2. <br>
 This project is just for fun, so there are no big updates planned. <br>
 
 <img src="https://github.com/jakub-swiniarski/rocketman-adventures/assets/77209709/3f56512e-3dc0-44a0-9ad9-c7fa0d7ab261">
