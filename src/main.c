@@ -300,7 +300,8 @@ int main(void){
                             redSoldier.hp-=20*redSoldier.critBoost;
                             if(redSoldier.hp<=0){
                                 gameState=2;
-                                
+                                PlaySound(sfxDeath);
+
                                 //reset soundtrack - same thing happens when player hits the ground
                                 SeekMusicStream(musicNormal,0);
                                 SeekMusicStream(musicMenu,0);
@@ -387,7 +388,8 @@ int main(void){
                 }
                 else{
                     gameState=2;
-            
+                    PlaySound(sfxDeath);
+
                     //reset soundtrack
                     SeekMusicStream(musicNormal,0);
                     SeekMusicStream(musicMenu,0);
