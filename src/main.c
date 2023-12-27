@@ -84,8 +84,12 @@ int main(void){
         UnloadImage(Images.bg[i]);
 
     //sfx
-    Sound fxExplosion=LoadSound(pathToFile("explosion.ogg"));
-    Sound fxPickup=LoadSound(pathToFile("pickup.ogg"));
+    Sound sfxExplosion=LoadSound(pathToFile("explosion.ogg"));
+    Sound sfxPickup=LoadSound(pathToFile("pickup.ogg"));
+    Sound sfxJump=LoadSound(pathToFile("jump.ogg"));
+    Sound sfxDeath=LoadSound(pathToFile("death.ogg"));
+
+    //music
     Music musicMenu=LoadMusicStream(pathToFile("soundtrack_menu.ogg"));
     Music musicNormal=LoadMusicStream(pathToFile("soundtrack_normal.ogg"));
     Music musicSpace=LoadMusicStream(pathToFile("soundtrack_space.ogg"));
@@ -269,7 +273,7 @@ int main(void){
             rocketBorderCheck(&rockets[i]);
 
             if(rockets[i].collided){
-                PlaySound(fxExplosion);
+                PlaySound(sfxExplosion);
 
                 //smoke particles
                 if(rockets[i].shouldExplode){
@@ -295,12 +299,13 @@ int main(void){
                             redSoldier.hp-=20*redSoldier.critBoost;
                             if(redSoldier.hp<=0){
                                 gameState=2;
-                                
+                                PlaySound(sfxDeath);
+
                                 //reset soundtrack - same thing happens when player hits the ground
                                 SeekMusicStream(musicNormal,0);
                                 SeekMusicStream(musicMenu,0);
                                 SeekMusicStream(musicSpace,0);
-                            }
+                            } 
                         }
                     }
                     
@@ -339,11 +344,11 @@ int main(void){
             if(!IsKeyDown(MOVELEFT) && !IsKeyDown(MOVERIGHT)) //if not moving horizontally
                 rotationParachute+=rotationParachute>0?-100*dt:100*dt;
             if(IsKeyDown(JUMP) && !redSoldier.falling){
+                PlaySound(sfxJump);
                 if(redSoldier.pickupActive==1){
                     redSoldier.slowfall=1;                     
                     redSoldier.pickupActive=0;
                 }
-                redSoldier.falling=0;
                 redSoldier.speedY=-400;
             }
 
@@ -382,7 +387,8 @@ int main(void){
                 }
                 else{
                     gameState=2;
-            
+                    PlaySound(sfxDeath);
+
                     //reset soundtrack
                     SeekMusicStream(musicNormal,0);
                     SeekMusicStream(musicMenu,0);
@@ -434,7 +440,7 @@ int main(void){
             soldierBorderCheck(&redSoldier);
     
             //update cooldowns
-            redSoldier.cooldown-=150*GetFrameTime();
+            redSoldier.cooldown-=150*dt;
 
             //update rockets
             for(int i=0; i<MAXROCKETS; i++){
@@ -442,7 +448,7 @@ int main(void){
                 rockets[i].x+=rockets[i].speedX*dt;
                 rockets[i].y+=rockets[i].speedY*dt;
             }  
-        } 
+        }  
 
         shift=redSoldier.speedY*dt;
 
@@ -508,7 +514,7 @@ int main(void){
         }
 
         //update pickup
-        if(pickupCollectCheck(&pickup, &redSoldier)) PlaySound(fxPickup); 
+        if(pickupCollectCheck(&pickup, &redSoldier)) PlaySound(sfxPickup); 
         if(redSoldier.y==SCREENMIDDLE(redSoldier) && redSoldier.speedY<0)
             pickup.y-=shift; 
         if(VISIBLE(pickup))
@@ -744,6 +750,12 @@ int main(void){
     UnloadTexture(parachute);
     UnloadTexture(healthHUD.tx);
     UnloadTexture(pickupHUD.tx);
+
+    //unload sfx
+    UnloadSound(sfxExplosion);
+    UnloadSound(sfxPickup);
+    UnloadSound(sfxJump);
+    UnloadSound(sfxDeath);
 
     //unload music
     UnloadMusicStream(musicMenu);
