@@ -1,4 +1,7 @@
 # Rocketman Adventures
+
+<img src="https://github.com/jakub-swiniarski/rocketman-adventures/assets/77209709/37e16421-faf1-4ed8-bd9f-b11413bae6a4" width=240 height=240>
+
 ## Screenshots
 ![image](https://github.com/jakub-swiniarski/rocketman-adventures/assets/77209709/3f56512e-3dc0-44a0-9ad9-c7fa0d7ab261)
 ![image](https://github.com/jakub-swiniarski/rocketman-adventures/assets/77209709/a46876ce-20cc-4b01-9c5f-ae316cc0be3f)
