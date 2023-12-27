@@ -345,6 +345,7 @@ int main(void){
             if(!IsKeyDown(MOVELEFT) && !IsKeyDown(MOVERIGHT)) //if not moving horizontally
                 rotationParachute+=rotationParachute>0?-100*dt:100*dt;
             if(IsKeyDown(JUMP) && !redSoldier.falling){
+                PlaySound(sfxJump);
                 if(redSoldier.pickupActive==1){
                     redSoldier.slowfall=1;                     
                     redSoldier.pickupActive=0;
