@@ -84,8 +84,13 @@ int main(void){
         UnloadImage(Images.bg[i]);
 
     //sfx
-    Sound fxExplosion=LoadSound(pathToFile("explosion.ogg"));
-    Sound fxPickup=LoadSound(pathToFile("pickup.ogg"));
+    Sound sfxExplosion=LoadSound(pathToFile("explosion.ogg"));
+    Sound sfxPickup=LoadSound(pathToFile("pickup.ogg"));
+    Sound sfxHurt=LoadSound(pathToFile("hurt.ogg"));
+    Sound sfxJump=LoadSound(pathToFile("jump.ogg"));
+    Sound sfxDeath=LoadSound(pathToFile("death.ogg"));
+
+    //music
     Music musicMenu=LoadMusicStream(pathToFile("soundtrack_menu.ogg"));
     Music musicNormal=LoadMusicStream(pathToFile("soundtrack_normal.ogg"));
     Music musicSpace=LoadMusicStream(pathToFile("soundtrack_space.ogg"));
@@ -269,7 +274,7 @@ int main(void){
             rocketBorderCheck(&rockets[i]);
 
             if(rockets[i].collided){
-                PlaySound(fxExplosion);
+                PlaySound(sfxExplosion);
 
                 //smoke particles
                 if(rockets[i].shouldExplode){
@@ -508,7 +513,7 @@ int main(void){
         }
 
         //update pickup
-        if(pickupCollectCheck(&pickup, &redSoldier)) PlaySound(fxPickup); 
+        if(pickupCollectCheck(&pickup, &redSoldier)) PlaySound(sfxPickup); 
         if(redSoldier.y==SCREENMIDDLE(redSoldier) && redSoldier.speedY<0)
             pickup.y-=shift; 
         if(VISIBLE(pickup))
@@ -744,6 +749,13 @@ int main(void){
     UnloadTexture(parachute);
     UnloadTexture(healthHUD.tx);
     UnloadTexture(pickupHUD.tx);
+
+    //unload sfx
+    UnloadSound(sfxExplosion);
+    UnloadSound(sfxPickup);
+    UnloadSound(sfxHurt);
+    UnloadSound(sfxJump);
+    UnloadSound(sfxDeath);
 
     //unload music
     UnloadMusicStream(musicMenu);
