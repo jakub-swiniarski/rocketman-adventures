@@ -86,7 +86,6 @@ int main(void){
     //sfx
     Sound sfxExplosion=LoadSound(pathToFile("explosion.ogg"));
     Sound sfxPickup=LoadSound(pathToFile("pickup.ogg"));
-    Sound sfxHurt=LoadSound(pathToFile("hurt.ogg"));
     Sound sfxJump=LoadSound(pathToFile("jump.ogg"));
     Sound sfxDeath=LoadSound(pathToFile("death.ogg"));
 
@@ -296,8 +295,18 @@ int main(void){
                         redSoldier.speedY=redSoldier.critBoost*-1*rockets[i].speedY; 
                     
                         //damage
-                        if(gameState==1)
+                        if(gameState==1){
                             redSoldier.hp-=20*redSoldier.critBoost;
+                            if(redSoldier.hp<=0){
+                                gameState=2;
+                                PlaySound(sfxDeath);
+
+                                //reset soundtrack - same thing happens when player hits the ground
+                                SeekMusicStream(musicNormal,0);
+                                SeekMusicStream(musicMenu,0);
+                                SeekMusicStream(musicSpace,0);
+                            } 
+                        }
                     }
                     
                     if(redSoldier.pickupActive==2){
@@ -439,18 +448,7 @@ int main(void){
                 rockets[i].x+=rockets[i].speedX*dt;
                 rockets[i].y+=rockets[i].speedY*dt;
             }  
-        } 
-
-        //game over check
-        if(redSoldier.hp<=0){
-            gameState=2;
-            PlaySound(sfxDeath);
-
-            //reset soundtrack - same thing happens when player hits the ground
-            SeekMusicStream(musicNormal,0);
-            SeekMusicStream(musicMenu,0);
-            SeekMusicStream(musicSpace,0);
-        } 
+        }  
 
         shift=redSoldier.speedY*dt;
 
@@ -756,7 +754,6 @@ int main(void){
     //unload sfx
     UnloadSound(sfxExplosion);
     UnloadSound(sfxPickup);
-    UnloadSound(sfxHurt);
     UnloadSound(sfxJump);
     UnloadSound(sfxDeath);
 
