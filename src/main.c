@@ -350,7 +350,6 @@ int main(void){
                     redSoldier.slowfall=1;                     
                     redSoldier.pickupActive=0;
                 }
-                redSoldier.falling=0;
                 redSoldier.speedY=-400;
             }
 
