@@ -164,7 +164,7 @@ int main(void){
     //health packs
     Health_pack health_packs[NUM_HEALTH_PACKS];
     for(int i=0; i<NUM_HEALTH_PACKS; i++){
-        Health_pack new_health_pack={ //TODO: SIMPLIFY THIS
+        Health_pack new_health_pack={ //TODO: SIMPLIFY THIS, NO NEED TO CREATE NEW HEALTH PACK
             .tx=LoadTextureFromImage(Images.health_pack),
         };
         health_packs[i]=new_health_pack;
