@@ -504,7 +504,7 @@ int main(void){
             }
 
             //draw platforms
-            DrawTexture(platforms[i].tx,platforms[i].x,platforms[i].y,WHITE);
+            DRAW(platforms[i]);
         }
 
         //update pickup
@@ -513,12 +513,12 @@ int main(void){
         if(redSoldier.y==SCREENMIDDLE(redSoldier) && redSoldier.speedY<0)
             pickup.y-=shift; 
         if(VISIBLE(pickup))
-            DrawTexture(pickup.tx,pickup.x,pickup.y,WHITE);
+            DRAW(pickup);
 
         //update health packs
         for(int i=0; i<NUMHEALTHPACKS; i++){
             if(VISIBLE(healthPacks[i])){
-                DrawTexture(healthPacks[i].tx,healthPacks[i].x,healthPacks[i].y,WHITE);
+                DRAW(healthPacks[i]);
                 if(COLLISION(healthPacks[i],redSoldier)){
                     redSoldier.hp+=50;
                     healthPacks[i].x=healthPacks[i].y=-100;
@@ -554,7 +554,7 @@ int main(void){
         }
         
         //draw player
-        DrawTexture(redSoldier.tx,redSoldier.x,redSoldier.y,WHITE);
+        DRAW(redSoldier);
 
         //draw rockets
         for(int i=0; i<MAXROCKETS; i++){
@@ -666,7 +666,7 @@ int main(void){
 
                 //hp hud
                 sprintf(healthHUD.text,"%d",redSoldier.hp);
-                DrawTexture(healthHUD.tx,healthHUD.x,healthHUD.y,WHITE);
+                DRAW(healthHUD);
                 drawTextFull(healthHUD.text,healthHUD.x+40,healthHUD.y+30,100, healthHUD.textColor); 
                
                 //pickup hud
