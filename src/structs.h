@@ -7,7 +7,7 @@
 
 static struct{
     //soldier
-    Image redSoldier;
+    Image red_soldier;
     Image rocket;
     Image launcher;
     Image parachute; 
@@ -16,16 +16,16 @@ static struct{
     Image platform;
     
     //pickups
-    Image parachutePickup;
-    Image critPickup;
-    Image healthPack;
+    Image parachute_pickup;
+    Image crit_pickup;
+    Image health_pack;
     
     //hud
     Image hud; 
     Image button[2];
 
     //visuals
-    Image particleSmoke;
+    Image particle_smoke;
  
     //backgrounds
     Image bg[9];
@@ -34,12 +34,12 @@ static struct{
 typedef struct{
     Texture tx;
     int x,y;
-    int speedX, speedY; //used for gravity and jumping
+    int speed_x, speed_y; //used for gravity and jumping
     int cooldown;
     bool falling;
-    int pickup, pickupActive;
-    float slowfall; //1 means no slowfall
-    int critBoost;
+    int pickup, pickup_active;
+    float slow_fall; //1 means no slow fall
+    int crit_boost;
     int hp;
 } Soldier;
 
@@ -47,8 +47,8 @@ typedef struct{
     Texture tx;
     int x,y;
     int rotation;
-    int speedX,speedY;
-    bool collided,shouldExplode,isFree;
+    int speed_x,speed_y;
+    bool collided,should_explode,is_free;
 } Rocket;
 
 typedef struct{
@@ -64,7 +64,7 @@ typedef struct{
     int x,y;
     int rotation;
     int alpha;
-    bool isFree;
+    bool is_free;
 } Particle;
 
 typedef struct{
@@ -82,13 +82,13 @@ typedef struct{
 typedef struct{
     Texture tx;
     int x,y;
-} HealthPack;
+} Health_pack;
 
 typedef struct{
     Texture tx;
     int x,y;
     char text[16];
-    Color textColor;
+    Color text_color;
 } HUD;
 
 typedef struct{
