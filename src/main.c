@@ -508,7 +508,8 @@ int main(void){
         }
 
         //update pickup
-        if(pickupCollectCheck(&pickup, &redSoldier)) PlaySound(sfxPickup); 
+        if(pickupCollectCheck(&pickup, &redSoldier)) 
+            PlaySound(sfxPickup); 
         if(redSoldier.y==SCREENMIDDLE(redSoldier) && redSoldier.speedY<0)
             pickup.y-=shift; 
         if(VISIBLE(pickup))
