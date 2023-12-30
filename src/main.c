@@ -63,7 +63,8 @@ int main(void){
     Images.button[1]=LoadImage(pathToFile("button_hover.png"));
     ImageResizeNN(&Images.button[1], 50*8, 20*8);
 
-    //load background images
+    //backgrounds 
+    Texture bgTxs[NUMBG];
     for(int i=0; i<NUMBG; i++){
         char name[12]="bg";
         char num[2];
@@ -72,17 +73,10 @@ int main(void){
         strcat(name,".png");
         Images.bg[i]=LoadImage(pathToFile(name));
         ImageResizeNN(&Images.bg[i],SCREENWIDTH,SCREENHEIGHT);
-    }
-
-    //load background images to textures
-    Texture bgTxs[NUMBG];
-    for(int i=0; i<NUMBG; i++)
-        bgTxs[i]=LoadTextureFromImage(Images.bg[i]);
-
-    //unload background images
-    for(int i=0; i<NUMBG; i++)
+        bgTxs[i]=LoadTextureFromImage(Images.bg[i]); 
         UnloadImage(Images.bg[i]);
-
+    }
+        
     //sfx
     Sound sfxExplosion=LoadSound(pathToFile("explosion.ogg"));
     Sound sfxPickup=LoadSound(pathToFile("pickup.ogg"));
