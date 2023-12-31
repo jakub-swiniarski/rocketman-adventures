@@ -162,13 +162,14 @@ int main(void){
     UnloadImage(Images.crit_pickup);
 
     //health packs
+    Health_pack new_health_pack={
+        .tx=LoadTextureFromImage(Images.health_pack),
+        .x=-100,
+        .y=-100
+    };
     Health_pack health_packs[NUM_HEALTH_PACKS];
-    for(int i=0; i<NUM_HEALTH_PACKS; i++){
-        Health_pack new_health_pack={ //TODO: SIMPLIFY THIS, create a new healthpack once with x=-100 and y=-100 and assign healtpacks[i] to new health pack when it gets picked, when it disappears and when the game is initialized
-            .tx=LoadTextureFromImage(Images.health_pack),
-        };
+    for(int i=0; i<NUM_HEALTH_PACKS; i++)
         health_packs[i]=new_health_pack;
-    }
     UnloadImage(Images.health_pack);
 
     int score;
@@ -235,7 +236,7 @@ int main(void){
     pickup.id=1;    
 
     for(int i=0; i<NUM_HEALTH_PACKS; i++)
-        health_packs[i].x=health_packs[i].y=-100;
+        health_packs[i]=new_health_pack;
 
     score=0;
 
@@ -521,7 +522,7 @@ int main(void){
                 DRAW(health_packs[i]);
                 if(COLLISION(health_packs[i],red_soldier)){
                     red_soldier.hp+=50;
-                    health_packs[i].x=health_packs[i].y=-100;
+                    health_packs[i]=new_health_pack;
                 }
             }
             if(red_soldier.y==SCREEN_MIDDLE(red_soldier) && red_soldier.speed_y<0)
