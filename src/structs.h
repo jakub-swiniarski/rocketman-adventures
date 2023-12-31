@@ -61,6 +61,11 @@ typedef struct{
 
 typedef struct{
     Texture tx;
+    int y;
+} Background;
+
+typedef struct{
+    Texture tx;
     int x,y;
     int rotation;
     int alpha;

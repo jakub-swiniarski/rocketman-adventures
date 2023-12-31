@@ -112,8 +112,7 @@ int main(void){
     UnloadImage(Images.launcher);
 
     //background
-    Texture bgs[2]; //TODO: TURN THESE TWO (115,116) into a struct
-    int bg_y[2];  
+    Background bgs[2];
     int shift, level; //used for changing backgrounds
 
     srand(time(NULL));
@@ -213,8 +212,8 @@ int main(void){
     red_soldier.hp=200;
 
     for(int i=0; i<2; i++){
-        bg_y[i]=-i*SCREEN_HEIGHT;
-        bgs[i]=bg_txs[i]; 
+        bgs[i].y=-i*SCREEN_HEIGHT;
+        bgs[i].tx=bg_txs[i]; 
     }
 
     for(int i=0; i<MAX_ROCKETS; i++)
@@ -449,19 +448,19 @@ int main(void){
         //update background
         for(int i=0; i<2; i++){
             //parallax scrolling
-            if(bg_y[i]>SCREEN_HEIGHT){
-                bg_y[i]=-SCREEN_HEIGHT;
-                bg_y[1-i]=0;
+            if(bgs[i].y>SCREEN_HEIGHT){
+                bgs[i].y=-SCREEN_HEIGHT;
+                bgs[1-i].y=0;
 
                 level++;
                 if(level>NUM_BG-1) level=NUM_BG-1;
-                bgs[i]=bg_txs[level];
+                bgs[i].tx=bg_txs[level];
             } 
             if(red_soldier.y==SCREEN_MIDDLE(red_soldier) && red_soldier.speed_y<0)
-                bg_y[i]-=shift/2;
+                bgs[i].y-=shift/2;
 
             //draw background
-            DrawTexture(bgs[i],0,bg_y[i],WHITE);
+            DrawTexture(bgs[i].tx,0,bgs[i].y,WHITE);
         }
 
         //update platforms
@@ -732,7 +731,7 @@ int main(void){
     for(int i=0; i<NUM_BG; i++)
         UnloadTexture(bg_txs[i]);
     for(int i=0; i<2; i++){
-        UnloadTexture(bgs[i]);
+        UnloadTexture(bgs[i].tx);
         UnloadTexture(try_again_button.tx[i]);
     }
     for(int i=0; i<NUM_HEALTH_PACKS; i++){
