@@ -3,13 +3,13 @@
 
 #include "structs.h"
 
-char *pathToFile(char *str);
-void rocketBorderCheck(Rocket *r);
-void soldierBorderCheck(Soldier *s);
-void platformCollisionCheckS(Platform *p, Soldier *s);
-void platformCollisionCheckR(Platform *p, Rocket *r);
-bool pickupCollectCheck(Pickup *p, Soldier *r);
-void drawTextFull(const char *text, int x, int y, int fontSize, Color color);
-void drawTextFullCenter(const char *text, int y, int fontSize, Color color);
+char *path_to_file(char *str);
+void rocket_border_check(Rocket *r);
+void soldier_border_check(Soldier *s);
+void platform_collision_check_soldier(Platform *p, Soldier *s);
+void platform_collision_check_rocket(Platform *p, Rocket *r);
+bool pickup_collect_check(Pickup *p, Soldier *r);
+void draw_text_full(const char *text, int x, int y, int font_size, Color color);
+void draw_text_full_center(const char *text, int y, int font_size, Color color);
 
 #endif
