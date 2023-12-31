@@ -144,12 +144,8 @@ int main(void){
     UnloadImage(Images.particle_smoke);
 
     Platform platforms[NUM_PLATFORMS];
-    for(int i=0; i<NUM_PLATFORMS; i++){
-        Platform new_platform={
-            .tx=LoadTextureFromImage(Images.platform),
-        };
-        platforms[i]=new_platform;
-    }
+    for(int i=0; i<NUM_PLATFORMS; i++)
+        platforms[i].tx=LoadTextureFromImage(Images.platform);
     UnloadImage(Images.platform);
     
     //pickups
