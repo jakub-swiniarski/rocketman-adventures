@@ -48,12 +48,12 @@ int main(void){
     ImageResizeNN(&image,30*5,2*5);
     TextureHolder.platform=LoadTextureFromImage(image);
 
-    image=LoadImage(path_to_file("parachute_pickup.png"));
-    ImageResizeNN(&image, 16*4, 20*4);
-    TextureHolder.parachute_pickup=LoadTextureFromImage(image);
-
     image=LoadImage(path_to_file("parachute.png"));
     ImageResizeNN(&image, 13*8, 11*8);
+    TextureHolder.parachute=LoadTextureFromImage(image);
+
+    image=LoadImage(path_to_file("parachute_pickup.png"));
+    ImageResizeNN(&image, 16*4, 20*4);
     TextureHolder.pickup[0]=LoadTextureFromImage(image);
 
     image=LoadImage(path_to_file("crit_pickup.png"));
@@ -155,7 +155,7 @@ int main(void){
     
     //pickups
     Pickup pickup={
-        .tx=&TextureHolder.parachute_pickup, 
+        .tx=&TextureHolder.pickup[0], 
     };
 
     //health packs
@@ -523,7 +523,7 @@ int main(void){
 
         //parachute
         if(red_soldier.slow_fall<1){
-            DrawTexturePro(
+            DrawTexturePro( //TODO: TURN PARACHUTE INTO A STRUCT AND USE DRAW_PRO
                 TextureHolder.parachute,
                 (Rectangle){ //src
                     .x=0,
@@ -551,7 +551,7 @@ int main(void){
 
         //draw rockets
         for(int i=0; i<MAX_ROCKETS; i++){
-            DrawTexturePro( //TODO: turn into a macro args (instance,flip,rotation)
+            DrawTexturePro( //TODO: create a macro for arrays DRAW_PRO_ARRAY
                 *rockets[i].tx,
                 (Rectangle){ //src
                     .x=0,
@@ -575,27 +575,7 @@ int main(void){
         }
 
         //draw rocket launcher
-        DrawTexturePro(
-            *rl.tx,
-            (Rectangle){ //src
-                .x=0,
-                .y=0,
-                .width=rl.tx->width,
-                .height=rl.flip*rl.tx->height
-            },
-            (Rectangle){ //dest
-                .x=rl.x,
-                .y=rl.y,
-                .width=rl.tx->width,
-                .height=rl.tx->height
-            },
-            (Vector2){ //origin
-                .x=MIDDLE_X(rl),
-                .y=MIDDLE_Y(rl)
-            },
-            rl.rotation,
-            rl.color
-        ); 
+        DRAW_PRO(rl,1,rl.flip,rl.rotation);
 
         //update particles
         for(int i=0; i<MAX_PARTICLES; i++){
@@ -684,6 +664,8 @@ int main(void){
                     0,
                     WHITE
                 );
+                //TODO: FIX MACRO NOT DRAWING IN THE RIGHT PLACE
+                //DRAW_PRO(pickup_hud,-1,1,0);
                 if(red_soldier.pickup==1 || red_soldier.pickup==2)
                     DrawTexture(*pickup.tx,pickup_hud.x+150, pickup_hud.y+25, WHITE);
                 else
