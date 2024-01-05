@@ -17,7 +17,7 @@ char *path_to_file(char *str){
 
 
 void rocket_border_check(Rocket *r){
-    if(r->y+r->tx.height>=SCREEN_HEIGHT)
+    if(r->y+r->tx->height>=SCREEN_HEIGHT)
         r->collided=1;
     else if(
     r->x<=0 ||
@@ -32,14 +32,14 @@ void soldier_border_check(Soldier *s){
     //horizontal
     if(s->x<0)
         s->x=0;
-    else if(s->x+s->tx.width>SCREEN_WIDTH)
-        s->x=SCREEN_WIDTH-s->tx.width;
+    else if(s->x+s->tx->width>SCREEN_WIDTH)
+        s->x=SCREEN_WIDTH-s->tx->width;
 }
 
 void platform_collision_check_soldier(Platform *p, Soldier *s){
-    if(s->x+s->tx.width>p->x && s->x<p->x+p->tx.width){
-        if(s->y+s->tx.height>p->y && s->y+s->tx.height<p->y+p->tx.height+10){ //add a constant number to prevent the player from falling through
-            s->y=p->y-s->tx.height;
+    if(s->x+s->tx->width>p->x && s->x<p->x+p->tx->width){
+        if(s->y+s->tx->height>p->y && s->y+s->tx->height<p->y+p->tx->height+10){ //add a constant number to prevent the player from falling through
+            s->y=p->y-s->tx->height;
             s->speed_y=0;
             s->falling=0;
         }
@@ -47,16 +47,16 @@ void platform_collision_check_soldier(Platform *p, Soldier *s){
 }
 
 void platform_collision_check_rocket(Platform *p, Rocket *r){
-    if(r->x+r->tx.width>p->x && r->x<p->x+p->tx.width){
-        if(r->y+r->tx.height>p->y 
-        && r->y<p->y+p->tx.height)
+    if(r->x+r->tx->width>p->x && r->x<p->x+p->tx->width){
+        if(r->y+r->tx->height>p->y 
+        && r->y<p->y+p->tx->height)
             r->collided=1;
     } 
 }
 
 bool pickup_collect_check(Pickup *p, Soldier *r){
-    if(r->x+r->tx.width>p->x && r->x<p->x+p->tx.width){
-        if(r->y+r->tx.height>p->y && r->y<p->y+p->tx.height){
+    if(r->x+r->tx->width>p->x && r->x<p->x+p->tx->width){
+        if(r->y+r->tx->height>p->y && r->y<p->y+p->tx->height){
             if(r->pickup==0){
                 r->pickup=p->id;
                 p->x=-100;
