@@ -16,7 +16,6 @@ static struct{
     Texture platform;
     
     //pickups
-    Texture parachute_pickup;
     Texture pickup[2];
     Texture health_pack;
 

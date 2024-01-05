@@ -8,5 +8,7 @@
 #define COLLISION(X,Y) ((X.x+X.tx->width>Y.x && X.x<Y.x+Y.tx->width) && (X.y+X.tx->height>Y.y && X.y<Y.y+Y.tx->height))
 #define MOUSE_HOVER_BUTTON(X,Y) ((Y.x>X.x && Y.x<X.x+X.tx->width) && (Y.y>X.y && Y.y<X.y+X.tx->height))
 #define DRAW(X) DrawTexture(*X.tx,X.x,X.y,WHITE)  
+//X, flip horizontal, flip vertical, rotation
+#define DRAW_PRO(X,FH,FV,R) DrawTexturePro(*X.tx,(Rectangle){.x=0,.y=0,.width=X.tx->width*FH,.height=X.tx->height*FV},(Rectangle){.x=X.x,.y=X.y,.width=X.tx->width,.height=X.tx->height},(Vector2){.x=MIDDLE_X(X),.y=MIDDLE_Y(X)},R,WHITE);
 
 #endif
