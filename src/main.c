@@ -26,57 +26,70 @@ int main(void){
 
     SetMasterVolume((float)volume/100);
 
-    //load and resize images
-    Images.red_soldier=LoadImage(path_to_file("red_soldier.png"));
-    ImageResizeNN(&Images.red_soldier,12*5,20*5);
+    //load and resize images, TODO: LIMIT SCOPE, SHOULD I UNLOAD?
+    //TODO: UNLOAD TEXTURES FROM TEXTURE HOLDER
+    Image image=LoadImage(path_to_file("red_soldier.png"));
+    ImageResizeNN(&image,12*5,20*5);
+    TextureHolder.red_soldier=LoadTextureFromImage(image);
 
-    Images.rocket=LoadImage(path_to_file("rocket.png"));
-    ImageResizeNN(&Images.rocket,30*3,8*3);
+    image=LoadImage(path_to_file("rocket.png"));
+    ImageResizeNN(&image,30*3,8*3);
+    TextureHolder.rocket=LoadTextureFromImage(image);    
 
-    Images.launcher=LoadImage(path_to_file("launcher.png"));
-    ImageResizeNN(&Images.launcher,20*5,8*5);
+    image=LoadImage(path_to_file("launcher.png"));
+    ImageResizeNN(&image,20*5,8*5);
+    TextureHolder.launcher=LoadTextureFromImage(image);
 
-    Images.particle_smoke=LoadImage(path_to_file("particle_smoke.png"));
-    ImageResizeNN(&Images.particle_smoke,12*12,12*12);
+    image=LoadImage(path_to_file("particle_smoke.png"));
+    ImageResizeNN(&image,12*12,12*12);
+    TextureHolder.particle_smoke=LoadTextureFromImage(image);
 
-    Images.platform=LoadImage(path_to_file("platform.png"));
-    ImageResizeNN(&Images.platform,30*5,2*5);
+    image=LoadImage(path_to_file("platform.png"));
+    ImageResizeNN(&image,30*5,2*5);
+    TextureHolder.platform=LoadTextureFromImage(image);
 
-    Images.parachute_pickup=LoadImage(path_to_file("parachute_pickup.png"));
-    ImageResizeNN(&Images.parachute_pickup, 16*4, 20*4);
+    image=LoadImage(path_to_file("parachute_pickup.png"));
+    ImageResizeNN(&image, 16*4, 20*4);
+    TextureHolder.parachute_pickup=LoadTextureFromImage(image);
 
-    Images.parachute=LoadImage(path_to_file("parachute.png"));
-    ImageResizeNN(&Images.parachute, 13*8, 11*8);
+    image=LoadImage(path_to_file("parachute.png"));
+    ImageResizeNN(&image, 13*8, 11*8);
+    TextureHolder.parachute=LoadTextureFromImage(image);
 
-    Images.crit_pickup=LoadImage(path_to_file("crit_pickup.png"));
-    ImageResizeNN(&Images.crit_pickup,9*8,13*8);
+    image=LoadImage(path_to_file("crit_pickup.png"));
+    ImageResizeNN(&image,9*8,13*8);
+    TextureHolder.crit_pickup=LoadTextureFromImage(image);
 
-    Images.hud=LoadImage(path_to_file("hud.png"));
-    ImageResizeNN(&Images.hud,64*5,32*5);
+    image=LoadImage(path_to_file("hud.png"));
+    ImageResizeNN(&image,64*5,32*5);
+    TextureHolder.hud=LoadTextureFromImage(image);
 
-    Images.health_pack=LoadImage(path_to_file("health_pack.png"));
-    ImageResizeNN(&Images.health_pack,12*6,12*6);
+    image=LoadImage(path_to_file("health_pack.png"));
+    ImageResizeNN(&image,12*6,12*6);
+    TextureHolder.health_pack=LoadTextureFromImage(image);
 
-    Images.button[0]=LoadImage(path_to_file("button_normal.png"));
-    ImageResizeNN(&Images.button[0], 50*8, 20*8);
+    image=LoadImage(path_to_file("button_normal.png"));
+    ImageResizeNN(&image, 50*8, 20*8);
+    TextureHolder.button[0]=LoadTextureFromImage(image);
 
-    Images.button[1]=LoadImage(path_to_file("button_hover.png"));
-    ImageResizeNN(&Images.button[1], 50*8, 20*8);
+    image=LoadImage(path_to_file("button_hover.png"));
+    ImageResizeNN(&image, 50*8, 20*8);
+    TextureHolder.button[1]=LoadTextureFromImage(image);
 
     //backgrounds 
-    Texture bg_txs[NUM_BG];
     for(int i=0; i<NUM_BG; i++){
         char name[12]="bg";
         char num[2];
         sprintf(num,"%d",i);
         strcat(name,num);
         strcat(name,".png");
-        Images.bg[i]=LoadImage(path_to_file(name));
-        ImageResizeNN(&Images.bg[i],SCREEN_WIDTH,SCREEN_HEIGHT);
-        bg_txs[i]=LoadTextureFromImage(Images.bg[i]); 
-        UnloadImage(Images.bg[i]);
+        image=LoadImage(path_to_file(name));
+        ImageResizeNN(&image,SCREEN_WIDTH,SCREEN_HEIGHT);
+        TextureHolder.bg[i]=LoadTextureFromImage(image); 
     }
         
+    UnloadImage(image);
+
     //sfx
     Sound sfx_explosion=LoadSound(path_to_file("explosion.ogg"));
     Sound sfx_pickup=LoadSound(path_to_file("pickup.ogg"));
@@ -92,24 +105,20 @@ int main(void){
 
     //player
     Soldier red_soldier={
-        .tx=LoadTextureFromImage(Images.red_soldier), 
+        .tx=TextureHolder.red_soldier, 
     }; 
-    UnloadImage(Images.red_soldier);  
 
     //parachute
-    Texture parachute=LoadTextureFromImage(Images.parachute);
-    UnloadImage(Images.parachute);
     int rotation_parachute=0; 
 
     //rocket launcher
     Launcher rl={
-        .tx=LoadTextureFromImage(Images.launcher),
+        .tx=TextureHolder.launcher,
         .x=0,
         .y=0,
         .rotation=0,
         .color=WHITE
     };
-    UnloadImage(Images.launcher);
 
     //background
     Background bgs[2];
@@ -118,7 +127,7 @@ int main(void){
     srand(time(NULL));
 
     Rocket new_rocket={
-        .tx=LoadTextureFromImage(Images.rocket),
+        .tx=TextureHolder.rocket,
         .x=-100,
         .y=-100,
         .speed_x=0,
@@ -129,10 +138,9 @@ int main(void){
         .is_free=1
     };
     Rocket rockets[MAX_ROCKETS]; 
-    UnloadImage(Images.rocket);       
 
     Particle new_particle={
-        .tx=LoadTextureFromImage(Images.particle_smoke),
+        .tx=TextureHolder.particle_smoke,
         .x=-100,
         .y=-100,
         .rotation=0,
@@ -140,64 +148,56 @@ int main(void){
         .is_free=1
     };
     Particle particles[MAX_PARTICLES];
-    UnloadImage(Images.particle_smoke);
 
     Platform platforms[NUM_PLATFORMS];
     for(int i=0; i<NUM_PLATFORMS; i++)
-        platforms[i].tx=LoadTextureFromImage(Images.platform);
-    UnloadImage(Images.platform);
+        platforms[i].tx=TextureHolder.platform;
     
     //pickups
     Pickup pickup={
-        .txs[0]=LoadTextureFromImage(Images.parachute_pickup),
-        .txs[1]=LoadTextureFromImage(Images.crit_pickup),
-        .tx=LoadTextureFromImage(Images.parachute_pickup), 
+        .txs[0]=TextureHolder.parachute_pickup,
+        .txs[1]=TextureHolder.crit_pickup,
+        .tx=TextureHolder.parachute_pickup, 
     };
-    UnloadImage(Images.parachute_pickup);
-    UnloadImage(Images.crit_pickup);
 
     //health packs
     Health_pack new_health_pack={
-        .tx=LoadTextureFromImage(Images.health_pack),
+        .tx=TextureHolder.health_pack,
         .x=-100,
         .y=-100
     };
     Health_pack health_packs[NUM_HEALTH_PACKS];
     for(int i=0; i<NUM_HEALTH_PACKS; i++)
         health_packs[i]=new_health_pack;
-    UnloadImage(Images.health_pack);
 
     int score;
     char score_string[5];
 
     //hp hud
     HUD health_hud={
-        .tx=LoadTextureFromImage(Images.hud),
+        .tx=TextureHolder.hud,
         .x=5,
-        .y=SCREEN_HEIGHT-Images.hud.height-5,
+        .y=SCREEN_HEIGHT-TextureHolder.hud.height-5,
         .text="0"
     }; 
     sprintf(health_hud.text, "%d", red_soldier.hp);
 
     //pickup hud
     HUD pickup_hud={
-        .tx=LoadTextureFromImage(Images.hud),
-        .x=SCREEN_WIDTH-Images.hud.width-5,
-        .y=SCREEN_HEIGHT-Images.hud.height-5,
+        .tx=TextureHolder.hud,
+        .x=SCREEN_WIDTH-TextureHolder.hud.width-5,
+        .y=SCREEN_HEIGHT-TextureHolder.hud.height-5,
         .text="EMPTY"
     };
-    UnloadImage(Images.hud); 
 
     //buttons
     Button try_again_button={
-        .tx[0]=LoadTextureFromImage(Images.button[0]),
-        .tx[1]=LoadTextureFromImage(Images.button[1]),
-        .x=SCREEN_WIDTH/2-Images.button[0].width/2,
+        .tx[0]=TextureHolder.button[0],
+        .tx[1]=TextureHolder.button[1],
+        .x=SCREEN_WIDTH/2-TextureHolder.button[0].width/2,
         .y=500,
         .text="TRY AGAIN"
     };
-    for(int i=0; i<2; i++)
-        UnloadImage(Images.button[i]);
     
     Vector2 mouse;
     
@@ -213,7 +213,7 @@ int main(void){
 
     for(int i=0; i<2; i++){
         bgs[i].y=-i*SCREEN_HEIGHT;
-        bgs[i].tx=bg_txs[i]; 
+        bgs[i].tx=TextureHolder.bg[i]; 
     }
 
     for(int i=0; i<MAX_ROCKETS; i++)
@@ -223,7 +223,7 @@ int main(void){
         particles[i]=new_particle;
 
     for(int i=0; i<NUM_PLATFORMS; i++){
-        platforms[i].x=rand()%(SCREEN_WIDTH-Images.platform.width-400)+200; //this is also used for random x when moving platform to the top
+        platforms[i].x=rand()%(SCREEN_WIDTH-TextureHolder.platform.width-400)+200; //this is also used for random x when moving platform to the top
         platforms[i].y=SCREEN_HEIGHT-(i+1)*1000/NUM_PLATFORMS;
     } 
 
@@ -454,7 +454,7 @@ int main(void){
 
                 level++;
                 if(level>NUM_BG-1) level=NUM_BG-1;
-                bgs[i].tx=bg_txs[level];
+                bgs[i].tx=TextureHolder.bg[level];
             } 
             if(red_soldier.y==SCREEN_MIDDLE(red_soldier) && red_soldier.speed_y<0)
                 bgs[i].y-=shift/2;
@@ -527,22 +527,22 @@ int main(void){
         //parachute
         if(red_soldier.slow_fall<1){
             DrawTexturePro(
-                parachute,
+                TextureHolder.parachute,
                 (Rectangle){ //src
                     .x=0,
                     .y=0,
-                    .width=parachute.width,
-                    .height=parachute.height
+                    .width=TextureHolder.parachute.width,
+                    .height=TextureHolder.parachute.height
                 },
                 (Rectangle){ //dest
                     .x=red_soldier.x+MIDDLE_X(red_soldier),
                     .y=red_soldier.y,
-                    .width=parachute.width,
-                    .height=parachute.height
+                    .width=TextureHolder.parachute.width,
+                    .height=TextureHolder.parachute.height
                 },
                 (Vector2){ //origin
-                    .x=(int)(parachute.width/2),
-                    .y=parachute.height
+                    .x=(int)(TextureHolder.parachute.width/2),
+                    .y=TextureHolder.parachute.height
                 },
                 rotation_parachute,
                 WHITE
@@ -729,7 +729,7 @@ int main(void){
     for(int i=0; i<NUM_PLATFORMS; i++)
         UnloadTexture(platforms[i].tx);
     for(int i=0; i<NUM_BG; i++)
-        UnloadTexture(bg_txs[i]);
+        UnloadTexture(TextureHolder.bg[i]);
     for(int i=0; i<2; i++){
         UnloadTexture(bgs[i].tx);
         UnloadTexture(try_again_button.tx[i]);
@@ -738,7 +738,7 @@ int main(void){
         UnloadTexture(health_packs[i].tx);
     }
     UnloadTexture(pickup.tx);
-    UnloadTexture(parachute);
+    UnloadTexture(TextureHolder.parachute);
     UnloadTexture(health_hud.tx);
     UnloadTexture(pickup_hud.tx);
 

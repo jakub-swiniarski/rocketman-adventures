@@ -7,29 +7,29 @@
 
 static struct{
     //soldier
-    Image red_soldier;
-    Image rocket;
-    Image launcher;
-    Image parachute; 
+    Texture red_soldier;
+    Texture rocket;
+    Texture launcher;
+    Texture parachute; 
     
     //world
-    Image platform;
+    Texture platform;
     
     //pickups
-    Image parachute_pickup;
-    Image crit_pickup;
-    Image health_pack;
+    Texture parachute_pickup;
+    Texture crit_pickup;
+    Texture health_pack;
     
     //hud
-    Image hud; 
-    Image button[2];
+    Texture hud; 
+    Texture button[2];
 
     //visuals
-    Image particle_smoke;
+    Texture particle_smoke;
  
     //backgrounds
-    Image bg[9];
-} Images;
+    Texture bg[9];
+} TextureHolder;
 
 typedef struct{
     Texture tx;
