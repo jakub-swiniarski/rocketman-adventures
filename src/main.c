@@ -51,6 +51,8 @@ int main(void){
     ImageResizeNN(&image, 13*8, 11*8);
     TextureHolder.parachute=LoadTextureFromImage(image);
 
+    //TODO: RENAME PICKUP FILES pickup0, pickup1 AND LOAD USING A LOOP
+    //REMEMBER TO USE NUM_PICKUP CONSTANT
     image=LoadImage(path_to_file("parachute_pickup.png"));
     ImageResizeNN(&image, 16*4, 20*4);
     TextureHolder.pickup[0]=LoadTextureFromImage(image);
@@ -168,7 +170,7 @@ int main(void){
         health_packs[i]=new_health_pack;
 
     int score;
-    char score_string[5];
+    char score_string[8];
 
     //hp hud
     HUD health_hud={
@@ -479,7 +481,7 @@ int main(void){
                 //random pickups and health packs
                 int random=rand()%10;
                 if(random==0 && !IS_VISIBLE(pickup)){ 
-                    pickup.id=rand()%2+1;
+                    pickup.id=rand()%NUM_PICKUP+1;
                     pickup.tx=&TextureHolder.pickup[pickup.id-1];
                     pickup.x=platforms[i].x+MIDDLE_X(platforms[i])-MIDDLE_X(pickup); 
                     pickup.y=platforms[i].y-pickup.tx->height; 
@@ -565,32 +567,7 @@ int main(void){
             particles[i].alpha-=2*dt;
             
             //draw
-            DrawTexturePro(
-                *particles[i].tx,
-                (Rectangle){ //src
-                    .x=0,
-                    .y=0,
-                    .width=particles[i].tx->width,
-                    .height=particles[i].tx->height
-                },
-                (Rectangle){ //dest
-                    .x=particles[i].x,
-                    .y=particles[i].y,
-                    .width=particles[i].tx->width,
-                    .height=particles[i].tx->height
-                },
-                (Vector2){ //origin
-                    .x=MIDDLE_X(particles[i]),
-                    .y=MIDDLE_Y(particles[i])
-                },
-                particles[i].rotation, //rotataion
-                (Color){
-                    255,
-                    255,
-                    255,
-                    particles[i].alpha
-                }
-            );
+            DRAW_PRO(particles[i],1,1,particles[i].rotation);
         } 
    
         //text and hud
@@ -684,7 +661,7 @@ int main(void){
     UnloadTexture(TextureHolder.launcher);
     UnloadTexture(TextureHolder.parachute);
     UnloadTexture(TextureHolder.platform);
-    for(int i=0; i<2; i++) //TODO: NUM_PICKUP CONSTANT
+    for(int i=0; i<NUM_PICKUP; i++)
         UnloadTexture(TextureHolder.pickup[i]);
     UnloadTexture(TextureHolder.health_pack);
     UnloadTexture(TextureHolder.hud);
