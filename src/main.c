@@ -27,56 +27,76 @@ int main(void){
     SetMasterVolume((float)volume/100);
 
     //load and resize images
-    Images.red_soldier=LoadImage(path_to_file("red_soldier.png"));
-    ImageResizeNN(&Images.red_soldier,12*5,20*5);
+    {
+        Image image=LoadImage(path_to_file("red_soldier.png"));
+        ImageResizeNN(&image,image.width*5,image.height*5);
+        TextureHolder.red_soldier=LoadTextureFromImage(image);
 
-    Images.rocket=LoadImage(path_to_file("rocket.png"));
-    ImageResizeNN(&Images.rocket,30*3,8*3);
+        image=LoadImage(path_to_file("rocket.png"));
+        ImageResizeNN(&image,image.width*3,image.height*3);
+        TextureHolder.rocket=LoadTextureFromImage(image);    
 
-    Images.launcher=LoadImage(path_to_file("launcher.png"));
-    ImageResizeNN(&Images.launcher,20*5,8*5);
+        image=LoadImage(path_to_file("launcher.png"));
+        ImageResizeNN(&image,image.width*5,image.height*5);
+        TextureHolder.launcher=LoadTextureFromImage(image);
 
-    Images.particle_smoke=LoadImage(path_to_file("particle_smoke.png"));
-    ImageResizeNN(&Images.particle_smoke,12*12,12*12);
+        image=LoadImage(path_to_file("particle_smoke.png"));
+        ImageResizeNN(&image,image.width*12,image.height*12);
+        TextureHolder.particle_smoke=LoadTextureFromImage(image);
 
-    Images.platform=LoadImage(path_to_file("platform.png"));
-    ImageResizeNN(&Images.platform,30*5,2*5);
+        image=LoadImage(path_to_file("platform.png"));
+        ImageResizeNN(&image,image.width*5,image.height*5);
+        TextureHolder.platform=LoadTextureFromImage(image);
 
-    Images.parachute_pickup=LoadImage(path_to_file("parachute_pickup.png"));
-    ImageResizeNN(&Images.parachute_pickup, 16*4, 20*4);
+        image=LoadImage(path_to_file("parachute.png"));
+        ImageResizeNN(&image, image.width*8, image.height*8);
+        TextureHolder.parachute=LoadTextureFromImage(image);
 
-    Images.parachute=LoadImage(path_to_file("parachute.png"));
-    ImageResizeNN(&Images.parachute, 13*8, 11*8);
+        for(int i=0; i<NUM_PICKUP; i++){
+            char name[12]="pickup";
+            char num[2];
+            sprintf(num,"%d",i);
+            strcat(name,num);
+            strcat(name,".png");
+            image=LoadImage(path_to_file(name));
+            ImageResizeNN(&image,image.width*8,image.height*8);
+            TextureHolder.pickup[i]=LoadTextureFromImage(image); 
+        }
 
-    Images.crit_pickup=LoadImage(path_to_file("crit_pickup.png"));
-    ImageResizeNN(&Images.crit_pickup,9*8,13*8);
+        image=LoadImage(path_to_file("hud.png"));
+        ImageResizeNN(&image,image.width*5,image.height*5);
+        TextureHolder.hud=LoadTextureFromImage(image);
 
-    Images.hud=LoadImage(path_to_file("hud.png"));
-    ImageResizeNN(&Images.hud,64*5,32*5);
-
-    Images.health_pack=LoadImage(path_to_file("health_pack.png"));
-    ImageResizeNN(&Images.health_pack,12*6,12*6);
-
-    Images.button[0]=LoadImage(path_to_file("button_normal.png"));
-    ImageResizeNN(&Images.button[0], 50*8, 20*8);
-
-    Images.button[1]=LoadImage(path_to_file("button_hover.png"));
-    ImageResizeNN(&Images.button[1], 50*8, 20*8);
-
-    //backgrounds 
-    Texture bg_txs[NUM_BG];
-    for(int i=0; i<NUM_BG; i++){
-        char name[12]="bg";
-        char num[2];
-        sprintf(num,"%d",i);
-        strcat(name,num);
-        strcat(name,".png");
-        Images.bg[i]=LoadImage(path_to_file(name));
-        ImageResizeNN(&Images.bg[i],SCREEN_WIDTH,SCREEN_HEIGHT);
-        bg_txs[i]=LoadTextureFromImage(Images.bg[i]); 
-        UnloadImage(Images.bg[i]);
-    }
+        image=LoadImage(path_to_file("health_pack.png"));
+        ImageResizeNN(&image,image.width*6,image.height*6);
+        TextureHolder.health_pack=LoadTextureFromImage(image);
         
+        for(int i=0; i<2; i++){
+            char name[12]="button";
+            char num[2];
+            sprintf(num,"%d",i);
+            strcat(name,num);
+            strcat(name,".png");
+            image=LoadImage(path_to_file(name));
+            ImageResizeNN(&image,image.width*8,image.height*8);
+            TextureHolder.button[i]=LoadTextureFromImage(image); 
+        }
+
+        //backgrounds 
+        for(int i=0; i<NUM_BG; i++){
+            char name[12]="bg";
+            char num[2];
+            sprintf(num,"%d",i);
+            strcat(name,num);
+            strcat(name,".png");
+            image=LoadImage(path_to_file(name));
+            ImageResizeNN(&image,SCREEN_WIDTH,SCREEN_HEIGHT);
+            TextureHolder.bg[i]=LoadTextureFromImage(image); 
+        }
+            
+        UnloadImage(image);
+    }
+
     //sfx
     Sound sfx_explosion=LoadSound(path_to_file("explosion.ogg"));
     Sound sfx_pickup=LoadSound(path_to_file("pickup.ogg"));
@@ -92,33 +112,32 @@ int main(void){
 
     //player
     Soldier red_soldier={
-        .tx=LoadTextureFromImage(Images.red_soldier), 
+        .tx=&TextureHolder.red_soldier, 
     }; 
-    UnloadImage(Images.red_soldier);  
 
     //parachute
-    Texture parachute=LoadTextureFromImage(Images.parachute);
-    UnloadImage(Images.parachute);
-    int rotation_parachute=0; 
-
+    Parachute parachute={
+        .tx=&TextureHolder.parachute,
+        .rotation=0
+    };
+        
     //rocket launcher
     Launcher rl={
-        .tx=LoadTextureFromImage(Images.launcher),
+        .tx=&TextureHolder.launcher,
         .x=0,
         .y=0,
         .rotation=0,
         .color=WHITE
     };
-    UnloadImage(Images.launcher);
 
     //background
-    Background bgs[2];
+    Background bg[2];
     int shift, level; //used for changing backgrounds
 
     srand(time(NULL));
 
     Rocket new_rocket={
-        .tx=LoadTextureFromImage(Images.rocket),
+        .tx=&TextureHolder.rocket,
         .x=-100,
         .y=-100,
         .speed_x=0,
@@ -129,10 +148,9 @@ int main(void){
         .is_free=1
     };
     Rocket rockets[MAX_ROCKETS]; 
-    UnloadImage(Images.rocket);       
 
     Particle new_particle={
-        .tx=LoadTextureFromImage(Images.particle_smoke),
+        .tx=&TextureHolder.particle_smoke,
         .x=-100,
         .y=-100,
         .rotation=0,
@@ -140,64 +158,53 @@ int main(void){
         .is_free=1
     };
     Particle particles[MAX_PARTICLES];
-    UnloadImage(Images.particle_smoke);
 
     Platform platforms[NUM_PLATFORMS];
     for(int i=0; i<NUM_PLATFORMS; i++)
-        platforms[i].tx=LoadTextureFromImage(Images.platform);
-    UnloadImage(Images.platform);
+        platforms[i].tx=&TextureHolder.platform;
     
     //pickups
     Pickup pickup={
-        .txs[0]=LoadTextureFromImage(Images.parachute_pickup),
-        .txs[1]=LoadTextureFromImage(Images.crit_pickup),
-        .tx=LoadTextureFromImage(Images.parachute_pickup), 
+        .tx=&TextureHolder.pickup[0], 
     };
-    UnloadImage(Images.parachute_pickup);
-    UnloadImage(Images.crit_pickup);
 
     //health packs
     Health_pack new_health_pack={
-        .tx=LoadTextureFromImage(Images.health_pack),
+        .tx=&TextureHolder.health_pack,
         .x=-100,
         .y=-100
     };
     Health_pack health_packs[NUM_HEALTH_PACKS];
     for(int i=0; i<NUM_HEALTH_PACKS; i++)
         health_packs[i]=new_health_pack;
-    UnloadImage(Images.health_pack);
 
     int score;
-    char score_string[5];
+    char score_string[8];
 
     //hp hud
     HUD health_hud={
-        .tx=LoadTextureFromImage(Images.hud),
+        .tx=&TextureHolder.hud,
         .x=5,
-        .y=SCREEN_HEIGHT-Images.hud.height-5,
+        .y=SCREEN_HEIGHT-TextureHolder.hud.height-5,
         .text="0"
     }; 
     sprintf(health_hud.text, "%d", red_soldier.hp);
 
     //pickup hud
     HUD pickup_hud={
-        .tx=LoadTextureFromImage(Images.hud),
-        .x=SCREEN_WIDTH-Images.hud.width-5,
-        .y=SCREEN_HEIGHT-Images.hud.height-5,
+        .tx=&TextureHolder.hud,
+        .x=SCREEN_WIDTH-(TextureHolder.hud.width)/2-5,
+        .y=SCREEN_HEIGHT-(TextureHolder.hud.height)/2-5,
         .text="EMPTY"
     };
-    UnloadImage(Images.hud); 
 
     //buttons
     Button try_again_button={
-        .tx[0]=LoadTextureFromImage(Images.button[0]),
-        .tx[1]=LoadTextureFromImage(Images.button[1]),
-        .x=SCREEN_WIDTH/2-Images.button[0].width/2,
+        .tx=&TextureHolder.button[0],
+        .x=SCREEN_WIDTH/2-TextureHolder.button[0].width/2,
         .y=500,
         .text="TRY AGAIN"
     };
-    for(int i=0; i<2; i++)
-        UnloadImage(Images.button[i]);
     
     Vector2 mouse;
     
@@ -205,15 +212,15 @@ int main(void){
     game_state=0;
     level=1;
 
-    red_soldier.x=(int)(SCREEN_WIDTH/2)-red_soldier.tx.width;
-    red_soldier.y=SCREEN_HEIGHT-red_soldier.tx.height; 
+    red_soldier.x=(int)(SCREEN_WIDTH/2)-red_soldier.tx->width;
+    red_soldier.y=SCREEN_HEIGHT-red_soldier.tx->height; 
     red_soldier.speed_x=red_soldier.speed_y=red_soldier.cooldown=red_soldier.falling=0;
     red_soldier.slow_fall=red_soldier.crit_boost=1;
     red_soldier.hp=200;
 
     for(int i=0; i<2; i++){
-        bgs[i].y=-i*SCREEN_HEIGHT;
-        bgs[i].tx=bg_txs[i]; 
+        bg[i].y=-i*SCREEN_HEIGHT;
+        bg[i].tx=&TextureHolder.bg[i]; 
     }
 
     for(int i=0; i<MAX_ROCKETS; i++)
@@ -223,7 +230,7 @@ int main(void){
         particles[i]=new_particle;
 
     for(int i=0; i<NUM_PLATFORMS; i++){
-        platforms[i].x=rand()%(SCREEN_WIDTH-Images.platform.width-400)+200; //this is also used for random x when moving platform to the top
+        platforms[i].x=rand()%(SCREEN_WIDTH-TextureHolder.platform.width-400)+200; //this is also used for random x when moving platform to the top
         platforms[i].y=SCREEN_HEIGHT-(i+1)*1000/NUM_PLATFORMS;
     } 
 
@@ -321,18 +328,18 @@ int main(void){
             if(IsKeyDown(MOVE_RIGHT) && !IsKeyDown(MOVE_LEFT)){
                 red_soldier.x+=150*dt;
 
-                if(red_soldier.pickup_active==1 && rotation_parachute>-30)
-                    rotation_parachute-=60*dt;
+                if(red_soldier.pickup_active==1 && parachute.rotation>-30)
+                    parachute.rotation-=60*dt;
             }
             if(IsKeyDown(MOVE_LEFT) && !IsKeyDown(MOVE_RIGHT)){
                 red_soldier.x-=150*dt;
             
-                if(red_soldier.pickup_active==1 && rotation_parachute<30)
-                    rotation_parachute+=60*dt;
+                if(red_soldier.pickup_active==1 && parachute.rotation<30)
+                    parachute.rotation+=60*dt;
             }
             //reset parachute rotation
             if(!IsKeyDown(MOVE_LEFT) && !IsKeyDown(MOVE_RIGHT)) //if not moving horizontally
-                rotation_parachute+=rotation_parachute>0?-100*dt:100*dt;
+                parachute.rotation+=parachute.rotation>0?-100*dt:100*dt;
             if(IsKeyDown(JUMP) && !red_soldier.falling){
                 PlaySound(sfx_jump);
                 if(red_soldier.pickup_active==1){
@@ -369,9 +376,9 @@ int main(void){
             } 
         
             //gravity
-            if(red_soldier.y+red_soldier.tx.height>=SCREEN_HEIGHT){
+            if(red_soldier.y+red_soldier.tx->height>=SCREEN_HEIGHT){
                 if(game_state!=1){
-                    red_soldier.y=SCREEN_HEIGHT-red_soldier.tx.height;
+                    red_soldier.y=SCREEN_HEIGHT-red_soldier.tx->height;
                     red_soldier.speed_y=0;
                     red_soldier.falling=0;
                 }
@@ -448,19 +455,19 @@ int main(void){
         //update background
         for(int i=0; i<2; i++){
             //parallax scrolling
-            if(bgs[i].y>SCREEN_HEIGHT){
-                bgs[i].y=-SCREEN_HEIGHT;
-                bgs[1-i].y=0;
+            if(bg[i].y>SCREEN_HEIGHT){
+                bg[i].y=-SCREEN_HEIGHT;
+                bg[1-i].y=0;
 
                 level++;
                 if(level>NUM_BG-1) level=NUM_BG-1;
-                bgs[i].tx=bg_txs[level];
+                bg[i].tx=&TextureHolder.bg[level];
             } 
             if(red_soldier.y==SCREEN_MIDDLE(red_soldier) && red_soldier.speed_y<0)
-                bgs[i].y-=shift/2;
+                bg[i].y-=shift/2;
 
             //draw background
-            DrawTexture(bgs[i].tx,0,bgs[i].y,WHITE);
+            DrawTexture(*bg[i].tx,0,bg[i].y,WHITE);
         }
 
         //update platforms
@@ -477,22 +484,22 @@ int main(void){
                 platform_collision_check_rocket(&platforms[i],&rockets[j]);
 
             if(platforms[i].y>SCREEN_HEIGHT){
-                platforms[i].x=rand()%(SCREEN_WIDTH-platforms[i].tx.width-400)+200;
-                platforms[i].y=-platforms[i].tx.height;
+                platforms[i].x=rand()%(SCREEN_WIDTH-platforms[i].tx->width-400)+200;
+                platforms[i].y=-platforms[i].tx->height;
                 
                 //random pickups and health packs
                 int random=rand()%10;
                 if(random==0 && !IS_VISIBLE(pickup)){ 
-                    pickup.id=rand()%2+1;
-                    pickup.tx=pickup.txs[pickup.id-1];
+                    pickup.id=rand()%NUM_PICKUP+1;
+                    pickup.tx=&TextureHolder.pickup[pickup.id-1];
                     pickup.x=platforms[i].x+MIDDLE_X(platforms[i])-MIDDLE_X(pickup); 
-                    pickup.y=platforms[i].y-pickup.tx.height; 
+                    pickup.y=platforms[i].y-pickup.tx->height; 
                 }
                 else if(random>7){
                     for(int j=0; j<NUM_HEALTH_PACKS; j++){
                         if(!IS_VISIBLE(health_packs[j])){
                             health_packs[j].x=platforms[i].x+MIDDLE_X(platforms[i])-MIDDLE_X(health_packs[j]);
-                            health_packs[j].y=platforms[i].y-health_packs[j].tx.height;
+                            health_packs[j].y=platforms[i].y-health_packs[j].tx->height;
                             break;
                         }
                     }
@@ -527,24 +534,24 @@ int main(void){
         //parachute
         if(red_soldier.slow_fall<1){
             DrawTexturePro(
-                parachute,
+                *parachute.tx,
                 (Rectangle){ //src
                     .x=0,
                     .y=0,
-                    .width=parachute.width,
-                    .height=parachute.height
+                    .width=TextureHolder.parachute.width,
+                    .height=TextureHolder.parachute.height
                 },
                 (Rectangle){ //dest
                     .x=red_soldier.x+MIDDLE_X(red_soldier),
                     .y=red_soldier.y,
-                    .width=parachute.width,
-                    .height=parachute.height
+                    .width=TextureHolder.parachute.width,
+                    .height=TextureHolder.parachute.height
                 },
                 (Vector2){ //origin
-                    .x=(int)(parachute.width/2),
-                    .y=parachute.height
+                    .x=(int)(TextureHolder.parachute.width/2),
+                    .y=TextureHolder.parachute.height
                 },
-                rotation_parachute,
+                parachute.rotation,
                 WHITE
             ); 
         }
@@ -553,52 +560,11 @@ int main(void){
         DRAW(red_soldier);
 
         //draw rockets
-        for(int i=0; i<MAX_ROCKETS; i++){
-            DrawTexturePro(
-                rockets[i].tx,
-                (Rectangle){ //src
-                    .x=0,
-                    .y=0,
-                    .width=rockets[i].tx.width,
-                    .height=rockets[i].tx.height
-                },
-                (Rectangle){ //dest
-                    .x=rockets[i].x,
-                    .y=rockets[i].y,
-                    .width=rockets[i].tx.width,
-                    .height=rockets[i].tx.height
-                },
-                (Vector2){ //origin
-                    .x=MIDDLE_X(rockets[i]),
-                    .y=MIDDLE_Y(rockets[i])
-                },
-                rockets[i].rotation,
-                WHITE
-            );
-        }
+        for(int i=0; i<MAX_ROCKETS; i++)
+            DRAW_PRO(rockets[i],1,1,rockets[i].rotation)
 
         //draw rocket launcher
-        DrawTexturePro(
-            rl.tx,
-            (Rectangle){ //src
-                .x=0,
-                .y=0,
-                .width=rl.tx.width,
-                .height=rl.flip*rl.tx.height
-            },
-            (Rectangle){ //dest
-                .x=rl.x,
-                .y=rl.y,
-                .width=rl.tx.width,
-                .height=rl.tx.height
-            },
-            (Vector2){ //origin
-                .x=MIDDLE_X(rl),
-                .y=MIDDLE_Y(rl)
-            },
-            rl.rotation,
-            rl.color
-        ); 
+        DRAW_PRO(rl,1,rl.flip,rl.rotation);
 
         //update particles
         for(int i=0; i<MAX_PARTICLES; i++){
@@ -610,32 +576,7 @@ int main(void){
             particles[i].alpha-=2*dt;
             
             //draw
-            DrawTexturePro(
-                particles[i].tx,
-                (Rectangle){ //src
-                    .x=0,
-                    .y=0,
-                    .width=particles[i].tx.width,
-                    .height=particles[i].tx.height
-                },
-                (Rectangle){ //dest
-                    .x=particles[i].x,
-                    .y=particles[i].y,
-                    .width=particles[i].tx.width,
-                    .height=particles[i].tx.height
-                },
-                (Vector2){ //origin
-                    .x=MIDDLE_X(particles[i]),
-                    .y=MIDDLE_Y(particles[i])
-                },
-                particles[i].rotation, //rotataion
-                (Color){
-                    255,
-                    255,
-                    255,
-                    particles[i].alpha
-                }
-            );
+            DRAW_PRO(particles[i],1,1,particles[i].rotation);
         } 
    
         //text and hud
@@ -666,31 +607,11 @@ int main(void){
                 draw_text_full(health_hud.text,health_hud.x+40,health_hud.y+30,100, health_hud.text_color); 
                
                 //pickup hud
-                DrawTexturePro(
-                    pickup_hud.tx,
-                    (Rectangle){ //src
-                        .x=0,
-                        .y=0,
-                        .width=-1*pickup_hud.tx.width,
-                        .height=pickup_hud.tx.height
-                    },
-                    (Rectangle){ //dest
-                        .x=pickup_hud.x,
-                        .y=pickup_hud.y,
-                        .width=pickup_hud.tx.width,
-                        .height=pickup_hud.tx.height
-                    },
-                    (Vector2){ //origin
-                        .x=0,
-                        .y=0
-                    },
-                    0,
-                    WHITE
-                );
+                DRAW_PRO(pickup_hud,-1,1,0);
                 if(red_soldier.pickup==1 || red_soldier.pickup==2)
-                    DrawTexture(pickup.txs[red_soldier.pickup-1],pickup_hud.x+150, pickup_hud.y+25, WHITE);
+                    DrawTexture(TextureHolder.pickup[red_soldier.pickup-1],pickup_hud.x-10, pickup_hud.y-45, WHITE);
                 else
-                    draw_text_full(pickup_hud.text,pickup_hud.x+65,pickup_hud.y+40,64,WHITE);
+                    draw_text_full(pickup_hud.text,pickup_hud.x-90,pickup_hud.y-35,64,WHITE);
 
                 //score
                 draw_text_full("SCORE:", 10, 10, 64, WHITE);
@@ -721,26 +642,20 @@ int main(void){
     }
    
     //unload textures
-    UnloadTexture(red_soldier.tx); 
-    for(int i=0; i<MAX_ROCKETS; i++)
-        UnloadTexture(rockets[i].tx); 
-    for(int i=0; i<MAX_PARTICLES; i++)
-        UnloadTexture(particles[i].tx);
-    for(int i=0; i<NUM_PLATFORMS; i++)
-        UnloadTexture(platforms[i].tx);
+    UnloadTexture(TextureHolder.red_soldier);
+    UnloadTexture(TextureHolder.rocket);
+    UnloadTexture(TextureHolder.launcher);
+    UnloadTexture(TextureHolder.parachute);
+    UnloadTexture(TextureHolder.platform);
+    for(int i=0; i<NUM_PICKUP; i++)
+        UnloadTexture(TextureHolder.pickup[i]);
+    UnloadTexture(TextureHolder.health_pack);
+    UnloadTexture(TextureHolder.hud);
+    for(int i=0; i<2; i++)
+        UnloadTexture(TextureHolder.button[i]);
+    UnloadTexture(TextureHolder.particle_smoke);
     for(int i=0; i<NUM_BG; i++)
-        UnloadTexture(bg_txs[i]);
-    for(int i=0; i<2; i++){
-        UnloadTexture(bgs[i].tx);
-        UnloadTexture(try_again_button.tx[i]);
-    }
-    for(int i=0; i<NUM_HEALTH_PACKS; i++){
-        UnloadTexture(health_packs[i].tx);
-    }
-    UnloadTexture(pickup.tx);
-    UnloadTexture(parachute);
-    UnloadTexture(health_hud.tx);
-    UnloadTexture(pickup_hud.tx);
+        UnloadTexture(TextureHolder.bg[i]);
 
     //unload sfx
     UnloadSound(sfx_explosion);
