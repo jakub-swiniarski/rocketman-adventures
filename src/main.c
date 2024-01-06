@@ -29,27 +29,27 @@ int main(void){
     //load and resize images
     {
         Image image=LoadImage(path_to_file("red_soldier.png"));
-        ImageResizeNN(&image,12*5,20*5);
+        ImageResizeNN(&image,image.width*5,image.height*5);
         TextureHolder.red_soldier=LoadTextureFromImage(image);
 
         image=LoadImage(path_to_file("rocket.png"));
-        ImageResizeNN(&image,30*3,8*3);
+        ImageResizeNN(&image,image.width*3,image.height*3);
         TextureHolder.rocket=LoadTextureFromImage(image);    
 
         image=LoadImage(path_to_file("launcher.png"));
-        ImageResizeNN(&image,20*5,8*5);
+        ImageResizeNN(&image,image.width*5,image.height*5);
         TextureHolder.launcher=LoadTextureFromImage(image);
 
         image=LoadImage(path_to_file("particle_smoke.png"));
-        ImageResizeNN(&image,12*12,12*12);
+        ImageResizeNN(&image,image.width*12,image.height*12);
         TextureHolder.particle_smoke=LoadTextureFromImage(image);
 
         image=LoadImage(path_to_file("platform.png"));
-        ImageResizeNN(&image,30*5,2*5);
+        ImageResizeNN(&image,image.width*5,image.height*5);
         TextureHolder.platform=LoadTextureFromImage(image);
 
         image=LoadImage(path_to_file("parachute.png"));
-        ImageResizeNN(&image, 13*8, 11*8);
+        ImageResizeNN(&image, image.width*8, image.height*8);
         TextureHolder.parachute=LoadTextureFromImage(image);
 
         for(int i=0; i<NUM_PICKUP; i++){
@@ -64,20 +64,23 @@ int main(void){
         }
 
         image=LoadImage(path_to_file("hud.png"));
-        ImageResizeNN(&image,64*5,32*5);
+        ImageResizeNN(&image,image.width*5,image.height*5);
         TextureHolder.hud=LoadTextureFromImage(image);
 
         image=LoadImage(path_to_file("health_pack.png"));
-        ImageResizeNN(&image,12*6,12*6);
+        ImageResizeNN(&image,image.width*6,image.height*6);
         TextureHolder.health_pack=LoadTextureFromImage(image);
-
-        image=LoadImage(path_to_file("button_normal.png"));
-        ImageResizeNN(&image, 50*8, 20*8);
-        TextureHolder.button[0]=LoadTextureFromImage(image);
-
-        image=LoadImage(path_to_file("button_hover.png"));
-        ImageResizeNN(&image, 50*8, 20*8);
-        TextureHolder.button[1]=LoadTextureFromImage(image);
+        
+        for(int i=0; i<2; i++){
+            char name[12]="button";
+            char num[2];
+            sprintf(num,"%d",i);
+            strcat(name,num);
+            strcat(name,".png");
+            image=LoadImage(path_to_file(name));
+            ImageResizeNN(&image,image.width*8,image.height*8);
+            TextureHolder.button[i]=LoadTextureFromImage(image); 
+        }
 
         //backgrounds 
         for(int i=0; i<NUM_BG; i++){
