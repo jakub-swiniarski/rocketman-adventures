@@ -26,7 +26,7 @@ int main(void){
 
     SetMasterVolume((float)volume/100);
 
-    //load and resize images, TODO: LIMIT SCOPE, SHOULD I UNLOAD?
+    //load and resize images, TODO: LIMIT SCOPE, SHOULD I UNLOAD FROM VRAM EVERY TIME I LOAD?
     Image image=LoadImage(path_to_file("red_soldier.png"));
     ImageResizeNN(&image,12*5,20*5);
     TextureHolder.red_soldier=LoadTextureFromImage(image);
