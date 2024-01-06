@@ -73,6 +73,11 @@ typedef struct{
 
 typedef struct{
     Texture *tx;
+    int rotation;
+} Parachute;
+
+typedef struct{
+    Texture *tx;
     int x,y;
 } Platform;
 

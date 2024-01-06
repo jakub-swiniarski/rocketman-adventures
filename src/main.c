@@ -113,8 +113,11 @@ int main(void){
     }; 
 
     //parachute
-    int rotation_parachute=0; 
-
+    Parachute parachute={
+        .tx=&TextureHolder.parachute,
+        .rotation=0
+    };
+        
     //rocket launcher
     Launcher rl={
         .tx=&TextureHolder.launcher,
@@ -322,18 +325,18 @@ int main(void){
             if(IsKeyDown(MOVE_RIGHT) && !IsKeyDown(MOVE_LEFT)){
                 red_soldier.x+=150*dt;
 
-                if(red_soldier.pickup_active==1 && rotation_parachute>-30)
-                    rotation_parachute-=60*dt;
+                if(red_soldier.pickup_active==1 && parachute.rotation>-30)
+                    parachute.rotation-=60*dt;
             }
             if(IsKeyDown(MOVE_LEFT) && !IsKeyDown(MOVE_RIGHT)){
                 red_soldier.x-=150*dt;
             
-                if(red_soldier.pickup_active==1 && rotation_parachute<30)
-                    rotation_parachute+=60*dt;
+                if(red_soldier.pickup_active==1 && parachute.rotation<30)
+                    parachute.rotation+=60*dt;
             }
             //reset parachute rotation
             if(!IsKeyDown(MOVE_LEFT) && !IsKeyDown(MOVE_RIGHT)) //if not moving horizontally
-                rotation_parachute+=rotation_parachute>0?-100*dt:100*dt;
+                parachute.rotation+=parachute.rotation>0?-100*dt:100*dt;
             if(IsKeyDown(JUMP) && !red_soldier.falling){
                 PlaySound(sfx_jump);
                 if(red_soldier.pickup_active==1){
@@ -527,8 +530,8 @@ int main(void){
 
         //parachute
         if(red_soldier.slow_fall<1){
-            DrawTexturePro( //TODO: TURN PARACHUTE INTO A STRUCT
-                TextureHolder.parachute,
+            DrawTexturePro(
+                *parachute.tx,
                 (Rectangle){ //src
                     .x=0,
                     .y=0,
@@ -545,7 +548,7 @@ int main(void){
                     .x=(int)(TextureHolder.parachute.width/2),
                     .y=TextureHolder.parachute.height
                 },
-                rotation_parachute,
+                parachute.rotation,
                 WHITE
             ); 
         }
