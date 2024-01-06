@@ -27,7 +27,6 @@ int main(void){
     SetMasterVolume((float)volume/100);
 
     //load and resize images, TODO: LIMIT SCOPE, SHOULD I UNLOAD?
-    //TODO: UNLOAD TEXTURES FROM TEXTURE HOLDER
     Image image=LoadImage(path_to_file("red_soldier.png"));
     ImageResizeNN(&image,12*5,20*5);
     TextureHolder.red_soldier=LoadTextureFromImage(image);
@@ -680,6 +679,20 @@ int main(void){
    
     //unload textures
     //TODO: unload from texture holder
+    UnloadTexture(TextureHolder.red_soldier);
+    UnloadTexture(TextureHolder.rocket);
+    UnloadTexture(TextureHolder.launcher);
+    UnloadTexture(TextureHolder.parachute);
+    UnloadTexture(TextureHolder.platform);
+    for(int i=0; i<2; i++) //TODO: NUM_PICKUP CONSTANT
+        UnloadTexture(TextureHolder.pickup[i]);
+    UnloadTexture(TextureHolder.health_pack);
+    UnloadTexture(TextureHolder.hud);
+    for(int i=0; i<2; i++)
+        UnloadTexture(TextureHolder.button[i]);
+    UnloadTexture(TextureHolder.particle_smoke);
+    for(int i=0; i<NUM_BG; i++)
+        UnloadTexture(TextureHolder.bg[i]);
 
     //unload sfx
     UnloadSound(sfx_explosion);
