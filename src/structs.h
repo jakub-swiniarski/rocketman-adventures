@@ -7,32 +7,31 @@
 
 static struct{
     //soldier
-    Image red_soldier;
-    Image rocket;
-    Image launcher;
-    Image parachute; 
+    Texture red_soldier;
+    Texture rocket;
+    Texture launcher;
+    Texture parachute; 
     
     //world
-    Image platform;
+    Texture platform;
     
     //pickups
-    Image parachute_pickup;
-    Image crit_pickup;
-    Image health_pack;
-    
+    Texture pickup[NUM_PICKUP];
+    Texture health_pack;
+
     //hud
-    Image hud; 
-    Image button[2];
+    Texture hud; 
+    Texture button[2];
 
     //visuals
-    Image particle_smoke;
+    Texture particle_smoke;
  
     //backgrounds
-    Image bg[9];
-} Images;
+    Texture bg[NUM_BG];
+} TextureHolder;
 
 typedef struct{
-    Texture tx;
+    Texture *tx;
     int x,y;
     int speed_x, speed_y; //used for gravity and jumping
     int cooldown;
@@ -44,7 +43,7 @@ typedef struct{
 } Soldier;
 
 typedef struct{
-    Texture tx;
+    Texture *tx;
     int x,y;
     int rotation;
     int speed_x,speed_y;
@@ -52,7 +51,7 @@ typedef struct{
 } Rocket;
 
 typedef struct{
-    Texture tx;
+    Texture *tx;
     int x,y;
     int rotation;
     int flip; //1 means befault, -1 means flipped
@@ -60,12 +59,12 @@ typedef struct{
 } Launcher;
 
 typedef struct{
-    Texture tx;
+    Texture *tx;
     int y;
 } Background;
 
 typedef struct{
-    Texture tx;
+    Texture *tx;
     int x,y;
     int rotation;
     int alpha;
@@ -73,31 +72,35 @@ typedef struct{
 } Particle;
 
 typedef struct{
-    Texture tx;
+    Texture *tx;
+    int rotation;
+} Parachute;
+
+typedef struct{
+    Texture *tx;
     int x,y;
 } Platform;
 
 typedef struct{
-    Texture tx;
-    Texture txs[2];
+    Texture *tx;
     int x,y;
     int id; //1 - parachute, 2 - crits
 } Pickup;
 
 typedef struct{
-    Texture tx;
+    Texture *tx;
     int x,y;
 } Health_pack;
 
 typedef struct{
-    Texture tx;
+    Texture *tx;
     int x,y;
     char text[16];
     Color text_color;
 } HUD;
 
 typedef struct{
-    Texture tx[2];
+    Texture *tx;
     int x,y;
     char text[12];
     int state; //0 - normal, 1 - hover
