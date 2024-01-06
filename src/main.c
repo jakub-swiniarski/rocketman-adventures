@@ -523,7 +523,7 @@ int main(void){
 
         //parachute
         if(red_soldier.slow_fall<1){
-            DrawTexturePro( //TODO: TURN PARACHUTE INTO A STRUCT AND USE DRAW_PRO
+            DrawTexturePro( //TODO: TURN PARACHUTE INTO A STRUCT
                 TextureHolder.parachute,
                 (Rectangle){ //src
                     .x=0,
@@ -550,29 +550,8 @@ int main(void){
         DRAW(red_soldier);
 
         //draw rockets
-        for(int i=0; i<MAX_ROCKETS; i++){
-            DrawTexturePro( //TODO: create a macro for arrays DRAW_PRO_ARRAY
-                *rockets[i].tx,
-                (Rectangle){ //src
-                    .x=0,
-                    .y=0,
-                    .width=rockets[i].tx->width,
-                    .height=rockets[i].tx->height
-                },
-                (Rectangle){ //dest
-                    .x=rockets[i].x,
-                    .y=rockets[i].y,
-                    .width=rockets[i].tx->width,
-                    .height=rockets[i].tx->height
-                },
-                (Vector2){ //origin
-                    .x=MIDDLE_X(rockets[i]),
-                    .y=MIDDLE_Y(rockets[i])
-                },
-                rockets[i].rotation,
-                WHITE
-            );
-        }
+        for(int i=0; i<MAX_ROCKETS; i++)
+            DRAW_PRO(rockets[i],1,1,rockets[i].rotation)
 
         //draw rocket launcher
         DRAW_PRO(rl,1,rl.flip,rl.rotation);
