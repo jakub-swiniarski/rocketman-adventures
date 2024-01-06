@@ -187,8 +187,8 @@ int main(void){
     //pickup hud
     HUD pickup_hud={
         .tx=&TextureHolder.hud,
-        .x=SCREEN_WIDTH-TextureHolder.hud.width-5,
-        .y=SCREEN_HEIGHT-TextureHolder.hud.height-5,
+        .x=SCREEN_WIDTH-(TextureHolder.hud.width)/2-5,
+        .y=SCREEN_HEIGHT-(TextureHolder.hud.height)/2-5,
         .text="EMPTY"
     };
 
@@ -601,33 +601,11 @@ int main(void){
                 draw_text_full(health_hud.text,health_hud.x+40,health_hud.y+30,100, health_hud.text_color); 
                
                 //pickup hud
-                DrawTexturePro(
-                    *pickup_hud.tx,
-                    (Rectangle){ //src
-                        .x=0,
-                        .y=0,
-                        .width=-1*pickup_hud.tx->width,
-                        .height=pickup_hud.tx->height
-                    },
-                    (Rectangle){ //dest
-                        .x=pickup_hud.x,
-                        .y=pickup_hud.y,
-                        .width=pickup_hud.tx->width,
-                        .height=pickup_hud.tx->height
-                    },
-                    (Vector2){ //origin
-                        .x=0,
-                        .y=0
-                    },
-                    0,
-                    WHITE
-                );
-                //TODO: FIX MACRO NOT DRAWING IN THE RIGHT PLACE
-                //DRAW_PRO(pickup_hud,-1,1,0);
+                DRAW_PRO(pickup_hud,-1,1,0);
                 if(red_soldier.pickup==1 || red_soldier.pickup==2)
-                    DrawTexture(*pickup.tx,pickup_hud.x+150, pickup_hud.y+25, WHITE);
+                    DrawTexture(TextureHolder.pickup[red_soldier.pickup-1],pickup_hud.x-10, pickup_hud.y-45, WHITE);
                 else
-                    draw_text_full(pickup_hud.text,pickup_hud.x+65,pickup_hud.y+40,64,WHITE);
+                    draw_text_full(pickup_hud.text,pickup_hud.x-90,pickup_hud.y-35,64,WHITE);
 
                 //score
                 draw_text_full("SCORE:", 10, 10, 64, WHITE);
