@@ -52,16 +52,16 @@ int main(void){
         ImageResizeNN(&image, 13*8, 11*8);
         TextureHolder.parachute=LoadTextureFromImage(image);
 
-        //TODO: RENAME PICKUP FILES pickup0, pickup1 AND LOAD USING A LOOP
-        //REMEMBER TO USE NUM_PICKUP CONSTANT
-        //MAKE THEM THE SAME SIZE
-        image=LoadImage(path_to_file("parachute_pickup.png"));
-        ImageResizeNN(&image, 16*4, 20*4);
-        TextureHolder.pickup[0]=LoadTextureFromImage(image);
-
-        image=LoadImage(path_to_file("crit_pickup.png"));
-        ImageResizeNN(&image,9*8,13*8);
-        TextureHolder.pickup[1]=LoadTextureFromImage(image);
+        for(int i=0; i<NUM_PICKUP; i++){
+            char name[12]="pickup";
+            char num[2];
+            sprintf(num,"%d",i);
+            strcat(name,num);
+            strcat(name,".png");
+            image=LoadImage(path_to_file(name));
+            ImageResizeNN(&image,image.width*8,image.height*8);
+            TextureHolder.pickup[i]=LoadTextureFromImage(image); 
+        }
 
         image=LoadImage(path_to_file("hud.png"));
         ImageResizeNN(&image,64*5,32*5);
