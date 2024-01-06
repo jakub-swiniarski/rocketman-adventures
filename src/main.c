@@ -26,70 +26,73 @@ int main(void){
 
     SetMasterVolume((float)volume/100);
 
-    //load and resize images, TODO: LIMIT SCOPE, SHOULD I UNLOAD FROM VRAM EVERY TIME I LOAD?
-    Image image=LoadImage(path_to_file("red_soldier.png"));
-    ImageResizeNN(&image,12*5,20*5);
-    TextureHolder.red_soldier=LoadTextureFromImage(image);
+    //load and resize images
+    {
+        Image image=LoadImage(path_to_file("red_soldier.png"));
+        ImageResizeNN(&image,12*5,20*5);
+        TextureHolder.red_soldier=LoadTextureFromImage(image);
 
-    image=LoadImage(path_to_file("rocket.png"));
-    ImageResizeNN(&image,30*3,8*3);
-    TextureHolder.rocket=LoadTextureFromImage(image);    
+        image=LoadImage(path_to_file("rocket.png"));
+        ImageResizeNN(&image,30*3,8*3);
+        TextureHolder.rocket=LoadTextureFromImage(image);    
 
-    image=LoadImage(path_to_file("launcher.png"));
-    ImageResizeNN(&image,20*5,8*5);
-    TextureHolder.launcher=LoadTextureFromImage(image);
+        image=LoadImage(path_to_file("launcher.png"));
+        ImageResizeNN(&image,20*5,8*5);
+        TextureHolder.launcher=LoadTextureFromImage(image);
 
-    image=LoadImage(path_to_file("particle_smoke.png"));
-    ImageResizeNN(&image,12*12,12*12);
-    TextureHolder.particle_smoke=LoadTextureFromImage(image);
+        image=LoadImage(path_to_file("particle_smoke.png"));
+        ImageResizeNN(&image,12*12,12*12);
+        TextureHolder.particle_smoke=LoadTextureFromImage(image);
 
-    image=LoadImage(path_to_file("platform.png"));
-    ImageResizeNN(&image,30*5,2*5);
-    TextureHolder.platform=LoadTextureFromImage(image);
+        image=LoadImage(path_to_file("platform.png"));
+        ImageResizeNN(&image,30*5,2*5);
+        TextureHolder.platform=LoadTextureFromImage(image);
 
-    image=LoadImage(path_to_file("parachute.png"));
-    ImageResizeNN(&image, 13*8, 11*8);
-    TextureHolder.parachute=LoadTextureFromImage(image);
+        image=LoadImage(path_to_file("parachute.png"));
+        ImageResizeNN(&image, 13*8, 11*8);
+        TextureHolder.parachute=LoadTextureFromImage(image);
 
-    //TODO: RENAME PICKUP FILES pickup0, pickup1 AND LOAD USING A LOOP
-    //REMEMBER TO USE NUM_PICKUP CONSTANT
-    image=LoadImage(path_to_file("parachute_pickup.png"));
-    ImageResizeNN(&image, 16*4, 20*4);
-    TextureHolder.pickup[0]=LoadTextureFromImage(image);
+        //TODO: RENAME PICKUP FILES pickup0, pickup1 AND LOAD USING A LOOP
+        //REMEMBER TO USE NUM_PICKUP CONSTANT
+        //MAKE THEM THE SAME SIZE
+        image=LoadImage(path_to_file("parachute_pickup.png"));
+        ImageResizeNN(&image, 16*4, 20*4);
+        TextureHolder.pickup[0]=LoadTextureFromImage(image);
 
-    image=LoadImage(path_to_file("crit_pickup.png"));
-    ImageResizeNN(&image,9*8,13*8);
-    TextureHolder.pickup[1]=LoadTextureFromImage(image);
+        image=LoadImage(path_to_file("crit_pickup.png"));
+        ImageResizeNN(&image,9*8,13*8);
+        TextureHolder.pickup[1]=LoadTextureFromImage(image);
 
-    image=LoadImage(path_to_file("hud.png"));
-    ImageResizeNN(&image,64*5,32*5);
-    TextureHolder.hud=LoadTextureFromImage(image);
+        image=LoadImage(path_to_file("hud.png"));
+        ImageResizeNN(&image,64*5,32*5);
+        TextureHolder.hud=LoadTextureFromImage(image);
 
-    image=LoadImage(path_to_file("health_pack.png"));
-    ImageResizeNN(&image,12*6,12*6);
-    TextureHolder.health_pack=LoadTextureFromImage(image);
+        image=LoadImage(path_to_file("health_pack.png"));
+        ImageResizeNN(&image,12*6,12*6);
+        TextureHolder.health_pack=LoadTextureFromImage(image);
 
-    image=LoadImage(path_to_file("button_normal.png"));
-    ImageResizeNN(&image, 50*8, 20*8);
-    TextureHolder.button[0]=LoadTextureFromImage(image);
+        image=LoadImage(path_to_file("button_normal.png"));
+        ImageResizeNN(&image, 50*8, 20*8);
+        TextureHolder.button[0]=LoadTextureFromImage(image);
 
-    image=LoadImage(path_to_file("button_hover.png"));
-    ImageResizeNN(&image, 50*8, 20*8);
-    TextureHolder.button[1]=LoadTextureFromImage(image);
+        image=LoadImage(path_to_file("button_hover.png"));
+        ImageResizeNN(&image, 50*8, 20*8);
+        TextureHolder.button[1]=LoadTextureFromImage(image);
 
-    //backgrounds 
-    for(int i=0; i<NUM_BG; i++){
-        char name[12]="bg";
-        char num[2];
-        sprintf(num,"%d",i);
-        strcat(name,num);
-        strcat(name,".png");
-        image=LoadImage(path_to_file(name));
-        ImageResizeNN(&image,SCREEN_WIDTH,SCREEN_HEIGHT);
-        TextureHolder.bg[i]=LoadTextureFromImage(image); 
+        //backgrounds 
+        for(int i=0; i<NUM_BG; i++){
+            char name[12]="bg";
+            char num[2];
+            sprintf(num,"%d",i);
+            strcat(name,num);
+            strcat(name,".png");
+            image=LoadImage(path_to_file(name));
+            ImageResizeNN(&image,SCREEN_WIDTH,SCREEN_HEIGHT);
+            TextureHolder.bg[i]=LoadTextureFromImage(image); 
+        }
+            
+        UnloadImage(image);
     }
-        
-    UnloadImage(image);
 
     //sfx
     Sound sfx_explosion=LoadSound(path_to_file("explosion.ogg"));
