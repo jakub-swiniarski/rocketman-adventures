@@ -655,7 +655,6 @@ int main(void){
     }
    
     //unload textures
-    //TODO: unload from texture holder
     UnloadTexture(TextureHolder.red_soldier);
     UnloadTexture(TextureHolder.rocket);
     UnloadTexture(TextureHolder.launcher);
