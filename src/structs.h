@@ -16,7 +16,7 @@ static struct{
     Texture platform;
     
     //pickups
-    Texture pickup[2];
+    Texture pickup[NUM_PICKUP];
     Texture health_pack;
 
     //hud
@@ -27,7 +27,7 @@ static struct{
     Texture particle_smoke;
  
     //backgrounds
-    Texture bg[9];
+    Texture bg[NUM_BG];
 } TextureHolder;
 
 typedef struct{
