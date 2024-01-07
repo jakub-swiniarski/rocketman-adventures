@@ -288,8 +288,8 @@ int main(void){
                     && abs(red_soldier.y+MIDDLE_Y(red_soldier)-rockets[i].y-MIDDLE_Y(rockets[i]))<100
                     && game_state!=2){
                         //rocket jump
-                        red_soldier.speed_x=red_soldier.crit_boost*-1*rockets[i].speed_x;
-                        red_soldier.speed_y=red_soldier.crit_boost*-1*rockets[i].speed_y; 
+                        red_soldier.speed_x+=red_soldier.crit_boost*-1*rockets[i].speed_x;
+                        red_soldier.speed_y+=red_soldier.crit_boost*-1*rockets[i].speed_y; 
                     
                         //damage
                         if(game_state==1){
