@@ -399,15 +399,15 @@ int main(void){
         
             if((IsMouseButtonPressed(SHOOT) || IsKeyPressed(SHOOT_ALT)) && red_soldier.cooldown<0){
                 red_soldier.cooldown=120;
-
+                
                 for(int i=0; i<MAX_ROCKETS; i++){
                     if(rockets[i].is_free){
                         rockets[i].is_free=0;
                         rockets[i].x=red_soldier.x+MIDDLE_X(rockets[i]);
                         rockets[i].y=red_soldier.y+MIDDLE_Y(rockets[i]);
                         rockets[i].rotation=90-atan2((red_soldier.x+MIDDLE_X(red_soldier)-mouse.x),(red_soldier.y+MIDDLE_Y(red_soldier)-mouse.y))*180/PI;
-                        rockets[i].speed_x=-1.2*cos(rockets[i].rotation*PI/180)*800;
-                        rockets[i].speed_y=-1.2*sin(rockets[i].rotation*PI/180)*800; 
+                        rockets[i].speed_x=-960*cos(rockets[i].rotation*PI/180);
+                        rockets[i].speed_y=-960*sin(rockets[i].rotation*PI/180); 
                         break;
                     }
                 }   
