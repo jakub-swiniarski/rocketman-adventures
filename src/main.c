@@ -669,6 +669,7 @@ int main(void){
     UnloadMusicStream(music_space);
 
     CloseAudioDevice();
+    //close window
     CloseWindow();
 
     return 0;
