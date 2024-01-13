@@ -538,7 +538,7 @@ int main(void){
                 (Rectangle){ //src
                     .x=0,
                     .y=0,
-                    .width=TextureHolder.parachute.width,
+                    .width=TextureHolder.parachute.width, //TODO: use parachute tx pointer
                     .height=TextureHolder.parachute.height
                 },
                 (Rectangle){ //dest
@@ -561,10 +561,30 @@ int main(void){
 
         //draw rockets
         for(int i=0; i<MAX_ROCKETS; i++)
-            DRAW_PRO(rockets[i],1,1,rockets[i].rotation,WHITE)
+            DRAW_PRO(rockets[i],1,1,rockets[i].rotation)
 
         //draw rocket launcher
-        DRAW_PRO(rl,1,rl.flip,rl.rotation,rl.color);
+        DrawTexturePro(
+            *rl.tx,
+            (Rectangle){ //src
+                .x=0,
+                .y=0,
+                .width=rl.tx->width,
+                .height=rl.tx->height*rl.flip
+            },
+            (Rectangle){ //dest
+                .x=rl.x,
+                .y=rl.y,
+                .width=rl.tx->width,
+                .height=rl.tx->height
+            },
+            (Vector2){ //origin
+                .x=MIDDLE_X(rl),
+                .y=MIDDLE_Y(rl)
+            },
+            rl.rotation,
+            rl.color
+        ); 
 
         //update particles
         for(int i=0; i<MAX_PARTICLES; i++){
@@ -576,7 +596,7 @@ int main(void){
             particles[i].alpha-=2*dt;
             
             //draw
-            DRAW_PRO(particles[i],1,1,particles[i].rotation,WHITE);
+            DRAW_PRO(particles[i],1,1,particles[i].rotation);
         } 
    
         //text and hud
@@ -607,7 +627,7 @@ int main(void){
                 draw_text_full(health_hud.text,health_hud.x+40,health_hud.y+30,100, health_hud.text_color); 
                
                 //pickup hud
-                DRAW_PRO(pickup_hud,-1,1,0,WHITE);
+                DRAW_PRO(pickup_hud,-1,1,0);
                 if(red_soldier.pickup==1 || red_soldier.pickup==2)
                     DrawTexture(TextureHolder.pickup[red_soldier.pickup-1],pickup_hud.x-10, pickup_hud.y-45, WHITE);
                 else
