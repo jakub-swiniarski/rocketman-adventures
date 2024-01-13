@@ -40,6 +40,7 @@ typedef struct{
     float slow_fall; //1 means no slow fall
     int crit_boost;
     int hp;
+    int flip; //1 means befault, -1 means flipped
 } Soldier;
 
 typedef struct{
@@ -54,7 +55,6 @@ typedef struct{
     Texture *tx;
     int x,y;
     int rotation;
-    int flip; //1 means befault, -1 means flipped
     Color color;
 } Launcher;
 

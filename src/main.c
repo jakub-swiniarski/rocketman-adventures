@@ -113,6 +113,7 @@ int main(void){
     //player
     Soldier red_soldier={
         .tx=&TextureHolder.red_soldier, 
+        .flip=1
     }; 
 
     //parachute
@@ -350,12 +351,17 @@ int main(void){
             }
 
             //update rocket launcher
-            rl.x=red_soldier.x+MIDDLE_X(red_soldier);
-            rl.y=red_soldier.y+MIDDLE_Y(red_soldier); 
             rl.rotation=270-atan2((red_soldier.x+MIDDLE_X(red_soldier)-mouse.x),(red_soldier.y+MIDDLE_Y(red_soldier)-mouse.y))*180/PI; 
-        
-            //flip the rocket launcher to prevent it from going upside down
-            rl.flip=mouse.x<red_soldier.x+MIDDLE_X(red_soldier)?-1:1;
+            if(mouse.x<red_soldier.x+MIDDLE_X(red_soldier)){
+                red_soldier.flip=-1;
+                rl.x=red_soldier.x;
+                rl.y=red_soldier.y-60;
+            }
+            else{
+                rl.x=red_soldier.x-10;
+                red_soldier.flip=1;
+                rl.y=red_soldier.y-50; 
+            }
             
             //update player position
             red_soldier.x+=red_soldier.speed_x*dt;
@@ -557,7 +563,7 @@ int main(void){
         }
         
         //draw player
-        DRAW(red_soldier);
+        DRAW_PRO(red_soldier,red_soldier.flip,1,0);
 
         //draw rockets
         for(int i=0; i<MAX_ROCKETS; i++)
@@ -570,7 +576,7 @@ int main(void){
                 .x=0,
                 .y=0,
                 .width=rl.tx->width,
-                .height=rl.tx->height*rl.flip
+                .height=rl.tx->height*red_soldier.flip
             },
             (Rectangle){ //dest
                 .x=rl.x,
@@ -579,8 +585,8 @@ int main(void){
                 .height=rl.tx->height
             },
             (Vector2){ //origin
-                .x=MIDDLE_X(rl),
-                .y=MIDDLE_Y(rl)
+                .x=40,
+                .y=40
             },
             rl.rotation,
             rl.color
