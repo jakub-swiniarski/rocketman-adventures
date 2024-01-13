@@ -41,7 +41,7 @@ int main(void){
         TextureHolder.launcher=LoadTextureFromImage(image);
 
         image=LoadImage(path_to_file("particle_smoke.png"));
-        ImageResizeNN(&image,image.width*12,image.height*12);
+        ImageResizeNN(&image,image.width*15,image.height*15);
         TextureHolder.particle_smoke=LoadTextureFromImage(image);
 
         image=LoadImage(path_to_file("platform.png"));
@@ -550,7 +550,7 @@ int main(void){
                 },
                 (Rectangle){ //dest
                     .x=red_soldier.x+MIDDLE_X(red_soldier),
-                    .y=red_soldier.y,
+                    .y=red_soldier.y+10,
                     .width=TextureHolder.parachute.width,
                     .height=TextureHolder.parachute.height
                 },
