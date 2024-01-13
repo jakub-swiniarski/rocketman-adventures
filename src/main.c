@@ -194,8 +194,8 @@ int main(void){
     //pickup hud
     HUD pickup_hud={
         .tx=&TextureHolder.hud,
-        .x=SCREEN_WIDTH-(TextureHolder.hud.width)/2-5,
-        .y=SCREEN_HEIGHT-(TextureHolder.hud.height)/2-5,
+        .x=SCREEN_WIDTH-TextureHolder.hud.width-5,
+        .y=SCREEN_HEIGHT-TextureHolder.hud.height-5,
         .text="EMPTY"
     };
 
@@ -354,14 +354,14 @@ int main(void){
             rl.rotation=270-atan2((red_soldier.x+MIDDLE_X(red_soldier)-mouse.x),(red_soldier.y+MIDDLE_Y(red_soldier)-mouse.y))*180/PI; 
             if(mouse.x<red_soldier.x+MIDDLE_X(red_soldier)){
                 red_soldier.flip=-1;
-                rl.x=red_soldier.x+10;
-                rl.y=red_soldier.y-60;
+                rl.x=red_soldier.x+40;
             }
             else{
-                rl.x=red_soldier.x-10;
+                rl.x=red_soldier.x+25;
                 red_soldier.flip=1;
-                rl.y=red_soldier.y-50; 
             }
+            rl.y=red_soldier.y+45;
+
             
             //update player position
             red_soldier.x+=red_soldier.speed_x*dt;
@@ -635,9 +635,9 @@ int main(void){
                 //pickup hud
                 DRAW_PRO(pickup_hud,-1,1,0);
                 if(red_soldier.pickup==1 || red_soldier.pickup==2)
-                    DrawTexture(TextureHolder.pickup[red_soldier.pickup-1],pickup_hud.x-10, pickup_hud.y-45, WHITE);
+                    DrawTexture(TextureHolder.pickup[red_soldier.pickup-1],pickup_hud.x+150, pickup_hud.y+25, WHITE);
                 else
-                    draw_text_full(pickup_hud.text,pickup_hud.x-90,pickup_hud.y-35,64,WHITE);
+                    draw_text_full(pickup_hud.text,pickup_hud.x+65,pickup_hud.y+40,64,WHITE);
 
                 //score
                 draw_text_full("SCORE:", 10, 10, 64, WHITE);
