@@ -354,7 +354,7 @@ int main(void){
             rl.rotation=270-atan2((red_soldier.x+MIDDLE_X(red_soldier)-mouse.x),(red_soldier.y+MIDDLE_Y(red_soldier)-mouse.y))*180/PI; 
             if(mouse.x<red_soldier.x+MIDDLE_X(red_soldier)){
                 red_soldier.flip=-1;
-                rl.x=red_soldier.x;
+                rl.x=red_soldier.x+10;
                 rl.y=red_soldier.y-60;
             }
             else{
