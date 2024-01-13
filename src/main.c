@@ -571,27 +571,7 @@ int main(void){
             DRAW_PRO(rockets[i],1,1,rockets[i].rotation,MIDDLE_X(rockets[i]),MIDDLE_Y(rockets[i]))
 
         //draw rocket launcher
-        DrawTexturePro(
-            *rl.tx,
-            (Rectangle){ //src
-                .x=0,
-                .y=0,
-                .width=rl.tx->width,
-                .height=rl.tx->height*red_soldier.flip
-            },
-            (Rectangle){ //dest
-                .x=rl.x,
-                .y=rl.y,
-                .width=rl.tx->width,
-                .height=rl.tx->height
-            },
-            (Vector2){ //origin
-                .x=40,
-                .y=40
-            },
-            rl.rotation,
-            rl.color
-        ); 
+        DRAW_PRO(rl,1,red_soldier.flip,rl.rotation,40,40);
 
         //update particles
         for(int i=0; i<MAX_PARTICLES; i++){
