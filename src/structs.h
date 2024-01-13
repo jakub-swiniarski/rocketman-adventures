@@ -41,6 +41,7 @@ typedef struct{
     int crit_boost;
     int hp;
     int flip; //1 means befault, -1 means flipped
+    Color color;
 } Soldier;
 
 typedef struct{
@@ -55,7 +56,6 @@ typedef struct{
     Texture *tx;
     int x,y;
     int rotation;
-    Color color;
 } Launcher;
 
 typedef struct{
