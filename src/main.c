@@ -561,10 +561,10 @@ int main(void){
 
         //draw rockets
         for(int i=0; i<MAX_ROCKETS; i++)
-            DRAW_PRO(rockets[i],1,1,rockets[i].rotation)
+            DRAW_PRO(rockets[i],1,1,rockets[i].rotation,WHITE)
 
         //draw rocket launcher
-        DRAW_PRO(rl,1,rl.flip,rl.rotation);
+        DRAW_PRO(rl,1,rl.flip,rl.rotation,rl.color);
 
         //update particles
         for(int i=0; i<MAX_PARTICLES; i++){
@@ -576,7 +576,7 @@ int main(void){
             particles[i].alpha-=2*dt;
             
             //draw
-            DRAW_PRO(particles[i],1,1,particles[i].rotation);
+            DRAW_PRO(particles[i],1,1,particles[i].rotation,WHITE);
         } 
    
         //text and hud
@@ -607,7 +607,7 @@ int main(void){
                 draw_text_full(health_hud.text,health_hud.x+40,health_hud.y+30,100, health_hud.text_color); 
                
                 //pickup hud
-                DRAW_PRO(pickup_hud,-1,1,0);
+                DRAW_PRO(pickup_hud,-1,1,0,WHITE);
                 if(red_soldier.pickup==1 || red_soldier.pickup==2)
                     DrawTexture(TextureHolder.pickup[red_soldier.pickup-1],pickup_hud.x-10, pickup_hud.y-45, WHITE);
                 else
