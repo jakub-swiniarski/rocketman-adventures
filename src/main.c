@@ -285,8 +285,8 @@ int main(void){
                         }
                     }
 
-                    if(abs(red_soldier.x+MIDDLE_X(red_soldier)-rockets[i].x-MIDDLE_X(rockets[i]))<100 
-                    && abs(red_soldier.y+MIDDLE_Y(red_soldier)-rockets[i].y-MIDDLE_Y(rockets[i]))<100
+                    if(abs(red_soldier.x+MIDDLE_X(red_soldier)-rockets[i].x-MIDDLE_X(rockets[i]))<200 
+                    && abs(red_soldier.y+MIDDLE_Y(red_soldier)-rockets[i].y-MIDDLE_Y(rockets[i]))<200
                     && game_state!=2){
                         //rocket jump
                         red_soldier.speed_x+=red_soldier.crit_boost*-1*rockets[i].speed_x;
@@ -355,13 +355,12 @@ int main(void){
             if(mouse.x<red_soldier.x+MIDDLE_X(red_soldier)){
                 red_soldier.flip=-1;
                 rl.x=red_soldier.x+40;
-                rl.y=red_soldier.y+30;
             }
             else{
                 rl.x=red_soldier.x+25;
                 red_soldier.flip=1;
-                rl.y=red_soldier.y+45;
             }
+            rl.y=red_soldier.y+45;
 
             
             //update player position
@@ -571,7 +570,7 @@ int main(void){
             DRAW_PRO(rockets[i],1,1,rockets[i].rotation,MIDDLE_X(rockets[i]),MIDDLE_Y(rockets[i]))
 
         //draw rocket launcher
-        DRAW_PRO(rl,1,red_soldier.flip,rl.rotation,40,40);
+        DRAW_PRO(rl,1,red_soldier.flip,rl.rotation,50,40);
 
         //update particles
         for(int i=0; i<MAX_PARTICLES; i++){
