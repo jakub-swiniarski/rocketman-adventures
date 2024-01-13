@@ -113,7 +113,8 @@ int main(void){
     //player
     Soldier red_soldier={
         .tx=&TextureHolder.red_soldier, 
-        .flip=1
+        .flip=1,
+        .color=WHITE
     }; 
 
     //parachute
@@ -128,7 +129,6 @@ int main(void){
         .x=0,
         .y=0,
         .rotation=0,
-        .color=WHITE
     };
 
     //background
@@ -309,7 +309,7 @@ int main(void){
                     
                     if(red_soldier.pickup_active==2){
                         red_soldier.crit_boost=1;
-                        rl.color=WHITE;
+                        red_soldier.color=WHITE;
                         red_soldier.pickup_active=0;
                     }
                 }
@@ -430,7 +430,7 @@ int main(void){
 
                     case 2:
                         red_soldier.crit_boost=2;
-                        rl.color=RED;    
+                        red_soldier.color=RED;    
                     break; 
                 }
             }
@@ -563,14 +563,14 @@ int main(void){
         }
         
         //draw player
-        DRAW_PRO(red_soldier,red_soldier.flip,1,0,0,0);
+        DRAW_PRO(red_soldier,red_soldier.flip,1,0,0,0,red_soldier.color);
 
         //draw rockets
         for(int i=0; i<MAX_ROCKETS; i++)
-            DRAW_PRO(rockets[i],1,1,rockets[i].rotation,MIDDLE_X(rockets[i]),MIDDLE_Y(rockets[i]))
+            DRAW_PRO(rockets[i],1,1,rockets[i].rotation,MIDDLE_X(rockets[i]),MIDDLE_Y(rockets[i]),red_soldier.color)
 
         //draw rocket launcher
-        DRAW_PRO(rl,1,red_soldier.flip,rl.rotation,50,40);
+        DRAW_PRO(rl,1,red_soldier.flip,rl.rotation,50,40,red_soldier.color);
 
         //update particles
         for(int i=0; i<MAX_PARTICLES; i++){
@@ -582,7 +582,7 @@ int main(void){
             particles[i].alpha-=2*dt;
             
             //draw
-            DRAW_PRO(particles[i],1,1,particles[i].rotation,MIDDLE_X(particles[i]),MIDDLE_Y(particles[i]));
+            DRAW_PRO(particles[i],1,1,particles[i].rotation,MIDDLE_X(particles[i]),MIDDLE_Y(particles[i]),WHITE);
         } 
    
         //text and hud
@@ -613,7 +613,7 @@ int main(void){
                 draw_text_full(health_hud.text,health_hud.x+40,health_hud.y+30,100, health_hud.text_color); 
                
                 //pickup hud
-                DRAW_PRO(pickup_hud,-1,1,0,0,0);
+                DRAW_PRO(pickup_hud,-1,1,0,0,0,WHITE);
                 if(red_soldier.pickup==1 || red_soldier.pickup==2)
                     DrawTexture(TextureHolder.pickup[red_soldier.pickup-1],pickup_hud.x+150, pickup_hud.y+25, WHITE);
                 else
