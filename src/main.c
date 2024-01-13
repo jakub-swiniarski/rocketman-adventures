@@ -214,7 +214,7 @@ int main(void){
 
     red_soldier.x=(int)(SCREEN_WIDTH/2)-red_soldier.tx->width;
     red_soldier.y=SCREEN_HEIGHT-red_soldier.tx->height; 
-    red_soldier.speed_x=red_soldier.speed_y=red_soldier.cooldown=red_soldier.falling=0;
+    red_soldier.speed_x=red_soldier.speed_y=red_soldier.cooldown=red_soldier.falling=red_soldier.pickup=red_soldier.pickup=0;
     red_soldier.slow_fall=red_soldier.crit_boost=1;
     red_soldier.hp=200;
 
