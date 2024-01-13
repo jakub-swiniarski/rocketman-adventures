@@ -1,13 +1,12 @@
 SOURCES=$(wildcard src/*.c)
 HEADERS=$(wildcard src/*.h)
 OBJECTS=$(patsubst src/%.c,%.o,$(SOURCES))
-FLAGS=-lraylib -lm
 
 rocketman: $(OBJECTS)
-	gcc -o rocketman $(OBJECTS) $(FLAGS)
+	gcc -o rocketman $(OBJECTS) -lraylib -lm
 
 $(OBJECTS): $(SOURCES) $(HEADERS)
-	gcc -c $(SOURCES)
+	gcc -c $(SOURCES) -O2
 
 .PHONY: clean run install uninstall
 
