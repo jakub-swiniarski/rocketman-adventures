@@ -355,12 +355,13 @@ int main(void){
             if(mouse.x<red_soldier.x+MIDDLE_X(red_soldier)){
                 red_soldier.flip=-1;
                 rl.x=red_soldier.x+40;
+                rl.y=red_soldier.y+30;
             }
             else{
                 rl.x=red_soldier.x+25;
                 red_soldier.flip=1;
+                rl.y=red_soldier.y+45;
             }
-            rl.y=red_soldier.y+45;
 
             
             //update player position
@@ -409,8 +410,8 @@ int main(void){
                 for(int i=0; i<MAX_ROCKETS; i++){
                     if(rockets[i].is_free){
                         rockets[i].is_free=0;
-                        rockets[i].x=red_soldier.x+MIDDLE_X(rockets[i]);
-                        rockets[i].y=red_soldier.y+MIDDLE_Y(rockets[i]);
+                        rockets[i].x=red_soldier.x+MIDDLE_X(red_soldier);
+                        rockets[i].y=red_soldier.y+MIDDLE_Y(red_soldier)/4;
                         rockets[i].rotation=90-atan2((red_soldier.x+MIDDLE_X(red_soldier)-mouse.x),(red_soldier.y+MIDDLE_Y(red_soldier)-mouse.y))*180/PI;
                         rockets[i].speed_x=-960*cos(rockets[i].rotation*PI/180);
                         rockets[i].speed_y=-960*sin(rockets[i].rotation*PI/180); 
