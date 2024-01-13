@@ -564,11 +564,11 @@ int main(void){
         }
         
         //draw player
-        DRAW_PRO(red_soldier,red_soldier.flip,1,0);
+        DRAW_PRO(red_soldier,red_soldier.flip,1,0,0,0);
 
         //draw rockets
         for(int i=0; i<MAX_ROCKETS; i++)
-            DRAW_PRO(rockets[i],1,1,rockets[i].rotation)
+            DRAW_PRO(rockets[i],1,1,rockets[i].rotation,MIDDLE_X(rockets[i]),MIDDLE_Y(rockets[i]))
 
         //draw rocket launcher
         DrawTexturePro(
@@ -603,7 +603,7 @@ int main(void){
             particles[i].alpha-=2*dt;
             
             //draw
-            DRAW_PRO(particles[i],1,1,particles[i].rotation);
+            DRAW_PRO(particles[i],1,1,particles[i].rotation,MIDDLE_X(particles[i]),MIDDLE_Y(particles[i]));
         } 
    
         //text and hud
@@ -634,7 +634,7 @@ int main(void){
                 draw_text_full(health_hud.text,health_hud.x+40,health_hud.y+30,100, health_hud.text_color); 
                
                 //pickup hud
-                DRAW_PRO(pickup_hud,-1,1,0);
+                DRAW_PRO(pickup_hud,-1,1,0,0,0);
                 if(red_soldier.pickup==1 || red_soldier.pickup==2)
                     DrawTexture(TextureHolder.pickup[red_soldier.pickup-1],pickup_hud.x+150, pickup_hud.y+25, WHITE);
                 else
