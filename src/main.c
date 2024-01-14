@@ -351,6 +351,8 @@ int main(void){
             }
             else
                 red_soldier.state=Standing;
+            if(red_soldier.speed_y<-100 || red_soldier.speed_y>100)
+                red_soldier.state=Jumping;
             //reset parachute rotation
             if(!IsKeyDown(MOVE_LEFT) && !IsKeyDown(MOVE_RIGHT)) //if not moving horizontally
                 parachute.rotation+=parachute.rotation>0?-100*dt:100*dt;
@@ -588,6 +590,10 @@ int main(void){
                     red_soldier.tx=&TextureHolder.red_soldier[red_soldier.frame%6];
                     red_soldier.anim_cooldown=12;
                 }
+            break;
+
+            case Jumping:
+                red_soldier.tx=&TextureHolder.red_soldier[0];
             break;
         }
         DRAW_PRO(red_soldier,red_soldier.flip,1,0,0,0,red_soldier.color);
