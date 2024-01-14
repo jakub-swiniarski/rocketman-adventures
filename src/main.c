@@ -223,7 +223,8 @@ int main(void){
 
     red_soldier.x=(int)(SCREEN_WIDTH/2)-red_soldier.tx->width;
     red_soldier.y=SCREEN_HEIGHT-red_soldier.tx->height; 
-    red_soldier.speed_x=red_soldier.speed_y=red_soldier.cooldown=red_soldier.falling=red_soldier.pickup=red_soldier.pickup=0;
+    red_soldier.speed_x=red_soldier.speed_y=red_soldier.rl_cooldown=red_soldier.falling=red_soldier.pickup=red_soldier.pickup=red_soldier.anim_cooldown=0;
+    red_soldier.state=Standing;
     red_soldier.slow_fall=red_soldier.crit_boost=1;
     red_soldier.hp=200;
 
@@ -336,16 +337,20 @@ int main(void){
             //movement 
             if(IsKeyDown(MOVE_RIGHT) && !IsKeyDown(MOVE_LEFT)){
                 red_soldier.x+=150*dt;
+                red_soldier.state=Walking;
 
                 if(red_soldier.pickup_active==1 && parachute.rotation>-30)
                     parachute.rotation-=60*dt;
             }
-            if(IsKeyDown(MOVE_LEFT) && !IsKeyDown(MOVE_RIGHT)){
+            else if(IsKeyDown(MOVE_LEFT) && !IsKeyDown(MOVE_RIGHT)){
                 red_soldier.x-=150*dt;
+                red_soldier.state=Walking;
             
                 if(red_soldier.pickup_active==1 && parachute.rotation<30)
                     parachute.rotation+=60*dt;
             }
+            else
+                red_soldier.state=Standing;
             //reset parachute rotation
             if(!IsKeyDown(MOVE_LEFT) && !IsKeyDown(MOVE_RIGHT)) //if not moving horizontally
                 parachute.rotation+=parachute.rotation>0?-100*dt:100*dt;
@@ -411,8 +416,8 @@ int main(void){
                 red_soldier.speed_y+=1000*dt;
             } 
         
-            if((IsMouseButtonPressed(SHOOT) || IsKeyPressed(SHOOT_ALT)) && red_soldier.cooldown<0){
-                red_soldier.cooldown=120;
+            if((IsMouseButtonPressed(SHOOT) || IsKeyPressed(SHOOT_ALT)) && red_soldier.rl_cooldown<0){
+                red_soldier.rl_cooldown=120;
                 
                 for(int i=0; i<MAX_ROCKETS; i++){
                     if(rockets[i].is_free){
@@ -451,7 +456,7 @@ int main(void){
             soldier_border_check(&red_soldier);
     
             //update cooldowns
-            red_soldier.cooldown-=150*dt;
+            red_soldier.rl_cooldown-=150*dt;
 
             //update rockets
             for(int i=0; i<MAX_ROCKETS; i++){
@@ -571,6 +576,20 @@ int main(void){
         }
         
         //draw player
+        switch(red_soldier.state){
+            case Standing:
+                red_soldier.tx=&TextureHolder.red_soldier[0];
+            break;
+
+            case Walking:
+                red_soldier.anim_cooldown-=150*dt;
+                if(red_soldier.anim_cooldown<0){
+                    red_soldier.frame++; 
+                    red_soldier.tx=&TextureHolder.red_soldier[red_soldier.frame%6];
+                    red_soldier.anim_cooldown=12;
+                }
+            break;
+        }
         DRAW_PRO(red_soldier,red_soldier.flip,1,0,0,0,red_soldier.color);
 
         //draw rockets
