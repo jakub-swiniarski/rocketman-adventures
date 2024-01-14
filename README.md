@@ -11,9 +11,9 @@ This project is just for fun, so there are no big updates planned. <br>
 
 ---
 
-<img src="https://github.com/jakub-swiniarski/rocketman-adventures/assets/77209709/3f56512e-3dc0-44a0-9ad9-c7fa0d7ab261">
-<img src="https://github.com/jakub-swiniarski/rocketman-adventures/assets/77209709/a46876ce-20cc-4b01-9c5f-ae316cc0be3f">
-<img src="https://github.com/jakub-swiniarski/rocketman-adventures/assets/77209709/800aafdf-5149-403b-a4c4-f5a3a1d7f053">
+![image](https://github.com/jakub-swiniarski/rocketman-adventures/assets/77209709/dafc0d9a-aef5-4fa3-9af4-68d0da6f5e79)
+![image](https://github.com/jakub-swiniarski/rocketman-adventures/assets/77209709/4a6b64c0-d6fb-4163-8639-5e2d9e9c06e7)
+![image](https://github.com/jakub-swiniarski/rocketman-adventures/assets/77209709/d342e54c-d502-4866-8661-a5babbba3ff9)
 
 ## How to install?
 ### Prerequisites:
