@@ -7,7 +7,8 @@
 
 static struct{
     //soldier
-    Texture red_soldier;
+    Texture red_soldier[6];
+    Texture red_soldier_jumping;
     Texture rocket;
     Texture launcher;
     Texture parachute; 
@@ -34,12 +35,17 @@ typedef struct{
     Texture *tx;
     int x,y;
     int speed_x, speed_y; //used for gravity and jumping
-    int cooldown;
+    int rl_cooldown;
     bool falling;
     int pickup, pickup_active;
     float slow_fall; //1 means no slow fall
     int crit_boost;
     int hp;
+    int flip; //1 means befault, -1 means flipped
+    Color color;
+    int state;
+    int anim_cooldown;
+    int frame;
 } Soldier;
 
 typedef struct{
@@ -54,8 +60,6 @@ typedef struct{
     Texture *tx;
     int x,y;
     int rotation;
-    int flip; //1 means befault, -1 means flipped
-    Color color;
 } Launcher;
 
 typedef struct{
