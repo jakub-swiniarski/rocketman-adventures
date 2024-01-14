@@ -28,7 +28,7 @@ int main(void){
 
     //load and resize images
     {
-        Image image=LoadImage(path_to_file("red_soldier.png"));
+        Image image=LoadImage(path_to_file("red_soldier0.png"));
         ImageResizeNN(&image,image.width*5,image.height*5);
         TextureHolder.red_soldier=LoadTextureFromImage(image);
 
