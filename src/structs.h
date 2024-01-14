@@ -8,6 +8,7 @@
 static struct{
     //soldier
     Texture red_soldier[6];
+    Texture red_soldier_jumping;
     Texture rocket;
     Texture launcher;
     Texture parachute; 

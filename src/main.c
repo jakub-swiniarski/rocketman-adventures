@@ -40,6 +40,10 @@ int main(void){
             TextureHolder.red_soldier[i]=LoadTextureFromImage(image); 
         }
 
+        image=LoadImage(path_to_file("red_soldier_jumping.png"));
+        ImageResizeNN(&image,image.width*5,image.height*5);
+        TextureHolder.red_soldier_jumping=LoadTextureFromImage(image);
+
         image=LoadImage(path_to_file("rocket.png"));
         ImageResizeNN(&image,image.width*3,image.height*3);
         TextureHolder.rocket=LoadTextureFromImage(image);    
@@ -61,7 +65,7 @@ int main(void){
         TextureHolder.parachute=LoadTextureFromImage(image);
 
         for(int i=0; i<NUM_PICKUP; i++){
-            char name[12]="pickup";
+            char name[16]="pickup";
             char num[2];
             sprintf(num,"%d",i);
             strcat(name,num);
@@ -80,7 +84,7 @@ int main(void){
         TextureHolder.health_pack=LoadTextureFromImage(image);
         
         for(int i=0; i<2; i++){
-            char name[12]="button";
+            char name[16]="button";
             char num[2];
             sprintf(num,"%d",i);
             strcat(name,num);
@@ -92,7 +96,7 @@ int main(void){
 
         //backgrounds 
         for(int i=0; i<NUM_BG; i++){
-            char name[12]="bg";
+            char name[16]="bg";
             char num[2];
             sprintf(num,"%d",i);
             strcat(name,num);
@@ -593,7 +597,7 @@ int main(void){
             break;
 
             case Jumping:
-                red_soldier.tx=&TextureHolder.red_soldier[0];
+                red_soldier.tx=&TextureHolder.red_soldier_jumping;
             break;
         }
         DRAW_PRO(red_soldier,red_soldier.flip,1,0,0,0,red_soldier.color);
