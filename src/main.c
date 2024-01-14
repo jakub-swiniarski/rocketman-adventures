@@ -80,7 +80,7 @@ int main(void){
         TextureHolder.hud=LoadTextureFromImage(image);
 
         image=LoadImage(path_to_file("health_pack.png"));
-        ImageResizeNN(&image,image.width*6,image.height*6);
+        ImageResizeNN(&image,image.width*5,image.height*5);
         TextureHolder.health_pack=LoadTextureFromImage(image);
         
         for(int i=0; i<2; i++){
