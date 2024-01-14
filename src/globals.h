@@ -6,6 +6,8 @@ static const int MAX_PARTICLES=MAX_ROCKETS*2;
 #define NUM_BG 9
 #define NUM_PICKUP 2
 
+enum {Standing, Walking};
+
 static const char *DIRECTORY="res/";
 static const char *VERSION="1.7.1";
 
