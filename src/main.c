@@ -566,18 +566,18 @@ int main(void){
                 (Rectangle){ //src
                     .x=0,
                     .y=0,
-                    .width=TextureHolder.parachute.width, //TODO: use parachute tx pointer
-                    .height=TextureHolder.parachute.height
+                    .width=parachute.tx->width,
+                    .height=parachute.tx->height
                 },
                 (Rectangle){ //dest
                     .x=red_soldier.x+MIDDLE_X(red_soldier),
                     .y=red_soldier.y+10,
-                    .width=TextureHolder.parachute.width,
-                    .height=TextureHolder.parachute.height
+                    .width=parachute.tx->width,
+                    .height=parachute.tx->height
                 },
                 (Vector2){ //origin
-                    .x=(int)(TextureHolder.parachute.width/2),
-                    .y=TextureHolder.parachute.height
+                    .x=(int)(parachute.tx->width/2),
+                    .y=parachute.tx->height
                 },
                 parachute.rotation,
                 WHITE
