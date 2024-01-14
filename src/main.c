@@ -179,6 +179,7 @@ int main(void){
     //pickups
     Pickup pickup={
         .tx=&TextureHolder.pickup[0], 
+        .id=PARACHUTE
     };
 
     //health packs
@@ -227,7 +228,8 @@ int main(void){
 
     red_soldier.x=(int)(SCREEN_WIDTH/2)-red_soldier.tx->width;
     red_soldier.y=SCREEN_HEIGHT-red_soldier.tx->height; 
-    red_soldier.speed_x=red_soldier.speed_y=red_soldier.rl_cooldown=red_soldier.falling=red_soldier.pickup=red_soldier.pickup=red_soldier.anim_cooldown=0;
+    red_soldier.speed_x=red_soldier.speed_y=red_soldier.rl_cooldown=red_soldier.falling=red_soldier.anim_cooldown=0;
+    red_soldier.pickup=red_soldier.pickup_active=NONE;
     red_soldier.state=STANDING;
     red_soldier.slow_fall=red_soldier.crit_boost=1;
     red_soldier.hp=200;
@@ -249,7 +251,7 @@ int main(void){
     } 
 
     pickup.x=pickup.y=-100;
-    pickup.id=1;    
+    pickup.id=PARACHUTE;    
 
     for(int i=0; i<NUM_HEALTH_PACKS; i++)
         health_packs[i]=new_health_pack;
@@ -320,10 +322,10 @@ int main(void){
                         }
                     }
                     
-                    if(red_soldier.pickup_active==2){
+                    if(red_soldier.pickup_active==CRIT){
                         red_soldier.crit_boost=1;
                         red_soldier.color=WHITE;
-                        red_soldier.pickup_active=0;
+                        red_soldier.pickup_active=NONE;
                     }
                 }
                 
@@ -343,14 +345,14 @@ int main(void){
                 red_soldier.x+=150*dt;
                 red_soldier.state=WALKING;
 
-                if(red_soldier.pickup_active==1 && parachute.rotation>-30)
+                if(red_soldier.pickup_active==PARACHUTE && parachute.rotation>-30)
                     parachute.rotation-=60*dt;
             }
             else if(IsKeyDown(MOVE_LEFT) && !IsKeyDown(MOVE_RIGHT)){
                 red_soldier.x-=150*dt;
                 red_soldier.state=WALKING;
             
-                if(red_soldier.pickup_active==1 && parachute.rotation<30)
+                if(red_soldier.pickup_active==PARACHUTE && parachute.rotation<30)
                     parachute.rotation+=60*dt;
             }
             else
@@ -362,9 +364,9 @@ int main(void){
                 parachute.rotation+=parachute.rotation>0?-100*dt:100*dt;
             if(IsKeyDown(JUMP) && !red_soldier.falling){
                 PlaySound(sfx_jump);
-                if(red_soldier.pickup_active==1){
+                if(red_soldier.pickup_active==PARACHUTE){
                     red_soldier.slow_fall=1;                     
-                    red_soldier.pickup_active=0;
+                    red_soldier.pickup_active=NONE;
                 }
                 red_soldier.speed_y=-400;
             }
@@ -441,13 +443,13 @@ int main(void){
             //ACTIVATE PICKUP
             if(IsKeyPressed(USE_PICKUP)){
                 red_soldier.pickup_active=red_soldier.pickup;
-                red_soldier.pickup=0;
+                red_soldier.pickup=NONE;
                 switch(red_soldier.pickup_active){
-                    case 1:
+                    case PARACHUTE:
                         red_soldier.slow_fall=0.2;
                     break;
 
-                    case 2:
+                    case CRIT:
                         red_soldier.crit_boost=2;
                         red_soldier.color=RED;    
                     break; 
@@ -651,7 +653,7 @@ int main(void){
                
                 //pickup hud
                 DRAW_PRO(pickup_hud,-1,1,0,0,0,WHITE);
-                if(red_soldier.pickup==1 || red_soldier.pickup==2)
+                if(red_soldier.pickup!=NONE)
                     DrawTexture(TextureHolder.pickup[red_soldier.pickup-1],pickup_hud.x+150, pickup_hud.y+25, WHITE);
                 else
                     draw_text_full(pickup_hud.text,pickup_hud.x+65,pickup_hud.y+40,64,WHITE);
