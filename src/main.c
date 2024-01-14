@@ -28,9 +28,17 @@ int main(void){
 
     //load and resize images
     {
-        Image image=LoadImage(path_to_file("red_soldier0.png"));
-        ImageResizeNN(&image,image.width*5,image.height*5);
-        TextureHolder.red_soldier=LoadTextureFromImage(image);
+        Image image;
+        for(int i=0; i<6; i++){
+            char name[16]="red_soldier";
+            char num[2];
+            sprintf(num,"%d",i);
+            strcat(name,num);
+            strcat(name,".png");
+            image=LoadImage(path_to_file(name));
+            ImageResizeNN(&image,image.width*5,image.height*5);
+            TextureHolder.red_soldier[i]=LoadTextureFromImage(image); 
+        }
 
         image=LoadImage(path_to_file("rocket.png"));
         ImageResizeNN(&image,image.width*3,image.height*3);
@@ -112,7 +120,7 @@ int main(void){
 
     //player
     Soldier red_soldier={
-        .tx=&TextureHolder.red_soldier, 
+        .tx=&TextureHolder.red_soldier[0], 
         .flip=1,
         .color=WHITE
     }; 
@@ -648,7 +656,8 @@ int main(void){
     }
    
     //unload textures
-    UnloadTexture(TextureHolder.red_soldier);
+    for(int i=0; i<6; i++)
+        UnloadTexture(TextureHolder.red_soldier[i]);
     UnloadTexture(TextureHolder.rocket);
     UnloadTexture(TextureHolder.launcher);
     UnloadTexture(TextureHolder.parachute);
