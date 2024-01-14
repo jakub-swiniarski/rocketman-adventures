@@ -120,7 +120,7 @@ int main(void){
     Music music_normal=LoadMusicStream(path_to_file("soundtrack_normal.ogg"));
     Music music_space=LoadMusicStream(path_to_file("soundtrack_space.ogg"));
 
-    int game_state; //0 - not started, 1 - in progress, 2 - game over
+    int game_state;
 
     //player
     Soldier red_soldier={
@@ -222,7 +222,7 @@ int main(void){
     Vector2 mouse;
     
     START:
-    game_state=0;
+    game_state=Menu;
     level=1;
 
     red_soldier.x=(int)(SCREEN_WIDTH/2)-red_soldier.tx->width;
@@ -300,16 +300,16 @@ int main(void){
 
                     if(abs(red_soldier.x+MIDDLE_X(red_soldier)-rockets[i].x-MIDDLE_X(rockets[i]))<200 
                     && abs(red_soldier.y+MIDDLE_Y(red_soldier)-rockets[i].y-MIDDLE_Y(rockets[i]))<200
-                    && game_state!=2){
+                    && game_state!=Over){
                         //rocket jump
                         red_soldier.speed_x+=red_soldier.crit_boost*-1*rockets[i].speed_x;
                         red_soldier.speed_y+=red_soldier.crit_boost*-1*rockets[i].speed_y; 
                     
                         //damage
-                        if(game_state==1){
+                        if(game_state==Normal){
                             red_soldier.hp-=20*red_soldier.crit_boost;
                             if(red_soldier.hp<=0){
-                                game_state=2;
+                                game_state=Over;
                                 PlaySound(sfx_death);
 
                                 //reset soundtrack - same thing happens when player hits the ground
@@ -337,7 +337,7 @@ int main(void){
             if(!particles[i].is_free && particles[i].alpha<5)
                 particles[i]=new_particle;
  
-        if(game_state!=2){
+        if(game_state!=Over){
             //movement 
             if(IsKeyDown(MOVE_RIGHT) && !IsKeyDown(MOVE_LEFT)){
                 red_soldier.x+=150*dt;
@@ -396,19 +396,19 @@ int main(void){
 
                 red_soldier.y=SCREEN_MIDDLE(red_soldier); 
            
-                if(game_state==0)
-                    game_state=1;
+                if(game_state==Menu)
+                    game_state=Normal;
             } 
         
             //gravity
             if(red_soldier.y+red_soldier.tx->height>=SCREEN_HEIGHT){
-                if(game_state!=1){
+                if(game_state!=Normal){
                     red_soldier.y=SCREEN_HEIGHT-red_soldier.tx->height;
                     red_soldier.speed_y=0;
                     red_soldier.falling=0;
                 }
                 else{
-                    game_state=2;
+                    game_state=Over;
                     PlaySound(sfx_death);
 
                     //reset soundtrack
@@ -624,14 +624,14 @@ int main(void){
    
         //text and hud
         switch(game_state){
-            case 0: //game not started
+            case Menu:
                 UpdateMusicStream(music_menu);
 
                 draw_text_full_center("ROCKETMAN ADVENTURES",200, 100, WHITE);
                 draw_text_full_center(VERSION, 300,64, WHITE); 
                 draw_text_full_center("START JUMPING TO BEGIN",400,64, WHITE);
                 break;
-            case 1: //game in progress
+            case Normal:
                 if(level<7)
                     UpdateMusicStream(music_normal);
                 else
@@ -660,7 +660,7 @@ int main(void){
                 draw_text_full("SCORE:", 10, 10, 64, WHITE);
                 draw_text_full(score_string,250, 10, 64, WHITE);
                 break;
-            case 2: //game over
+            case Over:
                 //update buttons
                 if(MOUSE_HOVER_BUTTON(try_again_button,mouse)){
                     try_again_button.state=1;

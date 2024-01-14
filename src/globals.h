@@ -7,8 +7,9 @@ static const int MAX_PARTICLES=MAX_ROCKETS*2;
 #define NUM_PICKUP 2
 
 enum {Standing, Walking, Jumping};
+enum {Menu, Normal, Over};
 
 static const char *DIRECTORY="/usr/local/share/rocketman/";
-static const char *VERSION="2.0.0";
+static const char *VERSION="2.0.1";
 
 #endif
