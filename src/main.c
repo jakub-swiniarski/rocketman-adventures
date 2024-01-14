@@ -222,13 +222,13 @@ int main(void){
     Vector2 mouse;
     
     START:
-    game_state=Menu;
+    game_state=MENU;
     level=1;
 
     red_soldier.x=(int)(SCREEN_WIDTH/2)-red_soldier.tx->width;
     red_soldier.y=SCREEN_HEIGHT-red_soldier.tx->height; 
     red_soldier.speed_x=red_soldier.speed_y=red_soldier.rl_cooldown=red_soldier.falling=red_soldier.pickup=red_soldier.pickup=red_soldier.anim_cooldown=0;
-    red_soldier.state=Standing;
+    red_soldier.state=STANDING;
     red_soldier.slow_fall=red_soldier.crit_boost=1;
     red_soldier.hp=200;
 
@@ -300,16 +300,16 @@ int main(void){
 
                     if(abs(red_soldier.x+MIDDLE_X(red_soldier)-rockets[i].x-MIDDLE_X(rockets[i]))<200 
                     && abs(red_soldier.y+MIDDLE_Y(red_soldier)-rockets[i].y-MIDDLE_Y(rockets[i]))<200
-                    && game_state!=Over){
+                    && game_state!=OVER){
                         //rocket jump
                         red_soldier.speed_x+=red_soldier.crit_boost*-1*rockets[i].speed_x;
                         red_soldier.speed_y+=red_soldier.crit_boost*-1*rockets[i].speed_y; 
                     
                         //damage
-                        if(game_state==Normal){
+                        if(game_state==NORMAL){
                             red_soldier.hp-=20*red_soldier.crit_boost;
                             if(red_soldier.hp<=0){
-                                game_state=Over;
+                                game_state=OVER;
                                 PlaySound(sfx_death);
 
                                 //reset soundtrack - same thing happens when player hits the ground
@@ -337,26 +337,26 @@ int main(void){
             if(!particles[i].is_free && particles[i].alpha<5)
                 particles[i]=new_particle;
  
-        if(game_state!=Over){
+        if(game_state!=OVER){
             //movement 
             if(IsKeyDown(MOVE_RIGHT) && !IsKeyDown(MOVE_LEFT)){
                 red_soldier.x+=150*dt;
-                red_soldier.state=Walking;
+                red_soldier.state=WALKING;
 
                 if(red_soldier.pickup_active==1 && parachute.rotation>-30)
                     parachute.rotation-=60*dt;
             }
             else if(IsKeyDown(MOVE_LEFT) && !IsKeyDown(MOVE_RIGHT)){
                 red_soldier.x-=150*dt;
-                red_soldier.state=Walking;
+                red_soldier.state=WALKING;
             
                 if(red_soldier.pickup_active==1 && parachute.rotation<30)
                     parachute.rotation+=60*dt;
             }
             else
-                red_soldier.state=Standing;
+                red_soldier.state=STANDING;
             if(red_soldier.speed_y<-100 || red_soldier.speed_y>100)
-                red_soldier.state=Jumping;
+                red_soldier.state=JUMPING;
             //reset parachute rotation
             if(!IsKeyDown(MOVE_LEFT) && !IsKeyDown(MOVE_RIGHT)) //if not moving horizontally
                 parachute.rotation+=parachute.rotation>0?-100*dt:100*dt;
@@ -396,19 +396,19 @@ int main(void){
 
                 red_soldier.y=SCREEN_MIDDLE(red_soldier); 
            
-                if(game_state==Menu)
-                    game_state=Normal;
+                if(game_state==MENU)
+                    game_state=NORMAL;
             } 
         
             //gravity
             if(red_soldier.y+red_soldier.tx->height>=SCREEN_HEIGHT){
-                if(game_state!=Normal){
+                if(game_state!=NORMAL){
                     red_soldier.y=SCREEN_HEIGHT-red_soldier.tx->height;
                     red_soldier.speed_y=0;
                     red_soldier.falling=0;
                 }
                 else{
-                    game_state=Over;
+                    game_state=OVER;
                     PlaySound(sfx_death);
 
                     //reset soundtrack
@@ -583,11 +583,11 @@ int main(void){
         
         //draw player
         switch(red_soldier.state){
-            case Standing:
+            case STANDING:
                 red_soldier.tx=&TextureHolder.red_soldier[0];
             break;
 
-            case Walking:
+            case WALKING:
                 red_soldier.anim_cooldown-=150*dt;
                 if(red_soldier.anim_cooldown<0){
                     red_soldier.frame++; 
@@ -596,7 +596,7 @@ int main(void){
                 }
             break;
 
-            case Jumping:
+            case JUMPING:
                 red_soldier.tx=&TextureHolder.red_soldier_jumping;
             break;
         }
@@ -624,14 +624,14 @@ int main(void){
    
         //text and hud
         switch(game_state){
-            case Menu:
+            case MENU:
                 UpdateMusicStream(music_menu);
 
                 draw_text_full_center("ROCKETMAN ADVENTURES",200, 100, WHITE);
                 draw_text_full_center(VERSION, 300,64, WHITE); 
                 draw_text_full_center("START JUMPING TO BEGIN",400,64, WHITE);
                 break;
-            case Normal:
+            case NORMAL:
                 if(level<7)
                     UpdateMusicStream(music_normal);
                 else
@@ -660,7 +660,7 @@ int main(void){
                 draw_text_full("SCORE:", 10, 10, 64, WHITE);
                 draw_text_full(score_string,250, 10, 64, WHITE);
                 break;
-            case Over:
+            case OVER:
                 //update buttons
                 if(MOUSE_HOVER_BUTTON(try_again_button,mouse)){
                     try_again_button.state=1;
