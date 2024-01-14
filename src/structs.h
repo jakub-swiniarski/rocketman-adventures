@@ -88,7 +88,7 @@ typedef struct{
 typedef struct{
     Texture *tx;
     int x,y;
-    int id; //1 - parachute, 2 - crits
+    int id;
 } Pickup;
 
 typedef struct{
