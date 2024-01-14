@@ -28,9 +28,21 @@ int main(void){
 
     //load and resize images
     {
-        Image image=LoadImage(path_to_file("red_soldier.png"));
+        Image image;
+        for(int i=0; i<6; i++){
+            char name[16]="red_soldier";
+            char num[2];
+            sprintf(num,"%d",i);
+            strcat(name,num);
+            strcat(name,".png");
+            image=LoadImage(path_to_file(name));
+            ImageResizeNN(&image,image.width*5,image.height*5);
+            TextureHolder.red_soldier[i]=LoadTextureFromImage(image); 
+        }
+
+        image=LoadImage(path_to_file("red_soldier_jumping.png"));
         ImageResizeNN(&image,image.width*5,image.height*5);
-        TextureHolder.red_soldier=LoadTextureFromImage(image);
+        TextureHolder.red_soldier_jumping=LoadTextureFromImage(image);
 
         image=LoadImage(path_to_file("rocket.png"));
         ImageResizeNN(&image,image.width*3,image.height*3);
@@ -41,7 +53,7 @@ int main(void){
         TextureHolder.launcher=LoadTextureFromImage(image);
 
         image=LoadImage(path_to_file("particle_smoke.png"));
-        ImageResizeNN(&image,image.width*12,image.height*12);
+        ImageResizeNN(&image,image.width*15,image.height*15);
         TextureHolder.particle_smoke=LoadTextureFromImage(image);
 
         image=LoadImage(path_to_file("platform.png"));
@@ -49,11 +61,11 @@ int main(void){
         TextureHolder.platform=LoadTextureFromImage(image);
 
         image=LoadImage(path_to_file("parachute.png"));
-        ImageResizeNN(&image, image.width*8, image.height*8);
+        ImageResizeNN(&image, image.width*5, image.height*5);
         TextureHolder.parachute=LoadTextureFromImage(image);
 
         for(int i=0; i<NUM_PICKUP; i++){
-            char name[12]="pickup";
+            char name[16]="pickup";
             char num[2];
             sprintf(num,"%d",i);
             strcat(name,num);
@@ -72,7 +84,7 @@ int main(void){
         TextureHolder.health_pack=LoadTextureFromImage(image);
         
         for(int i=0; i<2; i++){
-            char name[12]="button";
+            char name[16]="button";
             char num[2];
             sprintf(num,"%d",i);
             strcat(name,num);
@@ -84,7 +96,7 @@ int main(void){
 
         //backgrounds 
         for(int i=0; i<NUM_BG; i++){
-            char name[12]="bg";
+            char name[16]="bg";
             char num[2];
             sprintf(num,"%d",i);
             strcat(name,num);
@@ -112,7 +124,9 @@ int main(void){
 
     //player
     Soldier red_soldier={
-        .tx=&TextureHolder.red_soldier, 
+        .tx=&TextureHolder.red_soldier[0], 
+        .flip=1,
+        .color=WHITE
     }; 
 
     //parachute
@@ -127,7 +141,6 @@ int main(void){
         .x=0,
         .y=0,
         .rotation=0,
-        .color=WHITE
     };
 
     //background
@@ -193,8 +206,8 @@ int main(void){
     //pickup hud
     HUD pickup_hud={
         .tx=&TextureHolder.hud,
-        .x=SCREEN_WIDTH-(TextureHolder.hud.width)/2-5,
-        .y=SCREEN_HEIGHT-(TextureHolder.hud.height)/2-5,
+        .x=SCREEN_WIDTH-TextureHolder.hud.width-5,
+        .y=SCREEN_HEIGHT-TextureHolder.hud.height-5,
         .text="EMPTY"
     };
 
@@ -214,7 +227,8 @@ int main(void){
 
     red_soldier.x=(int)(SCREEN_WIDTH/2)-red_soldier.tx->width;
     red_soldier.y=SCREEN_HEIGHT-red_soldier.tx->height; 
-    red_soldier.speed_x=red_soldier.speed_y=red_soldier.cooldown=red_soldier.falling=0;
+    red_soldier.speed_x=red_soldier.speed_y=red_soldier.rl_cooldown=red_soldier.falling=red_soldier.pickup=red_soldier.pickup=red_soldier.anim_cooldown=0;
+    red_soldier.state=Standing;
     red_soldier.slow_fall=red_soldier.crit_boost=1;
     red_soldier.hp=200;
 
@@ -284,8 +298,8 @@ int main(void){
                         }
                     }
 
-                    if(abs(red_soldier.x+MIDDLE_X(red_soldier)-rockets[i].x-MIDDLE_X(rockets[i]))<100 
-                    && abs(red_soldier.y+MIDDLE_Y(red_soldier)-rockets[i].y-MIDDLE_Y(rockets[i]))<100
+                    if(abs(red_soldier.x+MIDDLE_X(red_soldier)-rockets[i].x-MIDDLE_X(rockets[i]))<200 
+                    && abs(red_soldier.y+MIDDLE_Y(red_soldier)-rockets[i].y-MIDDLE_Y(rockets[i]))<200
                     && game_state!=2){
                         //rocket jump
                         red_soldier.speed_x+=red_soldier.crit_boost*-1*rockets[i].speed_x;
@@ -308,7 +322,7 @@ int main(void){
                     
                     if(red_soldier.pickup_active==2){
                         red_soldier.crit_boost=1;
-                        rl.color=WHITE;
+                        red_soldier.color=WHITE;
                         red_soldier.pickup_active=0;
                     }
                 }
@@ -327,16 +341,22 @@ int main(void){
             //movement 
             if(IsKeyDown(MOVE_RIGHT) && !IsKeyDown(MOVE_LEFT)){
                 red_soldier.x+=150*dt;
+                red_soldier.state=Walking;
 
                 if(red_soldier.pickup_active==1 && parachute.rotation>-30)
                     parachute.rotation-=60*dt;
             }
-            if(IsKeyDown(MOVE_LEFT) && !IsKeyDown(MOVE_RIGHT)){
+            else if(IsKeyDown(MOVE_LEFT) && !IsKeyDown(MOVE_RIGHT)){
                 red_soldier.x-=150*dt;
+                red_soldier.state=Walking;
             
                 if(red_soldier.pickup_active==1 && parachute.rotation<30)
                     parachute.rotation+=60*dt;
             }
+            else
+                red_soldier.state=Standing;
+            if(red_soldier.speed_y<-100 || red_soldier.speed_y>100)
+                red_soldier.state=Jumping;
             //reset parachute rotation
             if(!IsKeyDown(MOVE_LEFT) && !IsKeyDown(MOVE_RIGHT)) //if not moving horizontally
                 parachute.rotation+=parachute.rotation>0?-100*dt:100*dt;
@@ -350,12 +370,17 @@ int main(void){
             }
 
             //update rocket launcher
-            rl.x=red_soldier.x+MIDDLE_X(red_soldier);
-            rl.y=red_soldier.y+MIDDLE_Y(red_soldier); 
             rl.rotation=270-atan2((red_soldier.x+MIDDLE_X(red_soldier)-mouse.x),(red_soldier.y+MIDDLE_Y(red_soldier)-mouse.y))*180/PI; 
-        
-            //flip the rocket launcher to prevent it from going upside down
-            rl.flip=mouse.x<red_soldier.x+MIDDLE_X(red_soldier)?-1:1;
+            if(mouse.x<red_soldier.x+MIDDLE_X(red_soldier)){
+                red_soldier.flip=-1;
+                rl.x=red_soldier.x+40;
+            }
+            else{
+                rl.x=red_soldier.x+25;
+                red_soldier.flip=1;
+            }
+            rl.y=red_soldier.y+45;
+
             
             //update player position
             red_soldier.x+=red_soldier.speed_x*dt;
@@ -397,14 +422,14 @@ int main(void){
                 red_soldier.speed_y+=1000*dt;
             } 
         
-            if((IsMouseButtonPressed(SHOOT) || IsKeyPressed(SHOOT_ALT)) && red_soldier.cooldown<0){
-                red_soldier.cooldown=120;
+            if((IsMouseButtonPressed(SHOOT) || IsKeyPressed(SHOOT_ALT)) && red_soldier.rl_cooldown<0){
+                red_soldier.rl_cooldown=120;
                 
                 for(int i=0; i<MAX_ROCKETS; i++){
                     if(rockets[i].is_free){
                         rockets[i].is_free=0;
-                        rockets[i].x=red_soldier.x+MIDDLE_X(rockets[i]);
-                        rockets[i].y=red_soldier.y+MIDDLE_Y(rockets[i]);
+                        rockets[i].x=red_soldier.x+MIDDLE_X(red_soldier);
+                        rockets[i].y=red_soldier.y+MIDDLE_Y(red_soldier)/4;
                         rockets[i].rotation=90-atan2((red_soldier.x+MIDDLE_X(red_soldier)-mouse.x),(red_soldier.y+MIDDLE_Y(red_soldier)-mouse.y))*180/PI;
                         rockets[i].speed_x=-960*cos(rockets[i].rotation*PI/180);
                         rockets[i].speed_y=-960*sin(rockets[i].rotation*PI/180); 
@@ -424,7 +449,7 @@ int main(void){
 
                     case 2:
                         red_soldier.crit_boost=2;
-                        rl.color=RED;    
+                        red_soldier.color=RED;    
                     break; 
                 }
             }
@@ -437,7 +462,7 @@ int main(void){
             soldier_border_check(&red_soldier);
     
             //update cooldowns
-            red_soldier.cooldown-=150*dt;
+            red_soldier.rl_cooldown-=150*dt;
 
             //update rockets
             for(int i=0; i<MAX_ROCKETS; i++){
@@ -538,12 +563,12 @@ int main(void){
                 (Rectangle){ //src
                     .x=0,
                     .y=0,
-                    .width=TextureHolder.parachute.width,
+                    .width=TextureHolder.parachute.width, //TODO: use parachute tx pointer
                     .height=TextureHolder.parachute.height
                 },
                 (Rectangle){ //dest
                     .x=red_soldier.x+MIDDLE_X(red_soldier),
-                    .y=red_soldier.y,
+                    .y=red_soldier.y+10,
                     .width=TextureHolder.parachute.width,
                     .height=TextureHolder.parachute.height
                 },
@@ -557,14 +582,32 @@ int main(void){
         }
         
         //draw player
-        DRAW(red_soldier);
+        switch(red_soldier.state){
+            case Standing:
+                red_soldier.tx=&TextureHolder.red_soldier[0];
+            break;
+
+            case Walking:
+                red_soldier.anim_cooldown-=150*dt;
+                if(red_soldier.anim_cooldown<0){
+                    red_soldier.frame++; 
+                    red_soldier.tx=&TextureHolder.red_soldier[red_soldier.frame%6];
+                    red_soldier.anim_cooldown=12;
+                }
+            break;
+
+            case Jumping:
+                red_soldier.tx=&TextureHolder.red_soldier_jumping;
+            break;
+        }
+        DRAW_PRO(red_soldier,red_soldier.flip,1,0,0,0,red_soldier.color);
 
         //draw rockets
         for(int i=0; i<MAX_ROCKETS; i++)
-            DRAW_PRO(rockets[i],1,1,rockets[i].rotation)
+            DRAW_PRO(rockets[i],1,1,rockets[i].rotation,MIDDLE_X(rockets[i]),MIDDLE_Y(rockets[i]),red_soldier.color)
 
         //draw rocket launcher
-        DRAW_PRO(rl,1,rl.flip,rl.rotation);
+        DRAW_PRO(rl,1,red_soldier.flip,rl.rotation,50,45,red_soldier.color);
 
         //update particles
         for(int i=0; i<MAX_PARTICLES; i++){
@@ -576,7 +619,7 @@ int main(void){
             particles[i].alpha-=2*dt;
             
             //draw
-            DRAW_PRO(particles[i],1,1,particles[i].rotation);
+            DRAW_PRO(particles[i],1,1,particles[i].rotation,MIDDLE_X(particles[i]),MIDDLE_Y(particles[i]),WHITE);
         } 
    
         //text and hud
@@ -607,11 +650,11 @@ int main(void){
                 draw_text_full(health_hud.text,health_hud.x+40,health_hud.y+30,100, health_hud.text_color); 
                
                 //pickup hud
-                DRAW_PRO(pickup_hud,-1,1,0);
+                DRAW_PRO(pickup_hud,-1,1,0,0,0,WHITE);
                 if(red_soldier.pickup==1 || red_soldier.pickup==2)
-                    DrawTexture(TextureHolder.pickup[red_soldier.pickup-1],pickup_hud.x-10, pickup_hud.y-45, WHITE);
+                    DrawTexture(TextureHolder.pickup[red_soldier.pickup-1],pickup_hud.x+150, pickup_hud.y+25, WHITE);
                 else
-                    draw_text_full(pickup_hud.text,pickup_hud.x-90,pickup_hud.y-35,64,WHITE);
+                    draw_text_full(pickup_hud.text,pickup_hud.x+65,pickup_hud.y+40,64,WHITE);
 
                 //score
                 draw_text_full("SCORE:", 10, 10, 64, WHITE);
@@ -642,7 +685,8 @@ int main(void){
     }
    
     //unload textures
-    UnloadTexture(TextureHolder.red_soldier);
+    for(int i=0; i<6; i++)
+        UnloadTexture(TextureHolder.red_soldier[i]);
     UnloadTexture(TextureHolder.rocket);
     UnloadTexture(TextureHolder.launcher);
     UnloadTexture(TextureHolder.parachute);
