@@ -107,7 +107,7 @@ typedef struct{
     Texture *tx;
     int x,y;
     char text[12];
-    int state; //0 - normal, 1 - hover
+    int state;
 } Button;
 
 #endif

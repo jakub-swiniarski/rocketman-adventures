@@ -217,7 +217,8 @@ int main(void){
         .tx=&TextureHolder.button[0],
         .x=SCREEN_WIDTH/2-TextureHolder.button[0].width/2,
         .y=500,
-        .text="TRY AGAIN"
+        .text="TRY AGAIN",
+        .state=NORMAL
     };
     
     Vector2 mouse;
@@ -308,7 +309,7 @@ int main(void){
                         red_soldier.speed_y+=red_soldier.crit_boost*-1*rockets[i].speed_y; 
                     
                         //damage
-                        if(game_state==NORMAL){
+                        if(game_state==IN_PROGRESS){
                             red_soldier.hp-=20*red_soldier.crit_boost;
                             if(red_soldier.hp<=0){
                                 game_state=OVER;
@@ -399,12 +400,12 @@ int main(void){
                 red_soldier.y=SCREEN_MIDDLE(red_soldier); 
            
                 if(game_state==MENU)
-                    game_state=NORMAL;
+                    game_state=IN_PROGRESS;
             } 
         
             //gravity
             if(red_soldier.y+red_soldier.tx->height>=SCREEN_HEIGHT){
-                if(game_state!=NORMAL){
+                if(game_state!=IN_PROGRESS){
                     red_soldier.y=SCREEN_HEIGHT-red_soldier.tx->height;
                     red_soldier.speed_y=0;
                     red_soldier.falling=0;
@@ -633,7 +634,7 @@ int main(void){
                 draw_text_full_center(VERSION, 300,64, WHITE); 
                 draw_text_full_center("START JUMPING TO BEGIN",400,64, WHITE);
                 break;
-            case NORMAL:
+            case IN_PROGRESS:
                 if(level<7)
                     UpdateMusicStream(music_normal);
                 else
@@ -665,12 +666,12 @@ int main(void){
             case OVER:
                 //update buttons
                 if(MOUSE_HOVER_BUTTON(try_again_button,mouse)){
-                    try_again_button.state=1;
+                    try_again_button.state=HOVER;
                     if(IsMouseButtonPressed(SHOOT))
                         goto START;
                 }
                 else
-                    try_again_button.state=0;
+                    try_again_button.state=NORMAL;
 
                 DrawRectangle(0,0,SCREEN_WIDTH,SCREEN_HEIGHT,(Color){0,0,0,150});
                 draw_text_full_center("GAME OVER",200,100, WHITE);
