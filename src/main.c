@@ -30,11 +30,8 @@ int main(void){
     {
         Image image;
         for(int i=0; i<6; i++){
-            char name[16]="red_soldier";
-            char num[2];
-            sprintf(num,"%d",i);
-            strcat(name,num);
-            strcat(name,".png");
+            char name[20];
+            sprintf(name,"red_soldier%d.png",i);
             image=LoadImage(path_to_file(name));
             ImageResizeNN(&image,image.width*5,image.height*5);
             TextureHolder.red_soldier[i]=LoadTextureFromImage(image); 
@@ -65,11 +62,8 @@ int main(void){
         TextureHolder.parachute=LoadTextureFromImage(image);
 
         for(int i=0; i<NUM_PICKUP; i++){
-            char name[16]="pickup";
-            char num[2];
-            sprintf(num,"%d",i);
-            strcat(name,num);
-            strcat(name,".png");
+            char name[20];
+            sprintf(name,"pickup%d.png",i);
             image=LoadImage(path_to_file(name));
             ImageResizeNN(&image,image.width*8,image.height*8);
             TextureHolder.pickup[i]=LoadTextureFromImage(image); 
@@ -84,11 +78,8 @@ int main(void){
         TextureHolder.health_pack=LoadTextureFromImage(image);
         
         for(int i=0; i<2; i++){
-            char name[16]="button";
-            char num[2];
-            sprintf(num,"%d",i);
-            strcat(name,num);
-            strcat(name,".png");
+            char name[20];
+            sprintf(name,"button%d.png",i);
             image=LoadImage(path_to_file(name));
             ImageResizeNN(&image,image.width*8,image.height*8);
             TextureHolder.button[i]=LoadTextureFromImage(image); 
@@ -96,11 +87,8 @@ int main(void){
 
         //backgrounds 
         for(int i=0; i<NUM_BG; i++){
-            char name[16]="bg";
-            char num[2];
-            sprintf(num,"%d",i);
-            strcat(name,num);
-            strcat(name,".png");
+            char name[20];
+            sprintf(name,"bg%d.png",i);
             image=LoadImage(path_to_file(name));
             ImageResizeNN(&image,SCREEN_WIDTH,SCREEN_HEIGHT);
             TextureHolder.bg[i]=LoadTextureFromImage(image); 
