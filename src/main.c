@@ -29,13 +29,11 @@ int main(void){
     //load and resize images
     {
         Image image;
-        for(int i=0; i<6; i++){
-            char name[20];
-            sprintf(name,"red_soldier%d.png",i);
-            image=LoadImage(path_to_file(name));
-            ImageResizeNN(&image,image.width*5,image.height*5);
-            TextureHolder.red_soldier[i]=LoadTextureFromImage(image); 
-        }
+
+        LOAD_TEXTURE_ARRAY(red_soldier,6,5);
+        LOAD_TEXTURE_ARRAY(pickup,NUM_PICKUP,8);
+        LOAD_TEXTURE_ARRAY(button,2,8);
+        LOAD_TEXTURE_ARRAY(bg,NUM_BG,SCREEN_WIDTH/160);
 
         LOAD_TEXTURE(red_soldier_jumping,5);
         LOAD_TEXTURE(rocket,3);
@@ -43,35 +41,9 @@ int main(void){
         LOAD_TEXTURE(particle_smoke,15);
         LOAD_TEXTURE(platform,5);
         LOAD_TEXTURE(parachute,5);
-
-        for(int i=0; i<NUM_PICKUP; i++){
-            char name[20];
-            sprintf(name,"pickup%d.png",i);
-            image=LoadImage(path_to_file(name));
-            ImageResizeNN(&image,image.width*8,image.height*8);
-            TextureHolder.pickup[i]=LoadTextureFromImage(image); 
-        }
-
         LOAD_TEXTURE(hud,5);
         LOAD_TEXTURE(health_pack,6);
-        
-        for(int i=0; i<2; i++){
-            char name[20];
-            sprintf(name,"button%d.png",i);
-            image=LoadImage(path_to_file(name));
-            ImageResizeNN(&image,image.width*8,image.height*8);
-            TextureHolder.button[i]=LoadTextureFromImage(image); 
-        }
 
-        //backgrounds 
-        for(int i=0; i<NUM_BG; i++){
-            char name[20];
-            sprintf(name,"bg%d.png",i);
-            image=LoadImage(path_to_file(name));
-            ImageResizeNN(&image,SCREEN_WIDTH,SCREEN_HEIGHT);
-            TextureHolder.bg[i]=LoadTextureFromImage(image); 
-        }
-            
         UnloadImage(image);
     }
 

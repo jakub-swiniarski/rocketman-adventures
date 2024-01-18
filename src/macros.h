@@ -13,5 +13,12 @@
 #define LOAD_TEXTURE(X,S) image=LoadImage(path_to_file(#X".png"));\
                           ImageResizeNN(&image,image.width*S,image.height*S);\
                           TextureHolder.X=LoadTextureFromImage(image);
+#define LOAD_TEXTURE_ARRAY(X,N,S) for(int i=0; i<N; i++){\
+                                      char name[20];\
+                                      sprintf(name,#X"%d.png",i);\
+                                      image=LoadImage(path_to_file(name));\
+                                      ImageResizeNN(&image,image.width*S,image.height*S);\
+                                      TextureHolder.X[i]=LoadTextureFromImage(image);\
+                                  }
 
 #endif
