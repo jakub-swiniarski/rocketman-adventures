@@ -10,5 +10,8 @@
 #define DRAW(X) DrawTexture(*X.tx,X.x,X.y,WHITE)  
 //X, flip horizontal, flip vertical, rotation
 #define DRAW_PRO(X,FH,FV,R,OX,OY,C) DrawTexturePro(*X.tx,(Rectangle){.x=0,.y=0,.width=X.tx->width*FH,.height=X.tx->height*FV},(Rectangle){.x=X.x,.y=X.y,.width=X.tx->width,.height=X.tx->height},(Vector2){.x=OX,.y=OY},R,C);
+#define LOAD_TEXTURE(X,S) image=LoadImage(path_to_file(#X".png"));\
+                          ImageResizeNN(&image,image.width*S,image.height*S);\
+                          TextureHolder.X=LoadTextureFromImage(image);
 
 #endif

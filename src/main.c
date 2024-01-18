@@ -37,29 +37,12 @@ int main(void){
             TextureHolder.red_soldier[i]=LoadTextureFromImage(image); 
         }
 
-        image=LoadImage(path_to_file("red_soldier_jumping.png"));
-        ImageResizeNN(&image,image.width*5,image.height*5);
-        TextureHolder.red_soldier_jumping=LoadTextureFromImage(image);
-
-        image=LoadImage(path_to_file("rocket.png"));
-        ImageResizeNN(&image,image.width*3,image.height*3);
-        TextureHolder.rocket=LoadTextureFromImage(image);    
-
-        image=LoadImage(path_to_file("launcher.png"));
-        ImageResizeNN(&image,image.width*5,image.height*5);
-        TextureHolder.launcher=LoadTextureFromImage(image);
-
-        image=LoadImage(path_to_file("particle_smoke.png"));
-        ImageResizeNN(&image,image.width*15,image.height*15);
-        TextureHolder.particle_smoke=LoadTextureFromImage(image);
-
-        image=LoadImage(path_to_file("platform.png"));
-        ImageResizeNN(&image,image.width*5,image.height*5);
-        TextureHolder.platform=LoadTextureFromImage(image);
-
-        image=LoadImage(path_to_file("parachute.png"));
-        ImageResizeNN(&image, image.width*5, image.height*5);
-        TextureHolder.parachute=LoadTextureFromImage(image);
+        LOAD_TEXTURE(red_soldier_jumping,5);
+        LOAD_TEXTURE(rocket,3);
+        LOAD_TEXTURE(launcher,5);
+        LOAD_TEXTURE(particle_smoke,15);
+        LOAD_TEXTURE(platform,5);
+        LOAD_TEXTURE(parachute,5);
 
         for(int i=0; i<NUM_PICKUP; i++){
             char name[20];
@@ -69,13 +52,8 @@ int main(void){
             TextureHolder.pickup[i]=LoadTextureFromImage(image); 
         }
 
-        image=LoadImage(path_to_file("hud.png"));
-        ImageResizeNN(&image,image.width*5,image.height*5);
-        TextureHolder.hud=LoadTextureFromImage(image);
-
-        image=LoadImage(path_to_file("health_pack.png"));
-        ImageResizeNN(&image,image.width*6,image.height*6);
-        TextureHolder.health_pack=LoadTextureFromImage(image);
+        LOAD_TEXTURE(hud,5);
+        LOAD_TEXTURE(health_pack,6);
         
         for(int i=0; i<2; i++){
             char name[20];
