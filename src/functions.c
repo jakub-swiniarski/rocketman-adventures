@@ -1,16 +1,15 @@
 #include <raylib.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 
 #include "functions.h"
 #include "globals.h"
 #include "config.h"
 
-char *path_to_file(char *str){
-    char *path=malloc(sizeof(char)*strlen(DIRECTORY)+strlen(str)+1);
-    strcpy(path,DIRECTORY);
-    strcat(path,str);
+char *path_to_file(char *name){
+    char *path=malloc(sizeof(char)*strlen(DIRECTORY)+strlen(name)+1);
+    sprintf(path,"%s%s",DIRECTORY,name);
     
     return path;
 }
