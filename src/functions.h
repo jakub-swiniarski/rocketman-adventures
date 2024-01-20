@@ -3,7 +3,7 @@
 
 #include "structs.h"
 
-char *path_to_file(char *str);
+char *path_to_file(char *name);
 void rocket_border_check(Rocket *r);
 void soldier_border_check(Soldier *s);
 void platform_collision_check_soldier(Platform *p, Soldier *s);

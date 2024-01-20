@@ -3,7 +3,7 @@ HEADERS=$(wildcard src/*.h)
 OBJECTS=$(patsubst src/%.c,%.o,$(SOURCES))
 
 rocketman: $(OBJECTS)
-	gcc -o rocketman $(OBJECTS) -lraylib -lm
+	gcc -o $@ $(OBJECTS) -lraylib -lm
 
 $(OBJECTS): $(SOURCES) $(HEADERS)
 	gcc -c $(SOURCES) -O2

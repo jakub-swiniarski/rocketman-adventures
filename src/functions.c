@@ -1,16 +1,15 @@
 #include <raylib.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdbool.h>
 
 #include "functions.h"
 #include "globals.h"
 #include "config.h"
 
-char *path_to_file(char *str){
-    char *path=malloc(sizeof(char)*strlen(DIRECTORY)+strlen(str)+1);
-    strcpy(path,DIRECTORY);
-    strcat(path,str);
+char *path_to_file(char *name){
+    char *path=malloc(sizeof(char)*strlen(DIRECTORY)+strlen(name)+1);
+    sprintf(path,"%s%s",DIRECTORY,name);
     
     return path;
 }
@@ -38,7 +37,7 @@ void soldier_border_check(Soldier *s){
 
 void platform_collision_check_soldier(Platform *p, Soldier *s){
     if(s->x+s->tx->width>p->x && s->x<p->x+p->tx->width){
-        if(s->y+s->tx->height>p->y && s->y+s->tx->height<p->y+p->tx->height+10){ //add a constant number to prevent the player from falling through
+        if(s->y+s->tx->height>p->y && s->y+s->tx->height<p->y+p->tx->height){
             s->y=p->y-s->tx->height;
             s->speed_y=0;
             s->falling=0;
