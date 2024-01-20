@@ -11,7 +11,7 @@ enum {MENU, IN_PROGRESS, OVER};
 enum {NONE, PARACHUTE, CRIT};
 enum {NORMAL, HOVER};
 
-static const char *DIRECTORY="/usr/local/share/rocketman/";
+static const char *DIRECTORY="res/";
 static const char *VERSION="2.0.3";
 
 #endif
