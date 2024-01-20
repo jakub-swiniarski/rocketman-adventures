@@ -12,6 +12,6 @@ enum {NONE, PARACHUTE, CRIT};
 enum {NORMAL, HOVER};
 
 static const char *DIRECTORY="/usr/local/share/rocketman/";
-static const char *VERSION="2.0.3";
+static const char *VERSION="2.0.4";
 
 #endif
