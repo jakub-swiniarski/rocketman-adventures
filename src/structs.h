@@ -94,7 +94,7 @@ typedef struct{
 typedef struct{
     Texture *tx;
     int x,y;
-} Health_pack;
+} HealthPack;
 
 typedef struct{
     Texture *tx;
