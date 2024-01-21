@@ -210,11 +210,11 @@ int main(void){
 
         //volume control
         if(IsKeyPressed(VOL_UP) && volume<=95){
-            volume+=0.1;
+            volume+=0.1f;
             SetMasterVolume(volume);
         }
         else if(IsKeyPressed(VOL_DOWN) && volume>=5){
-            volume-=0.1;
+            volume-=0.1f;
             SetMasterVolume(volume);
         }
         else if(IsKeyPressed(MUTE)){
