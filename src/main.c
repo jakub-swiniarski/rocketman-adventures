@@ -121,12 +121,12 @@ int main(void){
     };
 
     //health packs
-    Health_pack new_health_pack={
+    HealthPack new_health_pack={
         .tx=&TextureHolder.health_pack,
         .x=-100,
         .y=-100
     };
-    Health_pack health_packs[NUM_HEALTH_PACKS];
+    HealthPack health_packs[NUM_HEALTH_PACKS];
     for(int i=0; i<NUM_HEALTH_PACKS; i++)
         health_packs[i]=new_health_pack;
 
