@@ -11,7 +11,7 @@ static const int SCREEN_HEIGHT=1080;
 static const int FPS=60;
 
 //sound
-static float VOLUME=1.0f; //use values between 0 and 1
+static float VOLUME=1.0f;
 static bool MUTED=0;
 
 //HUD
