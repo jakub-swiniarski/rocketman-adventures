@@ -24,7 +24,9 @@ int main(void){
     SetTargetFPS(FPS);
     float dt=1.f;
 
-    SetMasterVolume((float)volume/100);
+    float volume=VOLUME;
+    bool muted=MUTED;
+    SetMasterVolume(volume);
 
     //load and resize images
     {
@@ -208,16 +210,16 @@ int main(void){
 
         //volume control
         if(IsKeyPressed(VOL_UP) && volume<=95){
-            volume+=10;
-            SetMasterVolume((float)volume/100);
+            volume+=0.1;
+            SetMasterVolume(volume);
         }
         else if(IsKeyPressed(VOL_DOWN) && volume>=5){
-            volume-=10;
-            SetMasterVolume((float)volume/100);
+            volume-=0.1;
+            SetMasterVolume(volume);
         }
         else if(IsKeyPressed(MUTE)){
             muted=!muted;
-            SetMasterVolume(muted?0:(float)volume/100);
+            SetMasterVolume(muted?0:volume);
         }
 
         for(int i=0; i<MAX_ROCKETS; i++){
