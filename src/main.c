@@ -209,11 +209,11 @@ int main(void){
         mouse=GetMousePosition();
 
         //volume control
-        if(IsKeyPressed(VOL_UP) && volume<=0.9){
+        if(IsKeyPressed(VOL_UP) && volume<=0.9f){
             volume+=0.1f;
             SetMasterVolume(volume);
         }
-        else if(IsKeyPressed(VOL_DOWN) && volume>=0.1){
+        else if(IsKeyPressed(VOL_DOWN) && volume>=0.1f){
             volume-=0.1f;
             SetMasterVolume(volume);
         }
