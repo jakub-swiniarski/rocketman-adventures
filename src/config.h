@@ -11,8 +11,8 @@ static const int SCREEN_HEIGHT=1080;
 static const int FPS=60;
 
 //sound
-static int volume=100;
-static bool muted=0;
+static float VOLUME=1.0f; //use values between 0 and 1
+static bool MUTED=0;
 
 //HUD
 static const Color TEXT_COLOR[3]={RED,WHITE,GREEN}; //low, normal, high
