@@ -22,7 +22,7 @@ int main(void){
     InitAudioDevice();
 
     SetTargetFPS(FPS);
-    float dt=1.f;
+    float dt=1.0f;
 
     float volume=VOLUME;
     bool muted=MUTED;
@@ -56,9 +56,12 @@ int main(void){
     Sound sfx_death=LoadSound(path_to_file("death.ogg"));
 
     //music
-    Music music_menu=LoadMusicStream(path_to_file("soundtrack_menu.ogg"));
-    Music music_normal=LoadMusicStream(path_to_file("soundtrack_normal.ogg"));
-    Music music_space=LoadMusicStream(path_to_file("soundtrack_space.ogg"));
+    Music music[NUM_MUSIC];
+    for(int i=0; i<NUM_MUSIC; i++){
+        char name[16];
+        sprintf(name,"music%d.ogg",i);
+        music[i]=LoadMusicStream(path_to_file(name));
+    }
 
     int game_state;
 
@@ -199,9 +202,8 @@ int main(void){
 
     score=0;
 
-    PlayMusicStream(music_normal);
-    PlayMusicStream(music_menu);   
-    PlayMusicStream(music_space);
+    for(int i=0; i<NUM_MUSIC; i++)
+        PlayMusicStream(music[i]);
 
     //game loop
     while(!WindowShouldClose()){
@@ -251,15 +253,8 @@ int main(void){
                         //damage
                         if(game_state==IN_PROGRESS){
                             red_soldier.hp-=20*red_soldier.crit_boost;
-                            if(red_soldier.hp<=0){
-                                game_state=OVER;
-                                PlaySound(sfx_death);
-
-                                //reset soundtrack - same thing happens when player hits the ground
-                                SeekMusicStream(music_normal,0);
-                                SeekMusicStream(music_menu,0);
-                                SeekMusicStream(music_space,0);
-                            } 
+                            if(red_soldier.hp<=0)
+                                game_over(&game_state,&sfx_death,music);
                         }
                     }
                     
@@ -350,15 +345,8 @@ int main(void){
                     red_soldier.speed_y=0;
                     red_soldier.falling=0;
                 }
-                else{
-                    game_state=OVER;
-                    PlaySound(sfx_death);
-
-                    //reset soundtrack
-                    SeekMusicStream(music_normal,0);
-                    SeekMusicStream(music_menu,0);
-                    SeekMusicStream(music_space,0);
-                }
+                else
+                    game_over(&game_state,&sfx_death,music);
             }
             else{
                 red_soldier.falling=1;
@@ -546,8 +534,10 @@ int main(void){
         DRAW_PRO(red_soldier,red_soldier.flip,1,0,0,0,red_soldier.color);
 
         //draw rockets
-        for(int i=0; i<MAX_ROCKETS; i++)
+        for(int i=0; i<MAX_ROCKETS; i++){
+            if(rockets[i].is_free) continue;
             DRAW_PRO(rockets[i],1,1,rockets[i].rotation,MIDDLE_X(rockets[i]),MIDDLE_Y(rockets[i]),red_soldier.color)
+        }
 
         //draw rocket launcher
         DRAW_PRO(rl,1,red_soldier.flip,rl.rotation,50,45,red_soldier.color);
@@ -568,7 +558,7 @@ int main(void){
         //text and hud
         switch(game_state){
             case MENU:
-                UpdateMusicStream(music_menu);
+                UpdateMusicStream(music[0]);
 
                 draw_text_full_center("ROCKETMAN ADVENTURES",200, 100, WHITE);
                 draw_text_full_center(VERSION, 300,64, WHITE); 
@@ -576,9 +566,9 @@ int main(void){
                 break;
             case IN_PROGRESS:
                 if(level<7)
-                    UpdateMusicStream(music_normal);
+                    UpdateMusicStream(music[1]);
                 else
-                    UpdateMusicStream(music_space);
+                    UpdateMusicStream(music[2]);
 
                 if(red_soldier.hp<50)
                     health_hud.text_color=TEXT_COLOR[0];
@@ -651,9 +641,8 @@ int main(void){
     UnloadSound(sfx_death);
 
     //unload music
-    UnloadMusicStream(music_menu);
-    UnloadMusicStream(music_normal);
-    UnloadMusicStream(music_space);
+    for(int i=0; i<NUM_MUSIC; i++)
+        UnloadMusicStream(music[i]);
 
     CloseAudioDevice();
     CloseWindow();
