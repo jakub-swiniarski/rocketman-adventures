@@ -81,3 +81,11 @@ void draw_text_full_center(const char *text, int y, int font_size, Color color){
         color
     );
 }
+
+void game_over(int *gs, Sound *sfx, Music *m){
+    *gs=OVER;
+    PlaySound(*sfx);
+    for(int i=0; i<NUM_MUSIC; i++){
+        SeekMusicStream(m[i],0.0f);
+    }
+}
