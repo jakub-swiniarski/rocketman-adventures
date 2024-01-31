@@ -11,5 +11,6 @@ void platform_collision_check_rocket(Platform *p, Rocket *r);
 bool pickup_collect_check(Pickup *p, Soldier *r);
 void draw_text_full(const char *text, int x, int y, int font_size, Color color);
 void draw_text_full_center(const char *text, int y, int font_size, Color color);
+void game_over(int *gs, Sound *sfx, Music *m);
 
 #endif
