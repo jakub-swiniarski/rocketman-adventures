@@ -22,7 +22,7 @@ int main(void){
     InitAudioDevice();
 
     SetTargetFPS(FPS);
-    float dt=1.f;
+    float dt=1.0f;
 
     float volume=VOLUME;
     bool muted=MUTED;
@@ -253,14 +253,8 @@ int main(void){
                         //damage
                         if(game_state==IN_PROGRESS){
                             red_soldier.hp-=20*red_soldier.crit_boost;
-                            if(red_soldier.hp<=0){
-                                game_state=OVER;
-                                PlaySound(sfx_death);
-
-                                //reset soundtrack - same thing happens when player hits the ground
-                                for(int i=0; i<NUM_MUSIC; i++)
-                                    SeekMusicStream(music[i],0);
-                            } 
+                            if(red_soldier.hp<=0)
+                                game_over(&game_state,&sfx_death,music);
                         }
                     }
                     
@@ -351,14 +345,8 @@ int main(void){
                     red_soldier.speed_y=0;
                     red_soldier.falling=0;
                 }
-                else{
-                    game_state=OVER;
-                    PlaySound(sfx_death);
-
-                    //reset soundtrack
-                    for(int i=0; i<NUM_MUSIC; i++)
-                        SeekMusicStream(music[i],0);
-                }
+                else
+                    game_over(&game_state,&sfx_death,music);
             }
             else{
                 red_soldier.falling=1;
