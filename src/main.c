@@ -56,9 +56,12 @@ int main(void){
     Sound sfx_death=LoadSound(path_to_file("death.ogg"));
 
     //music
-    Music music_menu=LoadMusicStream(path_to_file("soundtrack_menu.ogg"));
-    Music music_normal=LoadMusicStream(path_to_file("soundtrack_normal.ogg"));
-    Music music_space=LoadMusicStream(path_to_file("soundtrack_space.ogg"));
+    Music music[NUM_MUSIC];
+    for(int i=0; i<NUM_MUSIC; i++){
+        char name[16];
+        sprintf(name,"music%d.ogg",i);
+        music[i]=LoadMusicStream(path_to_file(name));
+    }
 
     int game_state;
 
@@ -199,9 +202,8 @@ int main(void){
 
     score=0;
 
-    PlayMusicStream(music_normal);
-    PlayMusicStream(music_menu);   
-    PlayMusicStream(music_space);
+    for(int i=0; i<NUM_MUSIC; i++)
+        PlayMusicStream(music[i]);
 
     //game loop
     while(!WindowShouldClose()){
@@ -256,9 +258,8 @@ int main(void){
                                 PlaySound(sfx_death);
 
                                 //reset soundtrack - same thing happens when player hits the ground
-                                SeekMusicStream(music_normal,0);
-                                SeekMusicStream(music_menu,0);
-                                SeekMusicStream(music_space,0);
+                                for(int i=0; i<NUM_MUSIC; i++)
+                                    SeekMusicStream(music[i],0);
                             } 
                         }
                     }
@@ -355,9 +356,8 @@ int main(void){
                     PlaySound(sfx_death);
 
                     //reset soundtrack
-                    SeekMusicStream(music_normal,0);
-                    SeekMusicStream(music_menu,0);
-                    SeekMusicStream(music_space,0);
+                    for(int i=0; i<NUM_MUSIC; i++)
+                        SeekMusicStream(music[i],0);
                 }
             }
             else{
@@ -568,7 +568,7 @@ int main(void){
         //text and hud
         switch(game_state){
             case MENU:
-                UpdateMusicStream(music_menu);
+                UpdateMusicStream(music[0]); //TODO: enum level, play soundtrack[level]
 
                 draw_text_full_center("ROCKETMAN ADVENTURES",200, 100, WHITE);
                 draw_text_full_center(VERSION, 300,64, WHITE); 
@@ -576,9 +576,9 @@ int main(void){
                 break;
             case IN_PROGRESS:
                 if(level<7)
-                    UpdateMusicStream(music_normal);
+                    UpdateMusicStream(music[1]);
                 else
-                    UpdateMusicStream(music_space);
+                    UpdateMusicStream(music[2]);
 
                 if(red_soldier.hp<50)
                     health_hud.text_color=TEXT_COLOR[0];
@@ -651,9 +651,8 @@ int main(void){
     UnloadSound(sfx_death);
 
     //unload music
-    UnloadMusicStream(music_menu);
-    UnloadMusicStream(music_normal);
-    UnloadMusicStream(music_space);
+    for(int i=0; i<NUM_MUSIC; i++)
+        UnloadMusicStream(music[i]);
 
     CloseAudioDevice();
     CloseWindow();
