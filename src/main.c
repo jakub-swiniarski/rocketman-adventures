@@ -534,8 +534,10 @@ int main(void){
         DRAW_PRO(red_soldier,red_soldier.flip,1,0,0,0,red_soldier.color);
 
         //draw rockets
-        for(int i=0; i<MAX_ROCKETS; i++)
+        for(int i=0; i<MAX_ROCKETS; i++){
+            if(rockets[i].is_free) continue;
             DRAW_PRO(rockets[i],1,1,rockets[i].rotation,MIDDLE_X(rockets[i]),MIDDLE_Y(rockets[i]),red_soldier.color)
+        }
 
         //draw rocket launcher
         DRAW_PRO(rl,1,red_soldier.flip,rl.rotation,50,45,red_soldier.color);
