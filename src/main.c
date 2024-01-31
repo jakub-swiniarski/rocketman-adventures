@@ -558,7 +558,7 @@ int main(void){
         //text and hud
         switch(game_state){
             case MENU:
-                UpdateMusicStream(music[0]); //TODO: enum level, play soundtrack[level]
+                UpdateMusicStream(music[0]);
 
                 draw_text_full_center("ROCKETMAN ADVENTURES",200, 100, WHITE);
                 draw_text_full_center(VERSION, 300,64, WHITE); 
