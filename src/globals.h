@@ -3,7 +3,7 @@
 
 static const int MAX_ROCKETS=3;
 static const int MAX_PARTICLES=MAX_ROCKETS*2;
-#define NUM_BG 9
+#define NUM_BG 11
 #define NUM_PICKUP 2
 #define NUM_MUSIC 3
 
