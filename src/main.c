@@ -248,7 +248,7 @@ int main(void){
                     && game_state!=OVER){
                         //rocket jump
                         red_soldier.speed_x+=red_soldier.crit_boost*-1*rockets[i].speed_x;
-                        red_soldier.speed_y+=red_soldier.crit_boost*-1*rockets[i].speed_y; 
+                        red_soldier.speed_y+=3*red_soldier.crit_boost*-1*rockets[i].speed_y; 
                     
                         //damage
                         if(game_state==IN_PROGRESS){
