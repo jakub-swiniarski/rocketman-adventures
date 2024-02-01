@@ -11,9 +11,9 @@ This project is just for fun, so there are no big updates planned. <br>
 
 ---
 
-![image](https://github.com/jakub-swiniarski/rocketman-adventures/assets/77209709/dafc0d9a-aef5-4fa3-9af4-68d0da6f5e79)
-![image](https://github.com/jakub-swiniarski/rocketman-adventures/assets/77209709/4a6b64c0-d6fb-4163-8639-5e2d9e9c06e7)
-![image](https://github.com/jakub-swiniarski/rocketman-adventures/assets/77209709/d342e54c-d502-4866-8661-a5babbba3ff9)
+![image](https://github.com/jakub-swiniarski/rocketman-adventures/assets/77209709/1e154f97-cbec-4072-9987-ea0415a8e891)
+![image](https://github.com/jakub-swiniarski/rocketman-adventures/assets/77209709/a9ed9f4f-a149-415d-bde6-90b44fd1d5b5)
+![image](https://github.com/jakub-swiniarski/rocketman-adventures/assets/77209709/f0596104-8796-4737-95c3-acda63d164f7)
 
 ## How to install?
 ### Prerequisites:
@@ -56,4 +56,4 @@ Escape - exit the game
 Edit the config file (src/config.h) to change the settings. Remember to recompile the game for the changes to take effect.
 
 ## Credits
-SFX and background images by [Boper](https://github.com/boprr)
+SFX by [Boper](https://github.com/boprr)
