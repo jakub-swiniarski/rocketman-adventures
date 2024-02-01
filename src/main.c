@@ -416,7 +416,7 @@ int main(void){
                 bg[1-i].y=0;
 
                 level++;
-                if(level>NUM_BG-1) level=NUM_BG-1;
+                if(level>NUM_BG-1) level=7;
                 bg[i].tx=&TextureHolder.bg[level];
             } 
             if(red_soldier.y==SCREEN_MIDDLE(red_soldier) && red_soldier.speed_y<0)
