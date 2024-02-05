@@ -104,7 +104,7 @@ int main(void){
         .alpha=255,
         .is_free=1
     };
-    Particle particles[MAX_PARTICLES];
+    Particle particles[MAX_PARTICLES]; //TODO: do the same as with the rockets
 
     Platform platforms[NUM_PLATFORMS];
     for(int i=0; i<NUM_PLATFORMS; i++)
