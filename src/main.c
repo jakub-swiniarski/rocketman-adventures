@@ -92,18 +92,9 @@ int main(void){
 
     srand(time(NULL));
 
-    Rocket new_rocket={
-        .tx=&TextureHolder.rocket,
-        .x=-100,
-        .y=-100,
-        .speed_x=0,
-        .speed_y=0,
-        .rotation=0,
-        .collided=0,
-        .should_explode=1,
-        .is_free=1
+    Rocket rockets={
+        .next=NULL
     };
-    Rocket rockets[MAX_ROCKETS]; 
 
     Particle new_particle={
         .tx=&TextureHolder.particle_smoke,
@@ -185,9 +176,6 @@ int main(void){
         bg[i].tx=&TextureHolder.bg[i]; 
     }
 
-    for(int i=0; i<MAX_ROCKETS; i++)
-        rockets[i]=new_rocket;  
-
     for(int i=0; i<MAX_PARTICLES; i++)
         particles[i]=new_particle;
 
@@ -226,51 +214,56 @@ int main(void){
             SetMasterVolume(muted?0:volume);
         }
 
-        for(int i=0; i<MAX_ROCKETS; i++){
-            if(rockets[i].is_free) continue;
-            rocket_border_check(&rockets[i]);
+        /*{ //rocket explosions
+            Rocket *r=&rockets;
+            while(r->next!=NULL){
+                rocket_border_check(r->next);
 
-            if(rockets[i].collided){
-                PlaySound(sfx_explosion);
+                if(r->next->collided){
+                    PlaySound(sfx_explosion);
 
-                //smoke particles
-                if(rockets[i].should_explode){
-                    for(int j=0; j<MAX_PARTICLES; j++){
-                        if(particles[j].is_free){
-                            particles[j].x=rockets[i].x;
-                            particles[j].y=rockets[i].y;
-                            particles[j].rotation=rand()%360;
-                            particles[j].is_free=0;
-                            break;
+                    //smoke particles
+                    if(r->next->should_explode){
+                        for(int j=0; j<MAX_PARTICLES; j++){
+                            if(particles[j].is_free){
+                                particles[j].x=r->next->x;
+                                particles[j].y=r->next->y;
+                                particles[j].rotation=rand()%360;
+                                particles[j].is_free=0;
+                                break;
+                            }
+                        }
+
+                        if(abs(red_soldier.x-r->next->x)<200 //TODO: calc from middle to middle?
+                        && abs(red_soldier.y-r->next->y)<200
+                        && game_state!=OVER){
+                            //rocket jump
+                            red_soldier.speed_x+=red_soldier.crit_boost*-1*r->next->speed_x;
+                            red_soldier.speed_y+=red_soldier.crit_boost*-1*r->next->speed_y; 
+                        
+                            //damage
+                            if(game_state==IN_PROGRESS){
+                                red_soldier.hp-=20*red_soldier.crit_boost;
+                                if(red_soldier.hp<=0)
+                                    game_over(&game_state,&sfx_death,music);
+                            }
+                        }
+                        
+                        if(red_soldier.pickup_active==CRIT){
+                            red_soldier.crit_boost=1;
+                            red_soldier.color=WHITE;
+                            red_soldier.pickup_active=NONE;
                         }
                     }
-
-                    if(abs(red_soldier.x+MIDDLE_X(red_soldier)-rockets[i].x-MIDDLE_X(rockets[i]))<200 
-                    && abs(red_soldier.y+MIDDLE_Y(red_soldier)-rockets[i].y-MIDDLE_Y(rockets[i]))<200
-                    && game_state!=OVER){
-                        //rocket jump
-                        red_soldier.speed_x+=red_soldier.crit_boost*-1*rockets[i].speed_x;
-                        red_soldier.speed_y+=red_soldier.crit_boost*-1*rockets[i].speed_y; 
                     
-                        //damage
-                        if(game_state==IN_PROGRESS){
-                            red_soldier.hp-=20*red_soldier.crit_boost;
-                            if(red_soldier.hp<=0)
-                                game_over(&game_state,&sfx_death,music);
-                        }
-                    }
-                    
-                    if(red_soldier.pickup_active==CRIT){
-                        red_soldier.crit_boost=1;
-                        red_soldier.color=WHITE;
-                        red_soldier.pickup_active=NONE;
-                    }
+                    //delete the rocket
+                    Rocket *r_next=r->next->next;
+                    free(r->next);
+                    r->next=r_next;
+                    r=r->next;
                 }
-                
-                //prepare for shooting again
-                rockets[i]=new_rocket; 
             }
-        }
+        }*/
 
         //prepare particles for future use
         for(int i=0; i<MAX_PARTICLES; i++)
@@ -357,18 +350,21 @@ int main(void){
         
             if((IsMouseButtonPressed(SHOOT) || IsKeyPressed(SHOOT_ALT)) && red_soldier.rl_cooldown<0.0f){
                 red_soldier.rl_cooldown=0.8f;
-                
-                for(int i=0; i<MAX_ROCKETS; i++){
-                    if(rockets[i].is_free){
-                        rockets[i].is_free=0;
-                        rockets[i].x=red_soldier.x+MIDDLE_X(red_soldier);
-                        rockets[i].y=red_soldier.y+MIDDLE_Y(red_soldier)/4;
-                        rockets[i].rotation=90-atan2((red_soldier.x+MIDDLE_X(red_soldier)-mouse.x),(red_soldier.y+MIDDLE_Y(red_soldier)-mouse.y))*180/PI;
-                        rockets[i].speed_x=-960*cos(rockets[i].rotation*PI/180);
-                        rockets[i].speed_y=-960*sin(rockets[i].rotation*PI/180); 
-                        break;
-                    }
-                }   
+
+                Rocket *r=&rockets;
+                while(r->next!=NULL)
+                    r=r->next;
+                r->next=malloc(sizeof(Rocket));
+                r=r->next;
+                r->tx=&TextureHolder.rocket;
+                r->x=red_soldier.x+MIDDLE_X(red_soldier);
+                r->y=red_soldier.y+MIDDLE_Y(red_soldier)/4;
+                r->rotation=90-atan2((red_soldier.x+MIDDLE_X(red_soldier)-mouse.x),(red_soldier.y+MIDDLE_Y(red_soldier)-mouse.y))*180/PI;
+                r->speed_x=-960*cos(r->rotation*PI/180);
+                r->speed_y=-960*sin(r->rotation*PI/180); 
+                r->collided=0;
+                r->should_explode=1;
+                r->next=NULL;
             }
 
             //ACTIVATE PICKUP
@@ -395,14 +391,7 @@ int main(void){
             soldier_border_check(&red_soldier);
     
             //update cooldowns
-            red_soldier.rl_cooldown-=dt;
-
-            //update rockets
-            for(int i=0; i<MAX_ROCKETS; i++){
-                //position
-                rockets[i].x+=rockets[i].speed_x*dt;
-                rockets[i].y+=rockets[i].speed_y*dt;
-            }  
+            red_soldier.rl_cooldown-=dt;  
         }  
 
         shift=red_soldier.speed_y*dt;
@@ -437,9 +426,13 @@ int main(void){
             if(red_soldier.y==SCREEN_MIDDLE(red_soldier) && red_soldier.speed_y<0)
                 platforms[i].y-=shift;
 
-            //rocket collisions
-            for(int j=0; j<MAX_ROCKETS; j++)
-                platform_collision_check_rocket(&platforms[i],&rockets[j]);
+            { //rocket collisions
+                Rocket *r=&rockets;
+                while(r->next!=NULL){
+                    r=r->next;
+                    platform_collision_check_rocket(&platforms[i],r);
+                }
+            }
 
             if(platforms[i].y>SCREEN_HEIGHT){
                 platforms[i].x=rand()%(SCREEN_WIDTH-platforms[i].tx->width-400)+200;
@@ -535,10 +528,15 @@ int main(void){
         }
         DRAW_PRO(red_soldier,red_soldier.flip,1,0,0,0,red_soldier.color);
 
-        //draw rockets
-        for(int i=0; i<MAX_ROCKETS; i++){
-            if(rockets[i].is_free) continue;
-            DRAW_PRO(rockets[i],1,1,rockets[i].rotation,MIDDLE_X(rockets[i]),MIDDLE_Y(rockets[i]),red_soldier.color)
+        { //update rockets
+            Rocket *r=&rockets;
+            while(r->next!=NULL){
+                r=r->next;
+                Rocket rocket=*r;
+                DRAW_PRO(rocket,1,1,rocket.rotation,MIDDLE_X(rocket),MIDDLE_Y(rocket),red_soldier.color)
+                r->x+=r->speed_x*dt;
+                r->y+=r->speed_y*dt;
+            }
         }
 
         //draw rocket launcher

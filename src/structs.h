@@ -48,13 +48,15 @@ typedef struct{
     int frame;
 } Soldier;
 
-typedef struct{
+typedef struct Rocket Rocket;
+struct Rocket{
     Texture *tx;
     int x,y;
     int rotation;
     int speed_x,speed_y;
-    bool collided,should_explode,is_free;
-} Rocket;
+    bool collided,should_explode;
+    Rocket *next;
+};
 
 typedef struct{
     Texture *tx;
