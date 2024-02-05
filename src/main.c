@@ -176,6 +176,7 @@ int main(void){
     red_soldier.pickup=red_soldier.pickup_active=NONE;
     red_soldier.state=STANDING;
     red_soldier.slow_fall=red_soldier.crit_boost=1;
+    red_soldier.color=WHITE;
     red_soldier.hp=200;
 
     for(int i=0; i<2; i++){
