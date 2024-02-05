@@ -1,9 +1,9 @@
 #ifndef STRUCTS_H
 #define STRUCTS_H
 
-#include "globals.h"
 #include <raylib.h>
-#include <stdint.h>
+
+#include "globals.h"
 
 static struct{
     //soldier
