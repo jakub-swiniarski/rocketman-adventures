@@ -214,16 +214,15 @@ int main(void){
             SetMasterVolume(muted?0:volume);
         }
 
-        /*{ //rocket explosions
+        { //rocket explosions
             Rocket *r=&rockets;
             while(r->next!=NULL){
                 rocket_border_check(r->next);
 
                 if(r->next->collided){
-                    PlaySound(sfx_explosion);
-
-                    //smoke particles
                     if(r->next->should_explode){
+                        PlaySound(sfx_explosion);
+
                         for(int j=0; j<MAX_PARTICLES; j++){
                             if(particles[j].is_free){
                                 particles[j].x=r->next->x;
@@ -257,13 +256,13 @@ int main(void){
                     }
                     
                     //delete the rocket
-                    Rocket *r_next=r->next->next;
+                    /*Rocket *r_next=r->next->next;
                     free(r->next);
-                    r->next=r_next;
-                    r=r->next;
+                    r->next=r_next;*/
                 }
+                r=r->next;
             }
-        }*/
+        }
 
         //prepare particles for future use
         for(int i=0; i<MAX_PARTICLES; i++)
