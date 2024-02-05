@@ -49,7 +49,7 @@ int main(void){
         UnloadImage(image);
     }
 
-    //sfx
+    //sfx, TODO: turn into an array and use enums to access elements
     Sound sfx_explosion=LoadSound(path_to_file("explosion.ogg"));
     Sound sfx_pickup=LoadSound(path_to_file("pickup.ogg"));
     Sound sfx_jump=LoadSound(path_to_file("jump.ogg"));
