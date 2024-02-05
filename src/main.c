@@ -233,8 +233,9 @@ int main(void){
                             }
                         }
 
-                        if(abs(red_soldier.x-r->next->x)<300
-                        && abs(red_soldier.y-r->next->y)<300
+                        Rocket rocket=*r->next;
+                        if(abs(red_soldier.x+MIDDLE_X(red_soldier)-r->next->x-MIDDLE_X(rocket))<200
+                        && abs(red_soldier.y+MIDDLE_Y(red_soldier)-r->next->y-MIDDLE_Y(rocket))<200
                         && game_state!=OVER){
                             //rocket jump
                             red_soldier.speed_x+=red_soldier.crit_boost*-1*r->next->speed_x;
