@@ -172,7 +172,8 @@ int main(void){
 
     red_soldier.x=(int)(SCREEN_WIDTH/2)-red_soldier.tx->width;
     red_soldier.y=SCREEN_HEIGHT-red_soldier.tx->height; 
-    red_soldier.speed_x=red_soldier.speed_y=red_soldier.rl_cooldown=red_soldier.falling=red_soldier.anim_cooldown=0;
+    red_soldier.speed_x=red_soldier.speed_y=red_soldier.falling=0;
+    red_soldier.rl_cooldown=red_soldier.anim_cooldown=0.0f;
     red_soldier.pickup=red_soldier.pickup_active=NONE;
     red_soldier.state=STANDING;
     red_soldier.slow_fall=red_soldier.crit_boost=1;
@@ -354,8 +355,8 @@ int main(void){
                 red_soldier.speed_y+=1000*dt;
             } 
         
-            if((IsMouseButtonPressed(SHOOT) || IsKeyPressed(SHOOT_ALT)) && red_soldier.rl_cooldown<0){
-                red_soldier.rl_cooldown=120;
+            if((IsMouseButtonPressed(SHOOT) || IsKeyPressed(SHOOT_ALT)) && red_soldier.rl_cooldown<0.0f){
+                red_soldier.rl_cooldown=0.8f;
                 
                 for(int i=0; i<MAX_ROCKETS; i++){
                     if(rockets[i].is_free){
@@ -394,7 +395,7 @@ int main(void){
             soldier_border_check(&red_soldier);
     
             //update cooldowns
-            red_soldier.rl_cooldown-=150*dt;
+            red_soldier.rl_cooldown-=dt;
 
             //update rockets
             for(int i=0; i<MAX_ROCKETS; i++){
@@ -520,11 +521,11 @@ int main(void){
             break;
 
             case WALKING:
-                red_soldier.anim_cooldown-=150*dt;
-                if(red_soldier.anim_cooldown<0){
+                red_soldier.anim_cooldown-=dt;
+                if(red_soldier.anim_cooldown<0.0f){
                     red_soldier.frame++; 
                     red_soldier.tx=&TextureHolder.red_soldier[red_soldier.frame%6];
-                    red_soldier.anim_cooldown=12;
+                    red_soldier.anim_cooldown=0.1;
                 }
             break;
 
