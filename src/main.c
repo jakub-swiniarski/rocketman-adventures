@@ -256,9 +256,10 @@ int main(void){
                     }
                     
                     //delete the rocket
-                    /*Rocket *r_next=r->next->next;
+                    Rocket *r_next=r->next->next;
                     free(r->next);
-                    r->next=r_next;*/
+                    r->next=r_next;
+                    break;
                 }
                 r=r->next;
             }
