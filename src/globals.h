@@ -12,7 +12,7 @@ enum {NONE, PARACHUTE, CRIT}; //pickups
 enum {NORMAL, HOVER}; //button states
 enum {SFX_EXPLOSION, SFX_PICKUP, SFX_JUMP, SFX_DEATH}; //sound effects
 
-static const char *DIRECTORY="res/";
-static const char *VERSION="3.0.0";
+static const char *DIRECTORY="/usr/local/share/rocketman/";
+static const char *VERSION="3.0.1";
 
 #endif
