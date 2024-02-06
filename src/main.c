@@ -388,6 +388,7 @@ int main(void){
         }  
 
         shift=red_soldier.speed_y*dt;
+        bool should_shift=red_soldier.y==SCREEN_MIDDLE(red_soldier) && red_soldier.speed_y<0;
 
         ClearBackground(BLACK); 
         BeginDrawing();
@@ -403,7 +404,7 @@ int main(void){
                 if(level>NUM_BG-1) level=7;
                 bg[i].tx=&TextureHolder.bg[level];
             } 
-            if(red_soldier.y==SCREEN_MIDDLE(red_soldier) && red_soldier.speed_y<0)
+            if(should_shift)
                 bg[i].y-=shift/2;
 
             //draw background
@@ -416,7 +417,7 @@ int main(void){
             if(red_soldier.speed_y>0)
                 platform_collision_check_soldier(&platforms[i],&red_soldier);
 
-            if(red_soldier.y==SCREEN_MIDDLE(red_soldier) && red_soldier.speed_y<0)
+            if(should_shift)
                 platforms[i].y-=shift;
 
             { //rocket collisions
@@ -457,7 +458,7 @@ int main(void){
         //update pickup
         if(pickup_collect_check(&pickup, &red_soldier)) 
             PlaySound(sfx[SFX_PICKUP]); 
-        if(red_soldier.y==SCREEN_MIDDLE(red_soldier) && red_soldier.speed_y<0)
+        if(should_shift)
             pickup.y-=shift; 
         if(IS_VISIBLE(pickup))
             DRAW(pickup);
@@ -471,7 +472,7 @@ int main(void){
                     health_packs[i]=new_health_pack;
                 }
             }
-            if(red_soldier.y==SCREEN_MIDDLE(red_soldier) && red_soldier.speed_y<0)
+            if(should_shift)
                 health_packs[i].y-=shift;     
         }
 
@@ -547,7 +548,7 @@ int main(void){
                     break;
                 }
 
-                if(red_soldier.y==SCREEN_MIDDLE(red_soldier) && red_soldier.speed_y<0) //TODO: calc this and use in multiple places
+                if(should_shift)
                     p->next->y-=shift;
 
                 p->next->alpha-=2*dt;
