@@ -50,10 +50,12 @@ int main(void){
     }
 
     //sfx, TODO: turn into an array and use enums to access elements
-    Sound sfx_explosion=LoadSound(path_to_file("explosion.ogg"));
-    Sound sfx_pickup=LoadSound(path_to_file("pickup.ogg"));
-    Sound sfx_jump=LoadSound(path_to_file("jump.ogg"));
-    Sound sfx_death=LoadSound(path_to_file("death.ogg"));
+    Sound sfx[NUM_SFX];
+    for(int i=0; i<NUM_SFX; i++){
+        char name[16];
+        sprintf(name,"sfx%d.ogg",i);
+        sfx[i]=LoadSound(path_to_file(name));
+    }
 
     //music
     Music music[NUM_MUSIC];
@@ -212,7 +214,7 @@ int main(void){
 
                 if(r->next->collided){
                     if(r->next->should_explode){
-                        PlaySound(sfx_explosion);
+                        PlaySound(sfx[SFX_EXPLOSION]);
 
                         //spawn particles
                         {
@@ -241,7 +243,7 @@ int main(void){
                             if(game_state==IN_PROGRESS){
                                 red_soldier.hp-=20*red_soldier.crit_boost;
                                 if(red_soldier.hp<=0)
-                                    game_over(&game_state,&sfx_death,music);
+                                    game_over(&game_state,&sfx[SFX_DEATH],music);
                             }
                         }
                         
@@ -286,7 +288,7 @@ int main(void){
             if(!IsKeyDown(MOVE_LEFT) && !IsKeyDown(MOVE_RIGHT)) //if not moving horizontally
                 parachute.rotation+=parachute.rotation>0?-100*dt:100*dt;
             if(IsKeyDown(JUMP) && !red_soldier.falling){
-                PlaySound(sfx_jump);
+                PlaySound(sfx[SFX_JUMP]);
                 if(red_soldier.pickup_active==PARACHUTE){
                     red_soldier.slow_fall=1;                     
                     red_soldier.pickup_active=NONE;
@@ -333,7 +335,7 @@ int main(void){
                     red_soldier.falling=0;
                 }
                 else
-                    game_over(&game_state,&sfx_death,music);
+                    game_over(&game_state,&sfx[SFX_DEATH],music);
             }
             else{
                 red_soldier.falling=1;
@@ -455,7 +457,7 @@ int main(void){
 
         //update pickup
         if(pickup_collect_check(&pickup, &red_soldier)) 
-            PlaySound(sfx_pickup); 
+            PlaySound(sfx[SFX_PICKUP]); 
         if(red_soldier.y==SCREEN_MIDDLE(red_soldier) && red_soldier.speed_y<0)
             pickup.y-=shift; 
         if(IS_VISIBLE(pickup))
@@ -638,10 +640,8 @@ int main(void){
         UnloadTexture(TextureHolder.bg[i]);
 
     //unload sfx
-    UnloadSound(sfx_explosion);
-    UnloadSound(sfx_pickup);
-    UnloadSound(sfx_jump);
-    UnloadSound(sfx_death);
+    for(int i=0; i<NUM_SFX; i++)
+        UnloadSound(sfx[i]);
 
     //unload music
     for(int i=0; i<NUM_MUSIC; i++)
