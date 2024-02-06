@@ -49,7 +49,6 @@ int main(void){
         UnloadImage(image);
     }
 
-    //sfx, TODO: turn into an array and use enums to access elements
     Sound sfx[NUM_SFX];
     for(int i=0; i<NUM_SFX; i++){
         char name[16];
