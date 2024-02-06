@@ -1,9 +1,9 @@
 #ifndef STRUCTS_H
 #define STRUCTS_H
 
-#include "globals.h"
 #include <raylib.h>
-#include <stdint.h>
+
+#include "globals.h"
 
 static struct{
     //soldier
@@ -35,7 +35,7 @@ typedef struct{
     Texture *tx;
     int x,y;
     int speed_x, speed_y; //used for gravity and jumping
-    int rl_cooldown;
+    float rl_cooldown;
     bool falling;
     int pickup, pickup_active;
     float slow_fall; //1 means no slow fall
@@ -44,17 +44,19 @@ typedef struct{
     int flip; //1 means befault, -1 means flipped
     Color color;
     int state;
-    int anim_cooldown;
+    float anim_cooldown;
     int frame;
 } Soldier;
 
-typedef struct{
+typedef struct Rocket Rocket;
+struct Rocket{
     Texture *tx;
     int x,y;
     int rotation;
     int speed_x,speed_y;
-    bool collided,should_explode,is_free;
-} Rocket;
+    bool collided,should_explode;
+    Rocket *next;
+};
 
 typedef struct{
     Texture *tx;
@@ -67,13 +69,14 @@ typedef struct{
     int y;
 } Background;
 
-typedef struct{
+typedef struct Particle Particle;
+struct Particle{
     Texture *tx;
     int x,y;
     int rotation;
     int alpha;
-    bool is_free;
-} Particle;
+    Particle *next;
+};
 
 typedef struct{
     Texture *tx;
