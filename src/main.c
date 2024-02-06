@@ -553,7 +553,8 @@ int main(void){
                 p->next->alpha-=2*dt;
                 
                 Particle particle=*p->next;
-                DRAW_PRO(particle,1,1,particle.rotation,MIDDLE_X(particle),MIDDLE_Y(particle),WHITE);
+                Color color={.r=255,.g=255,.b=255,.a=p->next->alpha};
+                DRAW_PRO(particle,1,1,particle.rotation,MIDDLE_X(particle),MIDDLE_Y(particle),color);
 
                 p=p->next;
             }
