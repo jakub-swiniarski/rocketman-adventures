@@ -69,13 +69,14 @@ typedef struct{
     int y;
 } Background;
 
-typedef struct{
+typedef struct Particle Particle;
+struct Particle{
     Texture *tx;
     int x,y;
     int rotation;
     int alpha;
-    bool is_free;
-} Particle;
+    Particle *next;
+};
 
 typedef struct{
     Texture *tx;

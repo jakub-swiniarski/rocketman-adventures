@@ -1,7 +1,6 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
-static const int MAX_PARTICLES=6;
 #define NUM_BG 11
 #define NUM_PICKUP 2
 #define NUM_MUSIC 3
