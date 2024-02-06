@@ -96,15 +96,9 @@ int main(void){
         .next=NULL
     };
 
-    Particle new_particle={
-        .tx=&TextureHolder.particle_smoke,
-        .x=-100,
-        .y=-100,
-        .rotation=0,
-        .alpha=255,
-        .is_free=1
+    Particle particles={
+        .next=NULL
     };
-    Particle particles[MAX_PARTICLES]; //TODO: do the same as with the rockets
 
     Platform platforms[NUM_PLATFORMS];
     for(int i=0; i<NUM_PLATFORMS; i++)
@@ -176,9 +170,6 @@ int main(void){
         bg[i].tx=&TextureHolder.bg[i]; 
     }
 
-    for(int i=0; i<MAX_PARTICLES; i++)
-        particles[i]=new_particle;
-
     for(int i=0; i<NUM_PLATFORMS; i++){
         platforms[i].x=rand()%(SCREEN_WIDTH-TextureHolder.platform.width-400)+200; //this is also used for random x when moving platform to the top
         platforms[i].y=SCREEN_HEIGHT-(i+1)*1000/NUM_PLATFORMS;
@@ -223,14 +214,19 @@ int main(void){
                     if(r->next->should_explode){
                         PlaySound(sfx_explosion);
 
-                        for(int j=0; j<MAX_PARTICLES; j++){
-                            if(particles[j].is_free){
-                                particles[j].x=r->next->x;
-                                particles[j].y=r->next->y;
-                                particles[j].rotation=rand()%360;
-                                particles[j].is_free=0;
-                                break;
-                            }
+                        //spawn particles
+                        {
+                            Particle *p=&particles;
+                            while(p->next!=NULL)
+                                p=p->next;
+                            p->next=malloc(sizeof(Particle));
+                            p=p->next;
+                            p->tx=&TextureHolder.particle_smoke;
+                            p->x=r->next->x;
+                            p->y=r->next->y;
+                            p->rotation=rand()%360;
+                            p->alpha=255;
+                            p->next=NULL;
                         }
 
                         Rocket rocket=*r->next;
@@ -265,11 +261,6 @@ int main(void){
                 r=r->next;
             }
         }
-
-        //prepare particles for future use
-        for(int i=0; i<MAX_PARTICLES; i++)
-            if(!particles[i].is_free && particles[i].alpha<5)
-                particles[i]=new_particle;
  
         if(game_state!=OVER){
             //movement 
@@ -544,17 +535,28 @@ int main(void){
         DRAW_PRO(rl,1,red_soldier.flip,rl.rotation,50,45,red_soldier.color);
 
         //update particles
-        for(int i=0; i<MAX_PARTICLES; i++){
-            if(particles[i].is_free) continue;
-            if(red_soldier.y==SCREEN_MIDDLE(red_soldier) && red_soldier.speed_y<0)
-                particles[i].y-=shift;
+        {
+            Particle *p=&particles;
+            while(p->next!=NULL){
+                if(p->next->alpha<5){
+                    //delete the particle
+                    Particle *p_next=p->next->next;
+                    free(p->next);
+                    p->next=p_next;
+                    break;
+                }
 
-            //fade away 
-            particles[i].alpha-=2*dt;
-            
-            //draw
-            DRAW_PRO(particles[i],1,1,particles[i].rotation,MIDDLE_X(particles[i]),MIDDLE_Y(particles[i]),WHITE);
-        } 
+                if(red_soldier.y==SCREEN_MIDDLE(red_soldier) && red_soldier.speed_y<0) //TODO: calc this and use in multiple places
+                    p->next->y-=shift;
+
+                p->next->alpha-=2*dt;
+                
+                Particle particle=*p->next;
+                DRAW_PRO(particle,1,1,particle.rotation,MIDDLE_X(particle),MIDDLE_Y(particle),WHITE);
+
+                p=p->next;
+            }
+        }
    
         //text and hud
         switch(game_state){
