@@ -16,7 +16,7 @@
     TextureHolder.X = LoadTextureFromImage(image);\
 }
 #define LOAD_TEXTURE_ARRAY(X, N, S) {\
-    for(int i = 0; i < N; i++){\
+    for (int i = 0; i < N; i++){\
         char name[20];\
         sprintf(name, #X "%d.png", i);\
         image = LoadImage(path_to_file(name));\
