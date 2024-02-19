@@ -527,7 +527,7 @@ int main(void){
             while(r->next!=NULL){
                 r=r->next;
                 Rocket rocket=*r;
-                DRAW_PRO(rocket,1,1,rocket.rotation,MIDDLE_X(rocket),MIDDLE_Y(rocket),red_soldier.color)
+                DRAW_PRO(rocket,1,1,rocket.rotation,MIDDLE_X(rocket),MIDDLE_Y(rocket),red_soldier.color);
                 r->x+=r->speed_x*dt;
                 r->y+=r->speed_y*dt;
             }
