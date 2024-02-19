@@ -12,275 +12,263 @@
 #include "macros.h"
 #include "config.h"
 
-int main(void){
-    InitWindow(SCREEN_WIDTH,SCREEN_HEIGHT,"Rocketman Adventures");
+int main(void) {
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Rocketman Adventures");
     
-    int display=GetCurrentMonitor();
-    SetWindowSize(GetMonitorWidth(display),GetMonitorHeight(display));
+    int display = GetCurrentMonitor();
+    SetWindowSize(GetMonitorWidth(display), GetMonitorHeight(display));
     ToggleFullscreen();
 
     InitAudioDevice();
 
     SetTargetFPS(FPS);
-    float dt=1.0f;
+    float dt = 1.0f;
 
-    float volume=VOLUME;
-    bool muted=MUTED;
+    float volume = VOLUME;
+    bool muted = MUTED;
     SetMasterVolume(volume);
 
-    //load and resize images
     {
         Image image;
 
-        LOAD_TEXTURE_ARRAY(red_soldier,6,5);
-        LOAD_TEXTURE_ARRAY(pickup,NUM_PICKUP,8);
-        LOAD_TEXTURE_ARRAY(button,2,8);
-        LOAD_TEXTURE_ARRAY(bg,NUM_BG,5);
+        LOAD_TEXTURE_ARRAY(red_soldier, 6, 5);
+        LOAD_TEXTURE_ARRAY(pickup, NUM_PICKUP, 8);
+        LOAD_TEXTURE_ARRAY(button, 2, 8);
+        LOAD_TEXTURE_ARRAY(bg, NUM_BG, 5);
 
-        LOAD_TEXTURE(red_soldier_jumping,5);
-        LOAD_TEXTURE(rocket,3);
-        LOAD_TEXTURE(launcher,5);
-        LOAD_TEXTURE(particle_smoke,15);
-        LOAD_TEXTURE(platform,5);
-        LOAD_TEXTURE(parachute,5);
-        LOAD_TEXTURE(hud,5);
-        LOAD_TEXTURE(health_pack,6);
+        LOAD_TEXTURE(red_soldier_jumping, 5);
+        LOAD_TEXTURE(rocket, 3);
+        LOAD_TEXTURE(launcher, 5);
+        LOAD_TEXTURE(particle_smoke, 15);
+        LOAD_TEXTURE(platform, 5);
+        LOAD_TEXTURE(parachute, 5);
+        LOAD_TEXTURE(hud, 5);
+        LOAD_TEXTURE(health_pack, 6);
 
         UnloadImage(image);
     }
 
     Sound sfx[NUM_SFX];
-    for(int i=0; i<NUM_SFX; i++){
+    for (int i = 0; i < NUM_SFX; i++){
         char name[16];
-        sprintf(name,"sfx%d.ogg",i);
-        sfx[i]=LoadSound(path_to_file(name));
+        sprintf(name, "sfx%d.ogg", i);
+        sfx[i] = LoadSound(path_to_file(name));
     }
 
-    //music
     Music music[NUM_MUSIC];
-    for(int i=0; i<NUM_MUSIC; i++){
+    for (int i = 0; i < NUM_MUSIC; i++) {
         char name[16];
-        sprintf(name,"music%d.ogg",i);
-        music[i]=LoadMusicStream(path_to_file(name));
+        sprintf(name, "music%d.ogg", i);
+        music[i] = LoadMusicStream(path_to_file(name));
     }
 
     int game_state;
 
-    //player
-    Soldier red_soldier={
-        .tx=&TextureHolder.red_soldier[0], 
-        .flip=1,
-        .color=WHITE
+    Soldier red_soldier = {
+        .tx = &TextureHolder.red_soldier[0], 
+        .flip = 1,
+        .color = WHITE
     }; 
 
-    //parachute
-    Parachute parachute={
-        .tx=&TextureHolder.parachute,
-        .rotation=0
+    Parachute parachute = {
+        .tx = &TextureHolder.parachute,
+        .rotation = 0
     };
         
-    //rocket launcher
-    Launcher rl={
-        .tx=&TextureHolder.launcher,
-        .x=0,
-        .y=0,
-        .rotation=0,
+    Launcher rl = {
+        .tx = &TextureHolder.launcher,
+        .x = 0,
+        .y = 0,
+       .rotation = 0,
     };
 
-    //background
     Background bg[2];
-    int shift, level; //used for changing backgrounds
+    int shift, level; /* used for changing backgrounds */
 
     srand(time(NULL));
 
-    Rocket rockets={
-        .next=NULL
+    Rocket rockets = {
+        .next = NULL
     };
 
-    Particle particles={
-        .next=NULL
+    Particle particles = {
+        .next = NULL
     };
 
     Platform platforms[NUM_PLATFORMS];
-    for(int i=0; i<NUM_PLATFORMS; i++)
-        platforms[i].tx=&TextureHolder.platform;
+    for (int i = 0; i < NUM_PLATFORMS; i++)
+        platforms[i].tx = &TextureHolder.platform;
     
-    //pickups
-    Pickup pickup={
-        .tx=&TextureHolder.pickup[0], 
-        .id=PARACHUTE
+    Pickup pickup = {
+        .tx = &TextureHolder.pickup[0], 
+        .id = PARACHUTE
     };
 
-    //health packs
-    HealthPack new_health_pack={
-        .tx=&TextureHolder.health_pack,
-        .x=-100,
-        .y=-100
+    HealthPack new_health_pack = {
+        .tx = &TextureHolder.health_pack,
+        .x = -100,
+        .y = -100
     };
     HealthPack health_packs[NUM_HEALTH_PACKS];
-    for(int i=0; i<NUM_HEALTH_PACKS; i++)
-        health_packs[i]=new_health_pack;
+    for (int i = 0; i<NUM_HEALTH_PACKS; i++)
+        health_packs[i] = new_health_pack;
 
     int score;
     char score_string[8];
 
-    //hp hud
-    HUD health_hud={
-        .tx=&TextureHolder.hud,
-        .x=5,
-        .y=SCREEN_HEIGHT-TextureHolder.hud.height-5,
-        .text="0"
+    HUD health_hud = {
+        .tx = &TextureHolder.hud,
+        .x = 5,
+        .y = SCREEN_HEIGHT - TextureHolder.hud.height - 5,
+        .text = "0"
     }; 
     sprintf(health_hud.text, "%d", red_soldier.hp);
 
-    //pickup hud
-    HUD pickup_hud={
-        .tx=&TextureHolder.hud,
-        .x=SCREEN_WIDTH-TextureHolder.hud.width-5,
-        .y=SCREEN_HEIGHT-TextureHolder.hud.height-5,
-        .text="EMPTY"
+    HUD pickup_hud = {
+        .tx = &TextureHolder.hud,
+        .x = SCREEN_WIDTH - TextureHolder.hud.width - 5,
+        .y = SCREEN_HEIGHT - TextureHolder.hud.height - 5,
+        .text = "EMPTY"
     };
 
-    //buttons
-    Button try_again_button={
-        .tx=&TextureHolder.button[0],
-        .x=SCREEN_WIDTH/2-TextureHolder.button[0].width/2,
-        .y=500,
-        .text="TRY AGAIN",
-        .state=NORMAL
+    Button try_again_button = {
+        .tx = &TextureHolder.button[0],
+        .x = SCREEN_WIDTH / 2 - TextureHolder.button[0].width / 2,
+        .y = 500,
+        .text = "TRY AGAIN",
+        .state = NORMAL
     };
     
     Vector2 mouse;
     
     START:
-    game_state=MENU;
-    level=1;
+    game_state = MENU;
+    level = 1;
 
-    red_soldier.x=(int)(SCREEN_WIDTH/2)-red_soldier.tx->width;
-    red_soldier.y=SCREEN_HEIGHT-red_soldier.tx->height; 
-    red_soldier.speed_x=red_soldier.speed_y=red_soldier.falling=0;
-    red_soldier.rl_cooldown=red_soldier.anim_cooldown=0.0f;
-    red_soldier.pickup=red_soldier.pickup_active=NONE;
-    red_soldier.state=STANDING;
-    red_soldier.slow_fall=red_soldier.crit_boost=1;
-    red_soldier.color=WHITE;
-    red_soldier.hp=200;
+    red_soldier.x = (int)(SCREEN_WIDTH / 2) - red_soldier.tx->width;
+    red_soldier.y = SCREEN_HEIGHT - red_soldier.tx->height; 
+    red_soldier.speed_x = red_soldier.speed_y = red_soldier.falling = 0;
+    red_soldier.rl_cooldown = red_soldier.anim_cooldown = 0.0f;
+    red_soldier.pickup = red_soldier.pickup_active = NONE;
+    red_soldier.state = STANDING;
+    red_soldier.slow_fall = red_soldier.crit_boost = 1; /* TODO: rename these to avoid confusing with booleans, boost_rl, slow_fall_multiplier? */
+    red_soldier.color = WHITE;
+    red_soldier.hp = 200;
 
-    for(int i=0; i<2; i++){
-        bg[i].y=-i*SCREEN_HEIGHT;
-        bg[i].tx=&TextureHolder.bg[i]; 
+    for (int i = 0; i < 2; i++) {
+        bg[i].y = -i * SCREEN_HEIGHT;
+        bg[i].tx = &TextureHolder.bg[i]; 
     }
 
-    for(int i=0; i<NUM_PLATFORMS; i++){
-        platforms[i].x=rand()%(SCREEN_WIDTH-TextureHolder.platform.width-400)+200; //this is also used for random x when moving platform to the top
-        platforms[i].y=SCREEN_HEIGHT-(i+1)*1000/NUM_PLATFORMS;
+    for (int i = 0; i < NUM_PLATFORMS; i++) {
+        platforms[i].x = rand() % (SCREEN_WIDTH - TextureHolder.platform.width - 400) + 200; /* this is also used for random x when moving platform to the top */
+        platforms[i].y = SCREEN_HEIGHT - (i + 1) * 1000 / NUM_PLATFORMS;
     } 
 
-    pickup.x=pickup.y=-100;
-    pickup.id=PARACHUTE;    
+    pickup.x = pickup.y = -100;
+    pickup.id = PARACHUTE;
 
-    for(int i=0; i<NUM_HEALTH_PACKS; i++)
-        health_packs[i]=new_health_pack;
+    for (int i = 0; i < NUM_HEALTH_PACKS; i++)
+        health_packs[i] = new_health_pack;
 
-    score=0;
+    score = 0;
 
-    for(int i=0; i<NUM_MUSIC; i++)
+    for (int i = 0; i < NUM_MUSIC; i++)
         PlayMusicStream(music[i]);
 
-    //game loop
-    while(!WindowShouldClose()){
-        dt=GetFrameTime();
-        mouse=GetMousePosition();
+    while (!WindowShouldClose()) {
+        dt = GetFrameTime();
+        mouse = GetMousePosition();
 
-        //volume control
-        if(IsKeyPressed(VOL_UP) && volume<=0.9f){
-            volume+=0.1f;
+        /* volume control */
+        if (IsKeyPressed(VOL_UP) && volume <= 0.9f) {
+            volume += 0.1f;
             SetMasterVolume(volume);
         }
-        else if(IsKeyPressed(VOL_DOWN) && volume>=0.1f){
-            volume-=0.1f;
+        else if (IsKeyPressed(VOL_DOWN) && volume >= 0.1f) {
+            volume -= 0.1f;
             SetMasterVolume(volume);
         }
-        else if(IsKeyPressed(MUTE)){
-            muted=!muted;
-            SetMasterVolume(muted?0:volume);
+        else if (IsKeyPressed(MUTE)) {
+            muted =! muted;
+            SetMasterVolume(muted ? 0 : volume);
         }
 
-        { //rocket explosions
-            Rocket *r=&rockets;
-            while(r->next!=NULL){
+        { /* rocket explosions */
+            Rocket *r = &rockets;
+            while (r->next != NULL){
                 rocket_border_check(r->next);
 
-                if(r->next->collided){
-                    if(r->next->should_explode){
+                if (r->next->collided) {
+                    if (r->next->should_explode) {
                         PlaySound(sfx[SFX_EXPLOSION]);
 
-                        //spawn particles
+                        //spawn particles TODO: instead of commenting, define functions and procedures
                         {
-                            Particle *p=&particles;
-                            while(p->next!=NULL)
-                                p=p->next;
-                            p->next=malloc(sizeof(Particle));
-                            p=p->next;
-                            p->tx=&TextureHolder.particle_smoke;
-                            p->x=r->next->x;
-                            p->y=r->next->y;
-                            p->rotation=rand()%360;
-                            p->alpha=255;
-                            p->next=NULL;
+                            Particle *p = &particles;
+                            while (p->next != NULL)
+                                p = p->next;
+                            p->next = malloc(sizeof(Particle));
+                            p = p->next;
+                            p->tx = &TextureHolder.particle_smoke;
+                            p->x = r->next->x;
+                            p->y = r->next->y;
+                            p->rotation = rand() % 360;
+                            p->alpha = 255;
+                            p->next = NULL;
                         }
 
-                        Rocket rocket=*r->next;
-                        if(abs(red_soldier.x+MIDDLE_X(red_soldier)-r->next->x-MIDDLE_X(rocket))<200
-                        && abs(red_soldier.y+MIDDLE_Y(red_soldier)-r->next->y-MIDDLE_Y(rocket))<200
-                        && game_state!=OVER){
+                        Rocket rocket = *r->next;
+                        if (abs(red_soldier.x + MIDDLE_X(red_soldier) - r->next->x - MIDDLE_X(rocket)) < 200
+                        && abs(red_soldier.y + MIDDLE_Y(red_soldier) - r->next->y - MIDDLE_Y(rocket)) < 200
+                        && game_state != OVER) {
                             //rocket jump
-                            red_soldier.speed_x+=red_soldier.crit_boost*-1*r->next->speed_x;
-                            red_soldier.speed_y+=red_soldier.crit_boost*-1*r->next->speed_y; 
+                            red_soldier.speed_x += red_soldier.crit_boost * -1 * r->next->speed_x;
+                            red_soldier.speed_y += red_soldier.crit_boost * -1 * r->next->speed_y; 
                         
                             //damage
-                            if(game_state==IN_PROGRESS){
-                                red_soldier.hp-=20*red_soldier.crit_boost;
-                                if(red_soldier.hp<=0)
-                                    game_over(&game_state,&sfx[SFX_DEATH],music);
+                            if (game_state == IN_PROGRESS) {
+                                red_soldier.hp -= 20 * red_soldier.crit_boost;
+                                if (red_soldier.hp <= 0)
+                                    game_over(&game_state, &sfx[SFX_DEATH], music);
                             }
                         }
                         
-                        if(red_soldier.pickup_active==CRIT){
-                            red_soldier.crit_boost=1;
-                            red_soldier.color=WHITE;
-                            red_soldier.pickup_active=NONE;
+                        if (red_soldier.pickup_active == CRIT) {
+                            red_soldier.crit_boost = 1;
+                            red_soldier.color = WHITE;
+                            red_soldier.pickup_active = NONE;
                         }
                     }
                     
                     //delete the rocket
-                    Rocket *r_next=r->next->next;
+                    Rocket *r_next = r->next->next;
                     free(r->next);
-                    r->next=r_next;
+                    r->next = r_next;
                     break;
                 }
-                r=r->next;
+                r = r->next;
             }
         }
  
-        if(game_state!=OVER){
+        if (game_state != OVER) {
             //movement 
-            if(IsKeyDown(MOVE_RIGHT) && !IsKeyDown(MOVE_LEFT)){
-                red_soldier.x+=150*dt;
-                red_soldier.state=WALKING;
+            if (IsKeyDown(MOVE_RIGHT) && !IsKeyDown(MOVE_LEFT)) {
+                red_soldier.x += 150 * dt;
+                red_soldier.state = WALKING;
 
-                if(red_soldier.pickup_active==PARACHUTE && parachute.rotation>-30)
-                    parachute.rotation-=60*dt;
+                if (red_soldier.pickup_active == PARACHUTE && parachute.rotation > -30)
+                    parachute.rotation -= 60 * dt;
             }
-            else if(IsKeyDown(MOVE_LEFT) && !IsKeyDown(MOVE_RIGHT)){
-                red_soldier.x-=150*dt;
-                red_soldier.state=WALKING;
+            else if (IsKeyDown(MOVE_LEFT) && !IsKeyDown(MOVE_RIGHT)) {
+                red_soldier.x -= 150 * dt;
+                red_soldier.state = WALKING;
             
-                if(red_soldier.pickup_active==PARACHUTE && parachute.rotation<30)
-                    parachute.rotation+=60*dt;
+                if (red_soldier.pickup_active == PARACHUTE && parachute.rotation < 30)
+                    parachute.rotation += 60 * dt;
             }
             else
-                red_soldier.state=STANDING;
+                red_soldier.state = STANDING;
             if(red_soldier.speed_y<-100 || red_soldier.speed_y>100)
                 red_soldier.state=JUMPING;
             //reset parachute rotation
@@ -604,7 +592,7 @@ int main(void){
                 if(MOUSE_HOVER_BUTTON(try_again_button,mouse)){
                     try_again_button.state=HOVER;
                     if(IsMouseButtonPressed(SHOOT))
-                        goto START;
+                        goto START; /* TODO: turn this into a function? */
                 }
                 else
                     try_again_button.state=NORMAL;
