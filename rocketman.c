@@ -171,7 +171,7 @@ static const char *VERSION = "3.0.1";
 void draw_text(const char *text, int x, int y, int font_size, Color color) {
     DrawText(text, x, y, font_size, BLACK);
     DrawText(text, x+7, y+7, font_size,color);
-} /* TODO: is the 'full' in the name needed? */
+}
 
 void draw_text_center(const char *text, int y, int font_size, Color color) {
     draw_text(
