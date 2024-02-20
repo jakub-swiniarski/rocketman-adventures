@@ -6,7 +6,6 @@
 #include <time.h>
 #include <string.h>
 
-#include "globals.h"
 #include "config.h"
 
 /* macros */
@@ -32,6 +31,8 @@
         TextureHolder.X[i] = LoadTextureFromImage(image);\
     }\
 }
+#define NUM_BG 11
+#define NUM_MUSIC 3
 
 /* enums */
 enum { STANDING, WALKING, JUMPING }; /* player states, used for animations */
@@ -159,6 +160,12 @@ void platform_collision_check_rocket(Platform *p, Rocket *r);
 void platform_collision_check_soldier(Platform *p, Soldier *s);
 void rocket_border_check(Rocket *r);
 void soldier_border_check(Soldier *s);
+
+/* variables */
+
+/* constants */
+static const char *DIRECTORY = "res/";
+static const char *VERSION = "3.0.1";
 
 int main(void) {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Rocketman Adventures");
