@@ -15,7 +15,7 @@ static float VOLUME = 1.0f;
 static bool MUTED = 0;
 
 /* HUD */
-static const Color TEXT_COLOR[3] = { RED, WHITE, GREEN }; /* low, normal, high */
+static const Color TEXT_COLOR[3] = { RED, WHITE, GREEN }; /* low, normal, high, TODO: create an enum for this in main */
 
 /* keyboard controls */
 static const KeyboardKey MOVE_LEFT = KEY_A; /* TODO rename keys, start with KEY_... */
