@@ -9,8 +9,31 @@
 #include "structs.h"
 #include "functions.h"
 #include "globals.h"
-#include "macros.h"
 #include "config.h"
+
+/* macros */
+#define SCREEN_MIDDLE(X) ((int)(SCREEN_HEIGHT / 2) - (int)(X.tx->height / 2))
+#define MIDDLE_X(X) ((int)(X.tx->width / 2))
+#define MIDDLE_Y(X) ((int)(X.tx->height / 2))
+#define IS_VISIBLE(X) ((X.x + X.tx->width > 0 && X.x < SCREEN_WIDTH) && (X.y + X.tx->height > 0 && X.y < SCREEN_WIDTH))
+#define COLLISION(X, Y) ((X.x + X.tx->width > Y.x && X.x < Y.x + Y.tx->width) && (X.y + X.tx->height > Y.y && X.y < Y.y + Y.tx->height))
+#define MOUSE_HOVER_BUTTON(X, Y) ((Y.x > X.x && Y.x < X.x + X.tx->width) && (Y.y > X.y && Y.y < X.y + X.tx->height))
+#define DRAW(X) DrawTexture(*X.tx, X.x, X.y, WHITE)
+#define DRAW_PRO(X, FH, FV, R, OX, OY, C) (DrawTexturePro(*X.tx, (Rectangle){ .x = 0, .y = 0, .width = X.tx->width * FH, .height = X.tx->height * FV }, (Rectangle){ .x = X.x, .y = X.y, .width = X.tx->width, .height = X.tx->height }, (Vector2){ .x = OX, .y = OY }, R, C)) /* X, flip horizontal, flip vertical, rotation, origin x, origin y, color */
+#define LOAD_TEXTURE(X, S) {\
+    image = LoadImage(path_to_file(#X ".png"));\
+    ImageResizeNN(&image, image.width * S, image.height * S);\
+    TextureHolder.X = LoadTextureFromImage(image);\
+}
+#define LOAD_TEXTURE_ARRAY(X, N, S) {\
+    for (int i = 0; i < N; i++){\
+        char name[20];\
+        sprintf(name, #X "%d.png", i);\
+        image = LoadImage(path_to_file(name));\
+        ImageResizeNN(&image, image.width * S, image.height * S);\
+        TextureHolder.X[i] = LoadTextureFromImage(image);\
+    }\
+}
 
 int main(void) {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Rocketman Adventures");
