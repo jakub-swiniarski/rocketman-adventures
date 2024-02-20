@@ -151,8 +151,8 @@ typedef struct {
 } Button;
 
 /* function declarations */
-void draw_text_full(const char *text, int x, int y, int font_size, Color color);
-void draw_text_full_center(const char *text, int y, int font_size, Color color);
+void draw_text(const char *text, int x, int y, int font_size, Color color); /* TODO: take center as boolean arg */
+void draw_text_center(const char *text, int y, int font_size, Color color);
 void game_over(int *gs, Sound *sfx, Music *m);
 char *path_to_file(char *name);
 bool pickup_collect_check(Pickup *p, Soldier *r);
@@ -168,13 +168,13 @@ static const char *DIRECTORY = "res/";
 static const char *VERSION = "3.0.1";
 
 /* function implementations */
-void draw_text_full(const char *text, int x, int y, int font_size, Color color) {
+void draw_text(const char *text, int x, int y, int font_size, Color color) {
     DrawText(text, x, y, font_size, BLACK);
     DrawText(text, x+7, y+7, font_size,color);
 } /* TODO: is the 'full' in the name needed? */
 
-void draw_text_full_center(const char *text, int y, int font_size, Color color) {
-    draw_text_full(
+void draw_text_center(const char *text, int y, int font_size, Color color) {
+    draw_text(
         text,
         (int)(SCREEN_WIDTH / 2) - (int)(MeasureTextEx(GetFontDefault(), text, font_size, 10).x / 2),
         y,
@@ -794,9 +794,9 @@ int main(void) {
             case MENU:
                 UpdateMusicStream(music[0]);
 
-                draw_text_full_center("ROCKETMAN ADVENTURES", 200, 100, WHITE);
-                draw_text_full_center(VERSION, 300, 64, WHITE); 
-                draw_text_full_center("START JUMPING TO BEGIN", 400, 64, WHITE);
+                draw_text_center("ROCKETMAN ADVENTURES", 200, 100, WHITE);
+                draw_text_center(VERSION, 300, 64, WHITE); 
+                draw_text_center("START JUMPING TO BEGIN", 400, 64, WHITE);
                 break;
             case IN_PROGRESS:
                 if (level < 7)
@@ -814,18 +814,18 @@ int main(void) {
                 //hp hud
                 sprintf(health_hud.text, "%d", red_soldier.hp);
                 DRAW(health_hud);
-                draw_text_full(health_hud.text, health_hud.x + 40, health_hud.y + 30, 100, health_hud.text_color); 
+                draw_text(health_hud.text, health_hud.x + 40, health_hud.y + 30, 100, health_hud.text_color); 
                
                 //pickup hud
                 DRAW_PRO(pickup_hud, -1, 1, 0, 0, 0, WHITE);
                 if (red_soldier.pickup != NONE)
                     DrawTexture(TextureHolder.pickup[red_soldier.pickup - 1], pickup_hud.x + 150, pickup_hud.y + 25, WHITE);
                 else
-                    draw_text_full(pickup_hud.text, pickup_hud.x + 65, pickup_hud.y + 40, 64, WHITE);
+                    draw_text(pickup_hud.text, pickup_hud.x + 65, pickup_hud.y + 40, 64, WHITE);
 
                 //score
-                draw_text_full("SCORE:", 10, 10, 64, WHITE);
-                draw_text_full(score_string, 250, 10, 64, WHITE);
+                draw_text("SCORE:", 10, 10, 64, WHITE);
+                draw_text(score_string, 250, 10, 64, WHITE);
                 break;
             case OVER:
                 //update buttons
@@ -838,14 +838,14 @@ int main(void) {
                     try_again_button.state = NORMAL;
 
                 DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, (Color){ 0, 0, 0, 150 });
-                draw_text_full_center("GAME OVER", 200, 100, WHITE);
-                draw_text_full_center("SCORE:", 300, 64, WHITE);
-                draw_text_full_center(score_string, 375, 64, WHITE);
+                draw_text_center("GAME OVER", 200, 100, WHITE);
+                draw_text_center("SCORE:", 300, 64, WHITE);
+                draw_text_center(score_string, 375, 64, WHITE);
                 DrawTexture(try_again_button.tx[try_again_button.state], try_again_button.x, try_again_button.y, WHITE);
-                draw_text_full(try_again_button.text, try_again_button.x + 12, try_again_button.y + 45, 64, WHITE);
+                draw_text(try_again_button.text, try_again_button.x + 12, try_again_button.y + 45, 64, WHITE);
                 break;
             default:
-                draw_text_full("ERROR", 100, 100, 120, WHITE);
+                draw_text("ERROR", 100, 100, 120, WHITE);
         } 
 
         EndDrawing();
