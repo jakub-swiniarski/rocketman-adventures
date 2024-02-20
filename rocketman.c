@@ -6,8 +6,6 @@
 #include <time.h>
 #include <string.h>
 
-#include "structs.h"
-#include "functions.h"
 #include "globals.h"
 #include "config.h"
 
@@ -34,6 +32,133 @@
         TextureHolder.X[i] = LoadTextureFromImage(image);\
     }\
 }
+
+/* enums */
+enum { STANDING, WALKING, JUMPING }; /* player states, used for animations */
+enum { MENU, IN_PROGRESS, OVER }; /* game states */
+enum { NONE, PARACHUTE, CRIT, NUM_PICKUP }; /* pickups */
+enum { NORMAL, HOVER }; /* button states */
+enum { SFX_EXPLOSION, SFX_PICKUP, SFX_JUMP, SFX_DEATH, NUM_SFX }; /* sound effects */
+
+/* structs */
+static struct {
+    //soldier
+    Texture red_soldier[6];
+    Texture red_soldier_jumping;
+    Texture rocket;
+    Texture launcher;
+    Texture parachute; 
+    
+    //world
+    Texture platform;
+    
+    //pickups
+    Texture pickup[NUM_PICKUP];
+    Texture health_pack;
+
+    //hud
+    Texture hud; 
+    Texture button[2];
+
+    //visuals
+    Texture particle_smoke;
+ 
+    //backgrounds
+    Texture bg[NUM_BG];
+} TextureHolder;
+
+typedef struct {
+    Texture *tx;
+    int x, y;
+    int speed_x, speed_y; /* used for gravity and jumping */
+    float rl_cooldown;
+    bool falling;
+    int pickup, pickup_active;
+    float slow_fall; /* 1 means no slow fall */
+    int crit_boost;
+    int hp;
+    int flip; /* 1 means befault, -1 means flipped */
+    Color color;
+    int state;
+    float anim_cooldown;
+    int frame;
+} Soldier;
+
+typedef struct Rocket Rocket;
+struct Rocket {
+    Texture *tx;
+    int x, y;
+    int rotation;
+    int speed_x, speed_y;
+    bool collided, should_explode;
+    Rocket *next;
+};
+
+typedef struct {
+    Texture *tx;
+    int x, y;
+    int rotation;
+} Launcher;
+
+typedef struct {
+    Texture *tx;
+    int y;
+} Background;
+
+typedef struct Particle Particle;
+struct Particle {
+    Texture *tx;
+    int x, y;
+    int rotation;
+    int alpha;
+    Particle *next;
+};
+
+typedef struct {
+    Texture *tx;
+    int rotation;
+} Parachute;
+
+typedef struct {
+    Texture *tx;
+    int x, y;
+} Platform;
+
+typedef struct {
+    Texture *tx;
+    int x, y;
+    int id;
+} Pickup;
+
+typedef struct {
+    Texture *tx;
+    int x, y;
+} HealthPack;
+
+typedef struct {
+    Texture *tx;
+    int x, y;
+    char text[16];
+    Color text_color;
+} HUD;
+
+typedef struct {
+    Texture *tx;
+    int x, y;
+    char text[12];
+    int state;
+} Button;
+
+/* function declarations */
+void draw_text_full(const char *text, int x, int y, int font_size, Color color);
+void draw_text_full_center(const char *text, int y, int font_size, Color color);
+void game_over(int *gs, Sound *sfx, Music *m);
+char *path_to_file(char *name);
+bool pickup_collect_check(Pickup *p, Soldier *r);
+void platform_collision_check_rocket(Platform *p, Rocket *r);
+void platform_collision_check_soldier(Platform *p, Soldier *s);
+void rocket_border_check(Rocket *r);
+void soldier_border_check(Soldier *s);
 
 int main(void) {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Rocketman Adventures");
