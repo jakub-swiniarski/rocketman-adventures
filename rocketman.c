@@ -151,15 +151,15 @@ typedef struct {
 } Button;
 
 /* function declarations */
-void draw_text(const char *text, int x, int y, int font_size, Color color); /* TODO: take center as boolean arg */
-void draw_text_center(const char *text, int y, int font_size, Color color);
-void game_over(int *gs, Sound *sfx, Music *m);
-char *path_to_file(char *name);
-bool pickup_collect_check(Pickup *p, Soldier *r);
-void platform_collision_check_rocket(Platform *p, Rocket *r);
-void platform_collision_check_soldier(Platform *p, Soldier *s);
-void rocket_border_check(Rocket *r);
-void soldier_border_check(Soldier *s);
+static void draw_text(const char *text, int x, int y, int font_size, Color color); /* TODO: take center as boolean arg */
+static void draw_text_center(const char *text, int y, int font_size, Color color);
+static void game_over(int *gs, Sound *sfx, Music *m);
+static char *path_to_file(char *name);
+static bool pickup_collect_check(Pickup *p, Soldier *r);
+static void platform_collision_check_rocket(Platform *p, Rocket *r);
+static void platform_collision_check_soldier(Platform *p, Soldier *s);
+static void rocket_border_check(Rocket *r);
+static void soldier_border_check(Soldier *s);
 
 /* variables */
 
