@@ -156,6 +156,7 @@ static void draw_text(const char *text, int x, int y, int font_size, Color color
 static void draw_text_center(const char *text, int y, int font_size, Color color);
 static void game_over(int *gs, Sound *sfx, Music *m);
 static void init(void);
+static void load_assets(void);
 static char *path_to_file(char *name);
 static bool pickup_collect_check(Pickup *p, Soldier *r);
 static void platform_collision_check_rocket(Platform *p, Rocket *r);
@@ -164,15 +165,15 @@ static void rocket_border_check(Rocket *r);
 static void soldier_border_check(Soldier *s);
 
 /* variables */
-int display;
-float dt;
-int game_state;
-Music music[NUM_MUSIC];
-Parachute parachute;
-Soldier red_soldier;
-Launcher rl;
-Sound sfx[NUM_SFX];
-TextureHolder texture_holder;
+static int display;
+static float dt;
+static int game_state;
+static Music music[NUM_MUSIC];
+static Parachute parachute;
+static Soldier red_soldier;
+static Launcher rl;
+static Sound sfx[NUM_SFX];
+static TextureHolder texture_holder;
 
 /* constants */
 static const char *DIRECTORY = "res/";
@@ -214,7 +215,10 @@ void init(void) {
     SetTargetFPS(FPS);
     SetMasterVolume(volume);
 
-    /* combine the ones without .tx into a setup function or restart function */
+    game_state = MENU;
+    dt = 1.0f;
+
+    /* TODO: combine the ones without .tx into a setup function or restart function */
     red_soldier.tx = &texture_holder.red_soldier[0];
     red_soldier.flip = 1;
     red_soldier.color = WHITE;
@@ -224,6 +228,38 @@ void init(void) {
         
     rl.tx = &texture_holder.launcher;
     rl.rotation = 0;
+}
+
+void load_assets(void) {
+    Image image;
+
+    LOAD_TEXTURE_ARRAY(red_soldier, 6, 5);
+    LOAD_TEXTURE_ARRAY(pickup, NUM_PICKUP, 8);
+    LOAD_TEXTURE_ARRAY(button, 2, 8);
+    LOAD_TEXTURE_ARRAY(bg, NUM_BG, 5);
+
+    LOAD_TEXTURE(red_soldier_jumping, 5);
+    LOAD_TEXTURE(rocket, 3);
+    LOAD_TEXTURE(launcher, 5);
+    LOAD_TEXTURE(particle_smoke, 15);
+    LOAD_TEXTURE(platform, 5);
+    LOAD_TEXTURE(parachute, 5);
+    LOAD_TEXTURE(hud, 5);
+    LOAD_TEXTURE(health_pack, 6);
+
+    UnloadImage(image);
+
+    for (int i = 0; i < NUM_SFX; i++){
+        char name[16];
+        sprintf(name, "sfx%d.ogg", i);
+        sfx[i] = LoadSound(path_to_file(name));
+    }
+
+    for (int i = 0; i < NUM_MUSIC; i++) {
+        char name[16];
+        sprintf(name, "music%d.ogg", i);
+        music[i] = LoadMusicStream(path_to_file(name));
+    }
 }
 
 char *path_to_file(char *name) {
@@ -270,10 +306,9 @@ void platform_collision_check_soldier(Platform *p, Soldier *s) {
 void rocket_border_check(Rocket *r) {
     if (r->y + r->tx->height >= SCREEN_HEIGHT)
         r->collided = 1;
-    else if (
-    r->x <= 0 ||
-    r->x >= SCREEN_WIDTH ||
-    r->y <= 0) {
+    else if (r->x <= 0
+    || r->x >= SCREEN_WIDTH
+    || r->y <= 0) {
         r->collided = 1;
         r->should_explode = 0;
     }
@@ -289,38 +324,7 @@ void soldier_border_check(Soldier *s) {
 
 int main(void) {
     init();
-
-    {
-        Image image;
-
-        LOAD_TEXTURE_ARRAY(red_soldier, 6, 5);
-        LOAD_TEXTURE_ARRAY(pickup, NUM_PICKUP, 8);
-        LOAD_TEXTURE_ARRAY(button, 2, 8);
-        LOAD_TEXTURE_ARRAY(bg, NUM_BG, 5);
-
-        LOAD_TEXTURE(red_soldier_jumping, 5);
-        LOAD_TEXTURE(rocket, 3);
-        LOAD_TEXTURE(launcher, 5);
-        LOAD_TEXTURE(particle_smoke, 15);
-        LOAD_TEXTURE(platform, 5);
-        LOAD_TEXTURE(parachute, 5);
-        LOAD_TEXTURE(hud, 5);
-        LOAD_TEXTURE(health_pack, 6);
-
-        UnloadImage(image);
-    }
-
-    for (int i = 0; i < NUM_SFX; i++){
-        char name[16];
-        sprintf(name, "sfx%d.ogg", i);
-        sfx[i] = LoadSound(path_to_file(name));
-    }
-
-    for (int i = 0; i < NUM_MUSIC; i++) {
-        char name[16];
-        sprintf(name, "music%d.ogg", i);
-        music[i] = LoadMusicStream(path_to_file(name));
-    }
+    load_assets();
 
     Background bg[2];
     int shift, level; /* used for changing backgrounds */
