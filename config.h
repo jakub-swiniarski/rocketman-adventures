@@ -31,7 +31,7 @@ static const KeyboardKey VOL_DOWN = KEY_F2;
 static const MouseButton SHOOT = MOUSE_LEFT_BUTTON;
 
 //gameplay
-static const int NUM_PLATFORMS = 10;
-static const int NUM_HEALTH_PACKS = 2;
+#define NUM_PLATFORMS 10
+#define NUM_HEALTH_PACKS 2
 
 #endif 
