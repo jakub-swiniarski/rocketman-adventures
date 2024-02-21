@@ -155,6 +155,7 @@ typedef struct {
 static void draw_text(const char *text, int x, int y, int font_size, Color color); /* TODO: take center as boolean arg */
 static void draw_text_center(const char *text, int y, int font_size, Color color);
 static void game_over(int *gs, Sound *sfx, Music *m);
+static void init(void);
 static char *path_to_file(char *name);
 static bool pickup_collect_check(Pickup *p, Soldier *r);
 static void platform_collision_check_rocket(Platform *p, Rocket *r);
@@ -163,6 +164,8 @@ static void rocket_border_check(Rocket *r);
 static void soldier_border_check(Soldier *s);
 
 /* variables */
+int display;
+float dt;
 
 /* constants */
 static const char *DIRECTORY = "res/";
@@ -187,9 +190,22 @@ void draw_text_center(const char *text, int y, int font_size, Color color) {
 void game_over(int *gs, Sound *sfx, Music *m) {
     *gs = OVER;
     PlaySound(*sfx);
-    for(int i = 0; i < NUM_MUSIC; i++){
+    for (int i = 0; i < NUM_MUSIC; i++){
         SeekMusicStream(m[i], 0.0f);
     }
+}
+
+void init(void) {
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Rocketman Adventures");
+ 
+    display = GetCurrentMonitor();
+    SetWindowSize(GetMonitorWidth(display), GetMonitorHeight(display));
+    ToggleFullscreen();
+
+    InitAudioDevice();
+
+    SetTargetFPS(FPS);
+    SetMasterVolume(volume);
 }
 
 char *path_to_file(char *name) {
@@ -202,7 +218,7 @@ char *path_to_file(char *name) {
 bool pickup_collect_check(Pickup *p, Soldier *r) {
     if (r->x + r->tx->width > p->x && r->x < p->x + p->tx->width) {
         if (r->y + r->tx->height > p->y && r->y < p->y + p->tx->height) {
-            if(r->pickup == 0) {
+            if (r->pickup == 0) {
                 r->pickup = p->id;
                 p->x = -100;
                 p->y = -100;
@@ -254,20 +270,7 @@ void soldier_border_check(Soldier *s) {
 }
 
 int main(void) {
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Rocketman Adventures");
- 
-    int display = GetCurrentMonitor();
-    SetWindowSize(GetMonitorWidth(display), GetMonitorHeight(display));
-    ToggleFullscreen();
-
-    InitAudioDevice();
-
-    SetTargetFPS(FPS);
-    float dt = 1.0f;
-
-    float volume = VOLUME;
-    bool muted = MUTED;
-    SetMasterVolume(volume);
+    init();
 
     TextureHolder texture_holder;
 
@@ -865,10 +868,10 @@ int main(void) {
         UnloadTexture(texture_holder.pickup[i]);
     UnloadTexture(texture_holder.health_pack);
     UnloadTexture(texture_holder.hud);
-    for(int i = 0; i < 2; i++)
+    for (int i = 0; i < 2; i++)
         UnloadTexture(texture_holder.button[i]);
     UnloadTexture(texture_holder.particle_smoke);
-    for(int i = 0; i < NUM_BG; i++)
+    for (int i = 0; i < NUM_BG; i++)
         UnloadTexture(texture_holder.bg[i]);
 
     //unload sfx
