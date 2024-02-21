@@ -19,7 +19,7 @@
     texture_holder.X = LoadTextureFromImage(image);\
 }
 #define LOAD_TEXTURE_ARRAY(X, N, S) {\
-    for (int i = 0; i < N; i++){\
+    for (int i = 0; i < N; i++) {\
         char name[20];\
         sprintf(name, #X "%d.png", i);\
         image = LoadImage(path_to_file(name));\
@@ -169,11 +169,17 @@ static Background bg[2];
 static int display;
 static float dt;
 static int game_state;
+static HealthPack health_packs[NUM_HEALTH_PACKS];
 static int level;
+static Vector2 mouse;
 static Music music[NUM_MUSIC];
+static HealthPack new_health_pack; /* TODO: manage health packs and pickups like rockets */
 static Parachute parachute;
 static Particle particles;
+static Pickup pickup;
 static Platform platforms[NUM_PLATFORMS];
+static int score;
+static char score_string[8];
 static Soldier red_soldier;
 static Launcher rl;
 static Rocket rockets;
@@ -204,7 +210,7 @@ void draw_text_center(const char *text, int y, int font_size, Color color) {
 void game_over(int *gs, Sound *sfx, Music *m) {
     *gs = OVER;
     PlaySound(*sfx);
-    for (int i = 0; i < NUM_MUSIC; i++){
+    for (int i = 0; i < NUM_MUSIC; i++) {
         SeekMusicStream(m[i], 0.0f);
     }
 }
@@ -224,12 +230,23 @@ void init(void) {
     srand(time(NULL));
 
     game_state = MENU;
+    level = 1;
+    score = 0;
     dt = 1.0f;
 
-    /* TODO: combine the ones responsible for positition, pickups, states, hp, etc into a setup or restart function */
+    /* TODO: combine the ones responsible for positition, states, hp, etc into a setup or restart function and call it here*/
     red_soldier.tx = &texture_holder.red_soldier[0];
     red_soldier.flip = 1;
     red_soldier.color = WHITE;
+    red_soldier.x = (int)(SCREEN_WIDTH / 2) - red_soldier.tx->width;
+    red_soldier.y = SCREEN_HEIGHT - red_soldier.tx->height; 
+    red_soldier.speed_x = red_soldier.speed_y = red_soldier.falling = 0;
+    red_soldier.rl_cooldown = red_soldier.anim_cooldown = 0.0f;
+    red_soldier.pickup = red_soldier.pickup_active = NONE;
+    red_soldier.state = STANDING;
+    red_soldier.slow_fall = red_soldier.crit_boost = 1; /* TODO: rename these to avoid confusing with booleans, boost_rl, slow_fall_multiplier? */
+    red_soldier.color = WHITE;
+    red_soldier.hp = 200;
 
     parachute.tx = &texture_holder.parachute;
     parachute.rotation = 0;
@@ -242,6 +259,16 @@ void init(void) {
 
     for (int i = 0; i < NUM_PLATFORMS; i++)
         platforms[i].tx = &texture_holder.platform;
+
+    pickup.tx = &texture_holder.pickup[0];
+    pickup.id = PARACHUTE;
+
+    new_health_pack.tx = &texture_holder.health_pack;
+    new_health_pack.x = -100;
+    new_health_pack.y = -100;
+
+    for (int i = 0; i<NUM_HEALTH_PACKS; i++)
+        health_packs[i] = new_health_pack;
 }
 
 void load_assets(void) {
@@ -263,7 +290,7 @@ void load_assets(void) {
 
     UnloadImage(image);
 
-    for (int i = 0; i < NUM_SFX; i++){
+    for (int i = 0; i < NUM_SFX; i++) {
         char name[16];
         sprintf(name, "sfx%d.ogg", i);
         sfx[i] = LoadSound(path_to_file(name));
@@ -340,23 +367,6 @@ int main(void) {
     init();
     load_assets();
 
-    Pickup pickup = {
-        .tx = &texture_holder.pickup[0], 
-        .id = PARACHUTE
-    };
-
-    HealthPack new_health_pack = {
-        .tx = &texture_holder.health_pack,
-        .x = -100,
-        .y = -100
-    };
-    HealthPack health_packs[NUM_HEALTH_PACKS];
-    for (int i = 0; i<NUM_HEALTH_PACKS; i++)
-        health_packs[i] = new_health_pack;
-
-    int score;
-    char score_string[8];
-
     HUD health_hud = {
         .tx = &texture_holder.hud,
         .x = 5,
@@ -379,22 +389,7 @@ int main(void) {
         .text = "TRY AGAIN",
         .state = NORMAL
     };
-    
-    Vector2 mouse;
-    
-    game_state = MENU;
-    level = 1;
-
-    red_soldier.x = (int)(SCREEN_WIDTH / 2) - red_soldier.tx->width;
-    red_soldier.y = SCREEN_HEIGHT - red_soldier.tx->height; 
-    red_soldier.speed_x = red_soldier.speed_y = red_soldier.falling = 0;
-    red_soldier.rl_cooldown = red_soldier.anim_cooldown = 0.0f;
-    red_soldier.pickup = red_soldier.pickup_active = NONE;
-    red_soldier.state = STANDING;
-    red_soldier.slow_fall = red_soldier.crit_boost = 1; /* TODO: rename these to avoid confusing with booleans, boost_rl, slow_fall_multiplier? */
-    red_soldier.color = WHITE;
-    red_soldier.hp = 200;
-
+     
     for (int i = 0; i < 2; i++) {
         bg[i].y = -i * SCREEN_HEIGHT;
         bg[i].tx = &texture_holder.bg[i]; 
@@ -410,8 +405,6 @@ int main(void) {
 
     for (int i = 0; i < NUM_HEALTH_PACKS; i++)
         health_packs[i] = new_health_pack;
-
-    score = 0;
 
     for (int i = 0; i < NUM_MUSIC; i++)
         PlayMusicStream(music[i]);
@@ -436,7 +429,7 @@ int main(void) {
 
         { /* rocket explosions */
             Rocket *r = &rockets;
-            while (r->next != NULL){
+            while (r->next != NULL) {
                 rocket_border_check(r->next);
 
                 if (r->next->collided) {
