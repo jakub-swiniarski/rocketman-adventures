@@ -11,8 +11,8 @@ static const int SCREEN_HEIGHT = 1080;
 static const int FPS = 60;
 
 /* sound */
-static float VOLUME = 1.0f;
-static bool MUTED = 0;
+static float volume = 1.0f;
+static bool muted = 0;
 
 /* HUD */
 static const Color TEXT_COLOR[3] = { RED, WHITE, GREEN }; /* low, normal, high, TODO: create an enum for this in main */
