@@ -166,6 +166,13 @@ static void soldier_border_check(Soldier *s);
 /* variables */
 int display;
 float dt;
+int game_state;
+Music music[NUM_MUSIC];
+Parachute parachute;
+Soldier red_soldier;
+Launcher rl;
+Sound sfx[NUM_SFX];
+TextureHolder texture_holder;
 
 /* constants */
 static const char *DIRECTORY = "res/";
@@ -206,6 +213,17 @@ void init(void) {
 
     SetTargetFPS(FPS);
     SetMasterVolume(volume);
+
+    /* combine the ones without .tx into a setup function or restart function */
+    red_soldier.tx = &texture_holder.red_soldier[0];
+    red_soldier.flip = 1;
+    red_soldier.color = WHITE;
+
+    parachute.tx = &texture_holder.parachute;
+    parachute.rotation = 0;
+        
+    rl.tx = &texture_holder.launcher;
+    rl.rotation = 0;
 }
 
 char *path_to_file(char *name) {
@@ -272,8 +290,6 @@ void soldier_border_check(Soldier *s) {
 int main(void) {
     init();
 
-    TextureHolder texture_holder;
-
     {
         Image image;
 
@@ -294,39 +310,17 @@ int main(void) {
         UnloadImage(image);
     }
 
-    Sound sfx[NUM_SFX];
     for (int i = 0; i < NUM_SFX; i++){
         char name[16];
         sprintf(name, "sfx%d.ogg", i);
         sfx[i] = LoadSound(path_to_file(name));
     }
 
-    Music music[NUM_MUSIC];
     for (int i = 0; i < NUM_MUSIC; i++) {
         char name[16];
         sprintf(name, "music%d.ogg", i);
         music[i] = LoadMusicStream(path_to_file(name));
     }
-
-    int game_state;
-
-    Soldier red_soldier = {
-        .tx = &texture_holder.red_soldier[0], 
-        .flip = 1,
-        .color = WHITE
-    }; 
-
-    Parachute parachute = {
-        .tx = &texture_holder.parachute,
-        .rotation = 0
-    };
-        
-    Launcher rl = {
-        .tx = &texture_holder.launcher,
-        .x = 0,
-        .y = 0,
-       .rotation = 0,
-    };
 
     Background bg[2];
     int shift, level; /* used for changing backgrounds */
@@ -387,7 +381,6 @@ int main(void) {
     
     Vector2 mouse;
     
-    START:
     game_state = MENU;
     level = 1;
 
@@ -838,7 +831,7 @@ int main(void) {
                 if (MOUSE_HOVER_BUTTON(try_again_button,mouse)) {
                     try_again_button.state = HOVER;
                     if (IsMouseButtonPressed(SHOOT))
-                        goto START; /* TODO: turn this into a function? */
+                        printf("WORK IN PROGRESS"); /* TODO: restart function */
                 }
                 else
                     try_again_button.state = NORMAL;
