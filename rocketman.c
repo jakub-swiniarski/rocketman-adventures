@@ -16,7 +16,7 @@
 #define LOAD_TEXTURE(X, S) {\
     image = LoadImage(path_to_file(#X ".png"));\
     ImageResizeNN(&image, image.width * S, image.height * S);\
-    TextureHolder.X = LoadTextureFromImage(image);\
+    texture_holder.X = LoadTextureFromImage(image);\
 }
 #define LOAD_TEXTURE_ARRAY(X, N, S) {\
     for (int i = 0; i < N; i++){\
@@ -24,7 +24,7 @@
         sprintf(name, #X "%d.png", i);\
         image = LoadImage(path_to_file(name));\
         ImageResizeNN(&image, image.width * S, image.height * S);\
-        TextureHolder.X[i] = LoadTextureFromImage(image);\
+        texture_holder.X[i] = LoadTextureFromImage(image);\
     }\
 }
 #define MIDDLE_X(X) ((int)(X.tx->width / 2))
@@ -43,7 +43,7 @@ enum { NORMAL, HOVER }; /* button states */
 enum { SFX_EXPLOSION, SFX_PICKUP, SFX_JUMP, SFX_DEATH, NUM_SFX }; /* sound effects */
 
 /* structs */
-static struct {
+typedef struct {
     //soldier
     Texture red_soldier[6];
     Texture red_soldier_jumping;
@@ -269,6 +269,8 @@ int main(void) {
     bool muted = MUTED;
     SetMasterVolume(volume);
 
+    TextureHolder texture_holder;
+
     {
         Image image;
 
@@ -306,18 +308,18 @@ int main(void) {
     int game_state;
 
     Soldier red_soldier = {
-        .tx = &TextureHolder.red_soldier[0], 
+        .tx = &texture_holder.red_soldier[0], 
         .flip = 1,
         .color = WHITE
     }; 
 
     Parachute parachute = {
-        .tx = &TextureHolder.parachute,
+        .tx = &texture_holder.parachute,
         .rotation = 0
     };
         
     Launcher rl = {
-        .tx = &TextureHolder.launcher,
+        .tx = &texture_holder.launcher,
         .x = 0,
         .y = 0,
        .rotation = 0,
@@ -338,15 +340,15 @@ int main(void) {
 
     Platform platforms[NUM_PLATFORMS];
     for (int i = 0; i < NUM_PLATFORMS; i++)
-        platforms[i].tx = &TextureHolder.platform;
+        platforms[i].tx = &texture_holder.platform;
     
     Pickup pickup = {
-        .tx = &TextureHolder.pickup[0], 
+        .tx = &texture_holder.pickup[0], 
         .id = PARACHUTE
     };
 
     HealthPack new_health_pack = {
-        .tx = &TextureHolder.health_pack,
+        .tx = &texture_holder.health_pack,
         .x = -100,
         .y = -100
     };
@@ -358,23 +360,23 @@ int main(void) {
     char score_string[8];
 
     HUD health_hud = {
-        .tx = &TextureHolder.hud,
+        .tx = &texture_holder.hud,
         .x = 5,
-        .y = SCREEN_HEIGHT - TextureHolder.hud.height - 5,
+        .y = SCREEN_HEIGHT - texture_holder.hud.height - 5,
         .text = "0"
     }; 
     sprintf(health_hud.text, "%d", red_soldier.hp);
 
     HUD pickup_hud = {
-        .tx = &TextureHolder.hud,
-        .x = SCREEN_WIDTH - TextureHolder.hud.width - 5,
-        .y = SCREEN_HEIGHT - TextureHolder.hud.height - 5,
+        .tx = &texture_holder.hud,
+        .x = SCREEN_WIDTH - texture_holder.hud.width - 5,
+        .y = SCREEN_HEIGHT - texture_holder.hud.height - 5,
         .text = "EMPTY"
     };
 
     Button try_again_button = {
-        .tx = &TextureHolder.button[0],
-        .x = SCREEN_WIDTH / 2 - TextureHolder.button[0].width / 2,
+        .tx = &texture_holder.button[0],
+        .x = SCREEN_WIDTH / 2 - texture_holder.button[0].width / 2,
         .y = 500,
         .text = "TRY AGAIN",
         .state = NORMAL
@@ -398,11 +400,11 @@ int main(void) {
 
     for (int i = 0; i < 2; i++) {
         bg[i].y = -i * SCREEN_HEIGHT;
-        bg[i].tx = &TextureHolder.bg[i]; 
+        bg[i].tx = &texture_holder.bg[i]; 
     }
 
     for (int i = 0; i < NUM_PLATFORMS; i++) {
-        platforms[i].x = rand() % (SCREEN_WIDTH - TextureHolder.platform.width - 400) + 200; /* this is also used for random x when moving platform to the top */
+        platforms[i].x = rand() % (SCREEN_WIDTH - texture_holder.platform.width - 400) + 200; /* this is also used for random x when moving platform to the top */
         platforms[i].y = SCREEN_HEIGHT - (i + 1) * 1000 / NUM_PLATFORMS;
     } 
 
@@ -451,7 +453,7 @@ int main(void) {
                                 p = p->next;
                             p->next = malloc(sizeof(Particle));
                             p = p->next;
-                            p->tx = &TextureHolder.particle_smoke;
+                            p->tx = &texture_holder.particle_smoke;
                             p->x = r->next->x;
                             p->y = r->next->y;
                             p->rotation = rand() % 360;
@@ -578,7 +580,7 @@ int main(void) {
                     r = r->next;
                 r->next = malloc(sizeof(Rocket));
                 r = r->next;
-                r->tx = &TextureHolder.rocket;
+                r->tx = &texture_holder.rocket;
                 r->x = red_soldier.x + MIDDLE_X(red_soldier);
                 r->y = red_soldier.y + MIDDLE_Y(red_soldier) / 4;
                 r->rotation = 90 - atan2((red_soldier.x + MIDDLE_X(red_soldier) - mouse.x), (red_soldier.y + MIDDLE_Y(red_soldier) - mouse.y)) * 180 / PI;
@@ -631,7 +633,7 @@ int main(void) {
 
                 level++;
                 if (level > NUM_BG - 1) level = 7;
-                bg[i].tx = &TextureHolder.bg[level];
+                bg[i].tx = &texture_holder.bg[level];
             } 
             if (should_shift)
                 bg[i].y -= shift / 2;
@@ -665,7 +667,7 @@ int main(void) {
                 int random = rand() % 10;
                 if (random == 0 && !IS_VISIBLE(pickup)) { 
                     pickup.id = rand() % NUM_PICKUP + 1;
-                    pickup.tx = &TextureHolder.pickup[pickup.id - 1];
+                    pickup.tx = &texture_holder.pickup[pickup.id - 1];
                     pickup.x = platforms[i].x + MIDDLE_X(platforms[i]) -  MIDDLE_X(pickup); 
                     pickup.y = platforms[i].y - pickup.tx->height; 
                 }
@@ -733,20 +735,20 @@ int main(void) {
         //draw player
         switch (red_soldier.state) {
             case STANDING:
-                red_soldier.tx = &TextureHolder.red_soldier[0];
+                red_soldier.tx = &texture_holder.red_soldier[0];
                 break;
 
             case WALKING:
                 red_soldier.anim_cooldown -= dt;
                 if (red_soldier.anim_cooldown < 0.0f) {
                     red_soldier.frame++;
-                    red_soldier.tx = &TextureHolder.red_soldier[red_soldier.frame % 6];
+                    red_soldier.tx = &texture_holder.red_soldier[red_soldier.frame % 6];
                     red_soldier.anim_cooldown = 0.1;
                 }
                 break;
 
             case JUMPING:
-                red_soldier.tx = &TextureHolder.red_soldier_jumping;
+                red_soldier.tx = &texture_holder.red_soldier_jumping;
                 break;
         }
         DRAW_PRO(red_soldier, red_soldier.flip, 1, 0, 0, 0, red_soldier.color);
@@ -820,7 +822,7 @@ int main(void) {
                 //pickup hud
                 DRAW_PRO(pickup_hud, -1, 1, 0, 0, 0, WHITE);
                 if (red_soldier.pickup != NONE)
-                    DrawTexture(TextureHolder.pickup[red_soldier.pickup - 1], pickup_hud.x + 150, pickup_hud.y + 25, WHITE);
+                    DrawTexture(texture_holder.pickup[red_soldier.pickup - 1], pickup_hud.x + 150, pickup_hud.y + 25, WHITE);
                 else
                     draw_text(pickup_hud.text, pickup_hud.x + 65, pickup_hud.y + 40, 64, WHITE);
 
@@ -854,20 +856,20 @@ int main(void) {
    
     //unload textures
     for (int i = 0; i < 6; i++)
-        UnloadTexture(TextureHolder.red_soldier[i]);
-    UnloadTexture(TextureHolder.rocket);
-    UnloadTexture(TextureHolder.launcher);
-    UnloadTexture(TextureHolder.parachute);
-    UnloadTexture(TextureHolder.platform);
+        UnloadTexture(texture_holder.red_soldier[i]);
+    UnloadTexture(texture_holder.rocket);
+    UnloadTexture(texture_holder.launcher);
+    UnloadTexture(texture_holder.parachute);
+    UnloadTexture(texture_holder.platform);
     for (int i = 0; i < NUM_PICKUP; i++)
-        UnloadTexture(TextureHolder.pickup[i]);
-    UnloadTexture(TextureHolder.health_pack);
-    UnloadTexture(TextureHolder.hud);
+        UnloadTexture(texture_holder.pickup[i]);
+    UnloadTexture(texture_holder.health_pack);
+    UnloadTexture(texture_holder.hud);
     for(int i = 0; i < 2; i++)
-        UnloadTexture(TextureHolder.button[i]);
-    UnloadTexture(TextureHolder.particle_smoke);
+        UnloadTexture(texture_holder.button[i]);
+    UnloadTexture(texture_holder.particle_smoke);
     for(int i = 0; i < NUM_BG; i++)
-        UnloadTexture(TextureHolder.bg[i]);
+        UnloadTexture(texture_holder.bg[i]);
 
     //unload sfx
     for (int i = 0; i < NUM_SFX; i++)
