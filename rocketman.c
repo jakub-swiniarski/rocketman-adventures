@@ -165,13 +165,18 @@ static void rocket_border_check(Rocket *r);
 static void soldier_border_check(Soldier *s);
 
 /* variables */
+static Background bg[2];
 static int display;
 static float dt;
 static int game_state;
+static int level;
 static Music music[NUM_MUSIC];
 static Parachute parachute;
+static Particle particles;
 static Soldier red_soldier;
 static Launcher rl;
+static Rocket rockets;
+static int shift;
 static Sound sfx[NUM_SFX];
 static TextureHolder texture_holder;
 
@@ -218,7 +223,7 @@ void init(void) {
     game_state = MENU;
     dt = 1.0f;
 
-    /* TODO: combine the ones without .tx into a setup function or restart function */
+    /* TODO: combine the ones responsible for positition, pickups, states, hp, etc into a setup or restart function */
     red_soldier.tx = &texture_holder.red_soldier[0];
     red_soldier.flip = 1;
     red_soldier.color = WHITE;
@@ -228,6 +233,9 @@ void init(void) {
         
     rl.tx = &texture_holder.launcher;
     rl.rotation = 0;
+
+    rockets.next = NULL;
+    particles.next = NULL;
 }
 
 void load_assets(void) {
@@ -326,18 +334,7 @@ int main(void) {
     init();
     load_assets();
 
-    Background bg[2];
-    int shift, level; /* used for changing backgrounds */
-
     srand(time(NULL));
-
-    Rocket rockets = {
-        .next = NULL
-    };
-
-    Particle particles = {
-        .next = NULL
-    };
 
     Platform platforms[NUM_PLATFORMS];
     for (int i = 0; i < NUM_PLATFORMS; i++)
