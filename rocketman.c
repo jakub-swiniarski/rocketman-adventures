@@ -163,6 +163,7 @@ static void platform_collision_check_rocket(Platform *p, Rocket *r);
 static void platform_collision_check_soldier(Platform *p, Soldier *s);
 static void rocket_border_check(Rocket *r);
 static void soldier_border_check(Soldier *s);
+static void volume_control(void);
 
 /* variables */
 static Background bg[2];
@@ -303,9 +304,6 @@ void init(void) {
 
     for (int i = 0; i < NUM_HEALTH_PACKS; i++)
         health_packs[i] = new_health_pack;
-
-    for (int i = 0; i < NUM_MUSIC; i++)
-        PlayMusicStream(music[i]);
 }
 
 void load_assets(void) {
@@ -400,27 +398,33 @@ void soldier_border_check(Soldier *s) {
         s->x = SCREEN_WIDTH - s->tx->width;
 }
 
+void volume_control(void) {
+    if (IsKeyPressed(VOL_UP) && volume <= 0.9f) {
+        volume += 0.1f;
+        SetMasterVolume(volume);
+    }
+    else if (IsKeyPressed(VOL_DOWN) && volume >= 0.1f) {
+        volume -= 0.1f;
+        SetMasterVolume(volume);
+    }
+    else if (IsKeyPressed(MUTE)) {
+        muted =! muted;
+        SetMasterVolume(muted ? 0 : volume);
+    }
+}
+
 int main(void) {
     init();
     load_assets();
+
+    for (int i = 0; i < NUM_MUSIC; i++) /* this has to be done after loading the assets */
+        PlayMusicStream(music[i]);
  
     while (!WindowShouldClose()) {
         dt = GetFrameTime();
         mouse = GetMousePosition();
 
-        /* volume control */
-        if (IsKeyPressed(VOL_UP) && volume <= 0.9f) {
-            volume += 0.1f;
-            SetMasterVolume(volume);
-        }
-        else if (IsKeyPressed(VOL_DOWN) && volume >= 0.1f) {
-            volume -= 0.1f;
-            SetMasterVolume(volume);
-        }
-        else if (IsKeyPressed(MUTE)) {
-            muted =! muted;
-            SetMasterVolume(muted ? 0 : volume);
-        }
+        volume_control();
 
         { /* rocket explosions */
             Rocket *r = &rockets;
