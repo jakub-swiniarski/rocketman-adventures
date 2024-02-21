@@ -173,6 +173,7 @@ static int level;
 static Music music[NUM_MUSIC];
 static Parachute parachute;
 static Particle particles;
+static Platform platforms[NUM_PLATFORMS];
 static Soldier red_soldier;
 static Launcher rl;
 static Rocket rockets;
@@ -219,6 +220,8 @@ void init(void) {
 
     SetTargetFPS(FPS);
     SetMasterVolume(volume);
+    
+    srand(time(NULL));
 
     game_state = MENU;
     dt = 1.0f;
@@ -236,6 +239,9 @@ void init(void) {
 
     rockets.next = NULL;
     particles.next = NULL;
+
+    for (int i = 0; i < NUM_PLATFORMS; i++)
+        platforms[i].tx = &texture_holder.platform;
 }
 
 void load_assets(void) {
@@ -334,12 +340,6 @@ int main(void) {
     init();
     load_assets();
 
-    srand(time(NULL));
-
-    Platform platforms[NUM_PLATFORMS];
-    for (int i = 0; i < NUM_PLATFORMS; i++)
-        platforms[i].tx = &texture_holder.platform;
-    
     Pickup pickup = {
         .tx = &texture_holder.pickup[0], 
         .id = PARACHUTE
