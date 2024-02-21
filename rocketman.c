@@ -169,6 +169,7 @@ static Background bg[2];
 static int display;
 static float dt;
 static int game_state;
+static HUD health_hud;
 static HealthPack health_packs[NUM_HEALTH_PACKS];
 static int level;
 static Vector2 mouse;
@@ -177,6 +178,7 @@ static HealthPack new_health_pack; /* TODO: manage health packs and pickups like
 static Parachute parachute;
 static Particle particles;
 static Pickup pickup;
+static HUD pickup_hud;
 static Platform platforms[NUM_PLATFORMS];
 static int score;
 static char score_string[8];
@@ -186,6 +188,7 @@ static Rocket rockets;
 static int shift;
 static Sound sfx[NUM_SFX];
 static TextureHolder texture_holder;
+static Button try_again_button;
 
 /* constants */
 static const char *DIRECTORY = "res/";
@@ -261,6 +264,8 @@ void init(void) {
         platforms[i].tx = &texture_holder.platform;
 
     pickup.tx = &texture_holder.pickup[0];
+    pickup.x = -100;
+    pickup.y = -100;
     pickup.id = PARACHUTE;
 
     new_health_pack.tx = &texture_holder.health_pack;
@@ -269,6 +274,38 @@ void init(void) {
 
     for (int i = 0; i<NUM_HEALTH_PACKS; i++)
         health_packs[i] = new_health_pack;
+
+    health_hud.tx = &texture_holder.hud;
+    health_hud.x = 5;
+    health_hud.y = SCREEN_HEIGHT - texture_holder.hud.height - 5;
+    strcpy(health_hud.text, "200");
+
+    pickup_hud.tx = &texture_holder.hud;
+    pickup_hud.x = SCREEN_WIDTH - texture_holder.hud.width - 5;
+    pickup_hud.y = SCREEN_HEIGHT - texture_holder.hud.height - 5;
+    strcpy(pickup_hud.text, "EMPTY");
+
+    try_again_button.tx = &texture_holder.button[0];
+    try_again_button.x = SCREEN_WIDTH / 2 - texture_holder.button[0].width / 2;
+    try_again_button.y = 500;
+    try_again_button.state = NORMAL;
+    strcpy(try_again_button.text, "TRY AGAIN");
+
+    for (int i = 0; i < 2; i++) {
+        bg[i].y = -i * SCREEN_HEIGHT;
+        bg[i].tx = &texture_holder.bg[i]; 
+    }
+
+    for (int i = 0; i < NUM_PLATFORMS; i++) {
+        platforms[i].x = rand() % (SCREEN_WIDTH - texture_holder.platform.width - 400) + 200; /* this is also used for random x when moving platform to the top */
+        platforms[i].y = SCREEN_HEIGHT - (i + 1) * 1000 / NUM_PLATFORMS;
+    } 
+
+    for (int i = 0; i < NUM_HEALTH_PACKS; i++)
+        health_packs[i] = new_health_pack;
+
+    for (int i = 0; i < NUM_MUSIC; i++)
+        PlayMusicStream(music[i]);
 }
 
 void load_assets(void) {
@@ -366,49 +403,7 @@ void soldier_border_check(Soldier *s) {
 int main(void) {
     init();
     load_assets();
-
-    HUD health_hud = {
-        .tx = &texture_holder.hud,
-        .x = 5,
-        .y = SCREEN_HEIGHT - texture_holder.hud.height - 5,
-        .text = "0"
-    }; 
-    sprintf(health_hud.text, "%d", red_soldier.hp);
-
-    HUD pickup_hud = {
-        .tx = &texture_holder.hud,
-        .x = SCREEN_WIDTH - texture_holder.hud.width - 5,
-        .y = SCREEN_HEIGHT - texture_holder.hud.height - 5,
-        .text = "EMPTY"
-    };
-
-    Button try_again_button = {
-        .tx = &texture_holder.button[0],
-        .x = SCREEN_WIDTH / 2 - texture_holder.button[0].width / 2,
-        .y = 500,
-        .text = "TRY AGAIN",
-        .state = NORMAL
-    };
-     
-    for (int i = 0; i < 2; i++) {
-        bg[i].y = -i * SCREEN_HEIGHT;
-        bg[i].tx = &texture_holder.bg[i]; 
-    }
-
-    for (int i = 0; i < NUM_PLATFORMS; i++) {
-        platforms[i].x = rand() % (SCREEN_WIDTH - texture_holder.platform.width - 400) + 200; /* this is also used for random x when moving platform to the top */
-        platforms[i].y = SCREEN_HEIGHT - (i + 1) * 1000 / NUM_PLATFORMS;
-    } 
-
-    pickup.x = pickup.y = -100;
-    pickup.id = PARACHUTE;
-
-    for (int i = 0; i < NUM_HEALTH_PACKS; i++)
-        health_packs[i] = new_health_pack;
-
-    for (int i = 0; i < NUM_MUSIC; i++)
-        PlayMusicStream(music[i]);
-
+ 
     while (!WindowShouldClose()) {
         dt = GetFrameTime();
         mouse = GetMousePosition();
