@@ -167,6 +167,7 @@ static void rocket_border_check(Rocket *r);
 static void soldier_border_check(Soldier *s);
 static void spawn_particles(Rocket *r);
 static void unload_assets(void);
+static void update_rl(void);
 static void update_rockets(void);
 static void volume_control(void);
 
@@ -493,6 +494,19 @@ void unload_assets(void) {
         UnloadMusicStream(music[i]);
 }
 
+void update_rl(void) {
+    rl.rotation = 270 - atan2((red_soldier.x + MIDDLE_X(red_soldier) - mouse.x), (red_soldier.y + MIDDLE_Y(red_soldier) - mouse.y)) * 180 / PI; 
+    if (mouse.x < red_soldier.x + MIDDLE_X(red_soldier)) {
+        red_soldier.flip = -1;
+        rl.x = red_soldier.x + 40;
+    }
+    else {
+        red_soldier.flip = 1;
+        rl.x = red_soldier.x + 25;
+    }
+    rl.y = red_soldier.y + 45;
+}
+
 void update_rockets(void) {
     Rocket *r = &rockets;
 
@@ -567,18 +581,7 @@ int main(void) {
                 red_soldier.speed_y = -400;
             }
 
-            //update rocket launcher
-            rl.rotation= 270 - atan2((red_soldier.x + MIDDLE_X(red_soldier) - mouse.x), (red_soldier.y + MIDDLE_Y(red_soldier) - mouse.y)) * 180 / PI; 
-            if (mouse.x < red_soldier.x + MIDDLE_X(red_soldier)) {
-                red_soldier.flip = -1;
-                rl.x = red_soldier.x + 40;
-            }
-            else {
-                rl.x = red_soldier.x + 25;
-                red_soldier.flip = 1;
-            }
-            rl.y = red_soldier.y + 45;
-
+            update_rl();
             
             //update player position
             red_soldier.x += red_soldier.speed_x * dt;
