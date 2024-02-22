@@ -165,6 +165,7 @@ static void platform_collision_check_rocket(Platform *p, Rocket *r);
 static void platform_collision_check_soldier(Platform *p, Soldier *s);
 static void rocket_border_check(Rocket *r);
 static void soldier_border_check(Soldier *s);
+static void spawn_particles(Rocket *r);
 static void unload_assets(void);
 static void update_rockets(void);
 static void volume_control(void);
@@ -357,20 +358,7 @@ void manage_rockets(void) {
             if (r->next->should_explode) {
                 PlaySound(sfx[SFX_EXPLOSION]);
 
-                //spawn particles TODO: instead of commenting, define functions and procedures
-                {
-                    Particle *p = &particles;
-                    while (p->next != NULL)
-                        p = p->next;
-                    p->next = malloc(sizeof(Particle));
-                    p = p->next;
-                    p->tx = &texture_holder.particle_smoke;
-                    p->x = r->next->x;
-                    p->y = r->next->y;
-                    p->rotation = rand() % 360;
-                    p->alpha = 255;
-                    p->next = NULL;
-                }
+                spawn_particles(r->next);
 
                 Rocket rocket = *r->next;
                 if (abs(red_soldier.x + MIDDLE_X(red_soldier) - r->next->x - MIDDLE_X(rocket)) < 200
@@ -463,6 +451,22 @@ void soldier_border_check(Soldier *s) {
         s->x = 0;
     else if (s->x + s->tx->width > SCREEN_WIDTH)
         s->x = SCREEN_WIDTH - s->tx->width;
+}
+
+void spawn_particles(Rocket *r) {
+    Particle *p = &particles;
+
+    while (p->next != NULL)
+        p = p->next;
+    p->next = malloc(sizeof(Particle));
+    p = p->next;
+
+    p->tx = &texture_holder.particle_smoke;
+    p->x = r->x;
+    p->y = r->y;
+    p->rotation = rand() % 360;
+    p->alpha = 255;
+    p->next = NULL;
 }
 
 void unload_assets(void) {
