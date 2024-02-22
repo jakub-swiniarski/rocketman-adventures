@@ -829,18 +829,18 @@ int main(void) {
                 p = p->next;
             }
         }
-   
+
         switch (game_state) {
             case MENU:
-                UpdateMusicStream(music[0]);
+                UpdateMusicStream(music[0]); /* music function */
 
                 draw_text_center("ROCKETMAN ADVENTURES", 200, 100, WHITE);
                 draw_text_center(VERSION, 300, 64, WHITE); 
                 draw_text_center("START JUMPING TO BEGIN", 400, 64, WHITE);
                 break;
             case IN_PROGRESS:
-                if (level < 7)
-                    UpdateMusicStream(music[1]);
+                if (level < 7) /* TODO: update music function */
+                    UpdateMusicStream(music[1]); /* TODO: enums for music access */
                 else
                     UpdateMusicStream(music[2]);
 
