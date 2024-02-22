@@ -233,6 +233,8 @@ void game_over(int *gs, Sound *sfx, Music *m) {
 }
 
 void init(void) {
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Rocketman Adventures");
+
     display = GetCurrentMonitor();
     SetWindowSize(GetMonitorWidth(display), GetMonitorHeight(display));
     ToggleFullscreen();
@@ -243,6 +245,8 @@ void init(void) {
     SetMasterVolume(volume);
     
     srand(time(NULL));
+
+    load_assets();
 
     game_state = MENU;
     level = 1;
@@ -555,8 +559,6 @@ void volume_control(void) {
 }
 
 int main(void) {
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Rocketman Adventures");
-    load_assets();
     init();
  
     while (!WindowShouldClose()) {
