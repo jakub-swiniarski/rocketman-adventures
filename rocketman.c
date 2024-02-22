@@ -158,6 +158,7 @@ static void draw_text(const char *text, int x, int y, int font_size, Color color
 static void draw_text_center(const char *text, int y, int font_size, Color color);
 static void game_over(int *gs, Sound *sfx, Music *m);
 static void init(void);
+static void input(void);
 static void load_assets(void);
 static void manage_rockets(void);
 static char *path_to_file(char *name);
@@ -167,6 +168,7 @@ static void platform_collision_check_soldier(Platform *p, Soldier *s);
 static void rocket_border_check(Rocket *r);
 static void soldier_border_check(Soldier *s);
 static void spawn_particle(Rocket *r);
+static void spawn_rocket(void);
 static void unload_assets(void);
 static void update_bg(void);
 static void update_rl(void);
@@ -383,6 +385,59 @@ void init(void) {
 
     for (int i = 0; i < NUM_MUSIC; i++)
         PlayMusicStream(music[i]);
+}
+
+void input(void) {
+    if (IsKeyDown(MOVE_RIGHT) && !IsKeyDown(MOVE_LEFT)) {
+        red_soldier.x += 150 * dt;
+        red_soldier.state = WALKING;
+
+        if (red_soldier.pickup_active == PARACHUTE && parachute.rotation > -30)
+            parachute.rotation -= 60 * dt;
+    }
+    else if (IsKeyDown(MOVE_LEFT) && !IsKeyDown(MOVE_RIGHT)) {
+        red_soldier.x -= 150 * dt;
+        red_soldier.state = WALKING;
+    
+        if (red_soldier.pickup_active == PARACHUTE && parachute.rotation < 30)
+            parachute.rotation += 60 * dt;
+    }
+    else
+        red_soldier.state = STANDING;
+    if (red_soldier.speed_y < -100 || red_soldier.speed_y > 100)
+        red_soldier.state = JUMPING;
+
+    if (!IsKeyDown(MOVE_LEFT) && !IsKeyDown(MOVE_RIGHT)) //if not moving horizontally
+        parachute.rotation += (parachute.rotation > 0) ? (-100 * dt) : (100 * dt);
+    if (IsKeyDown(JUMP) && !red_soldier.falling) {
+        PlaySound(sfx[SFX_JUMP]);
+        if (red_soldier.pickup_active == PARACHUTE) {
+            red_soldier.slow_fall = 1;
+            red_soldier.pickup_active = NONE;
+        }
+        red_soldier.speed_y = -400;
+    }
+
+    if ((IsMouseButtonPressed(SHOOT) || IsKeyPressed(SHOOT_ALT)) && red_soldier.rl_cooldown < 0.0f) {
+        red_soldier.rl_cooldown = 0.8f;
+
+        spawn_rocket();
+    }
+
+    if (IsKeyPressed(USE_PICKUP)) {
+        red_soldier.pickup_active = red_soldier.pickup;
+        red_soldier.pickup = NONE;
+        switch (red_soldier.pickup_active) {
+            case PARACHUTE:
+                red_soldier.slow_fall = 0.2;
+                break;
+
+            case CRIT:
+                red_soldier.crit_boost = 2;
+                red_soldier.color = RED;    
+                break; 
+        }
+    }
 }
 
 void load_assets(void) {
@@ -650,36 +705,7 @@ int main(void) {
         manage_rockets();
  
         if (game_state != OVER) {
-            //movement 
-            if (IsKeyDown(MOVE_RIGHT) && !IsKeyDown(MOVE_LEFT)) {
-                red_soldier.x += 150 * dt;
-                red_soldier.state = WALKING;
-
-                if (red_soldier.pickup_active == PARACHUTE && parachute.rotation > -30)
-                    parachute.rotation -= 60 * dt;
-            }
-            else if (IsKeyDown(MOVE_LEFT) && !IsKeyDown(MOVE_RIGHT)) {
-                red_soldier.x -= 150 * dt;
-                red_soldier.state = WALKING;
-            
-                if (red_soldier.pickup_active == PARACHUTE && parachute.rotation < 30)
-                    parachute.rotation += 60 * dt;
-            }
-            else
-                red_soldier.state = STANDING;
-            if (red_soldier.speed_y < -100 || red_soldier.speed_y > 100)
-                red_soldier.state = JUMPING;
-            //reset parachute rotation
-            if (!IsKeyDown(MOVE_LEFT) && !IsKeyDown(MOVE_RIGHT)) //if not moving horizontally
-                parachute.rotation += (parachute.rotation > 0) ? (-100 * dt) : (100 * dt);
-            if (IsKeyDown(JUMP) && !red_soldier.falling) {
-                PlaySound(sfx[SFX_JUMP]);
-                if (red_soldier.pickup_active == PARACHUTE) {
-                    red_soldier.slow_fall = 1;
-                    red_soldier.pickup_active = NONE;
-                }
-                red_soldier.speed_y = -400;
-            }
+            input();
 
             update_rl();
             
@@ -715,29 +741,7 @@ int main(void) {
                 red_soldier.falling = 1;
                 red_soldier.speed_y += 1000 * dt;
             } 
-        
-            if ((IsMouseButtonPressed(SHOOT) || IsKeyPressed(SHOOT_ALT)) && red_soldier.rl_cooldown < 0.0f) {
-                red_soldier.rl_cooldown = 0.8f;
-
-                spawn_rocket();
-            }
-
-            //ACTIVATE PICKUP
-            if (IsKeyPressed(USE_PICKUP)) {
-                red_soldier.pickup_active = red_soldier.pickup;
-                red_soldier.pickup = NONE;
-                switch (red_soldier.pickup_active) {
-                    case PARACHUTE:
-                        red_soldier.slow_fall = 0.2;
-                        break;
-
-                    case CRIT:
-                        red_soldier.crit_boost = 2;
-                        red_soldier.color = RED;    
-                        break; 
-                }
-            }
-       
+         
             //horizontal friction
             red_soldier.speed_x += (red_soldier.speed_x > 0) ? -8 : 8;
             if (red_soldier.speed_x > -5 && red_soldier.speed_x < 5)
