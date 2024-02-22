@@ -158,6 +158,7 @@ static void draw_text_center(const char *text, int y, int font_size, Color color
 static void game_over(int *gs, Sound *sfx, Music *m);
 static void init(void);
 static void load_assets(void);
+static void manage_rockets(void);
 static char *path_to_file(char *name);
 static bool pickup_collect_check(Pickup *p, Soldier *r);
 static void platform_collision_check_rocket(Platform *p, Rocket *r);
@@ -346,6 +347,64 @@ void load_assets(void) {
     }
 }
 
+void manage_rockets(void) {
+    Rocket *r = &rockets;
+
+    while (r->next != NULL) {
+        rocket_border_check(r->next);
+
+        if (r->next->collided) {
+            if (r->next->should_explode) {
+                PlaySound(sfx[SFX_EXPLOSION]);
+
+                //spawn particles TODO: instead of commenting, define functions and procedures
+                {
+                    Particle *p = &particles;
+                    while (p->next != NULL)
+                        p = p->next;
+                    p->next = malloc(sizeof(Particle));
+                    p = p->next;
+                    p->tx = &texture_holder.particle_smoke;
+                    p->x = r->next->x;
+                    p->y = r->next->y;
+                    p->rotation = rand() % 360;
+                    p->alpha = 255;
+                    p->next = NULL;
+                }
+
+                Rocket rocket = *r->next;
+                if (abs(red_soldier.x + MIDDLE_X(red_soldier) - r->next->x - MIDDLE_X(rocket)) < 200
+                && abs(red_soldier.y + MIDDLE_Y(red_soldier) - r->next->y - MIDDLE_Y(rocket)) < 200
+                && game_state != OVER) {
+                    //rocket jump
+                    red_soldier.speed_x += red_soldier.crit_boost * -1 * r->next->speed_x;
+                    red_soldier.speed_y += red_soldier.crit_boost * -1 * r->next->speed_y; 
+                
+                    //damage
+                    if (game_state == IN_PROGRESS) {
+                        red_soldier.hp -= 20 * red_soldier.crit_boost;
+                        if (red_soldier.hp <= 0)
+                            game_over(&game_state, &sfx[SFX_DEATH], music);
+                    }
+                }
+                
+                if (red_soldier.pickup_active == CRIT) {
+                    red_soldier.crit_boost = 1;
+                    red_soldier.color = WHITE;
+                    red_soldier.pickup_active = NONE;
+                }
+            }
+            
+            //delete the rocket
+            Rocket *r_next = r->next->next;
+            free(r->next);
+            r->next = r_next;
+            break;
+        }
+        r = r->next;
+    }
+}
+
 char *path_to_file(char *name) {
     char *path = malloc(sizeof(char) * strlen(DIRECTORY) + strlen(name) + 1);
     sprintf(path, "%s%s", DIRECTORY,name);
@@ -470,62 +529,7 @@ int main(void) {
 
         volume_control();
 
-        { /* rocket explosions */
-            Rocket *r = &rockets;
-            while (r->next != NULL) {
-                rocket_border_check(r->next);
-
-                if (r->next->collided) {
-                    if (r->next->should_explode) {
-                        PlaySound(sfx[SFX_EXPLOSION]);
-
-                        //spawn particles TODO: instead of commenting, define functions and procedures
-                        {
-                            Particle *p = &particles;
-                            while (p->next != NULL)
-                                p = p->next;
-                            p->next = malloc(sizeof(Particle));
-                            p = p->next;
-                            p->tx = &texture_holder.particle_smoke;
-                            p->x = r->next->x;
-                            p->y = r->next->y;
-                            p->rotation = rand() % 360;
-                            p->alpha = 255;
-                            p->next = NULL;
-                        }
-
-                        Rocket rocket = *r->next;
-                        if (abs(red_soldier.x + MIDDLE_X(red_soldier) - r->next->x - MIDDLE_X(rocket)) < 200
-                        && abs(red_soldier.y + MIDDLE_Y(red_soldier) - r->next->y - MIDDLE_Y(rocket)) < 200
-                        && game_state != OVER) {
-                            //rocket jump
-                            red_soldier.speed_x += red_soldier.crit_boost * -1 * r->next->speed_x;
-                            red_soldier.speed_y += red_soldier.crit_boost * -1 * r->next->speed_y; 
-                        
-                            //damage
-                            if (game_state == IN_PROGRESS) {
-                                red_soldier.hp -= 20 * red_soldier.crit_boost;
-                                if (red_soldier.hp <= 0)
-                                    game_over(&game_state, &sfx[SFX_DEATH], music);
-                            }
-                        }
-                        
-                        if (red_soldier.pickup_active == CRIT) {
-                            red_soldier.crit_boost = 1;
-                            red_soldier.color = WHITE;
-                            red_soldier.pickup_active = NONE;
-                        }
-                    }
-                    
-                    //delete the rocket
-                    Rocket *r_next = r->next->next;
-                    free(r->next);
-                    r->next = r_next;
-                    break;
-                }
-                r = r->next;
-            }
-        }
+        manage_rockets();
  
         if (game_state != OVER) {
             //movement 
