@@ -165,6 +165,7 @@ static void platform_collision_check_soldier(Platform *p, Soldier *s);
 static void rocket_border_check(Rocket *r);
 static void soldier_border_check(Soldier *s);
 static void unload_assets(void);
+static void update_rockets(void);
 static void volume_control(void);
 
 /* variables */
@@ -427,6 +428,18 @@ void unload_assets(void) {
 
     for (int i = 0; i < NUM_MUSIC; i++)
         UnloadMusicStream(music[i]);
+}
+
+void update_rockets(void) {
+    Rocket *r = &rockets;
+
+    while (r->next != NULL) { /* TODO: for loop? */
+        r = r->next;
+        Rocket rocket = *r;
+        DRAW_PRO(rocket, 1, 1, rocket.rotation, MIDDLE_X(rocket), MIDDLE_Y(rocket), red_soldier.color);
+        r->x += r->speed_x * dt;
+        r->y += r->speed_y * dt;
+    }
 }
 
 void volume_control(void) {
@@ -773,16 +786,7 @@ int main(void) {
         }
         DRAW_PRO(red_soldier, red_soldier.flip, 1, 0, 0, 0, red_soldier.color);
 
-        { //update rockets
-            Rocket *r = &rockets;
-            while (r->next != NULL) {
-                r = r->next;
-                Rocket rocket = *r;
-                DRAW_PRO(rocket, 1, 1, rocket.rotation, MIDDLE_X(rocket), MIDDLE_Y(rocket), red_soldier.color);
-                r->x += r->speed_x * dt;
-                r->y += r->speed_y * dt;
-            }
-        }
+        update_rockets();
 
         //draw rocket launcher
         DRAW_PRO(rl, 1, red_soldier.flip, rl.rotation, 50, 45, red_soldier.color);
