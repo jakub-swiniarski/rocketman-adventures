@@ -171,6 +171,7 @@ static void spawn_particle(Rocket *r);
 static void spawn_rocket(void);
 static void unload_assets(void);
 static void update_bg(void);
+static void update_particles(void);
 static void update_rl(void);
 static void update_rockets(void);
 static void volume_control(void);
@@ -653,6 +654,31 @@ void update_bg(void) {
     }
 }
 
+void update_particles(void) {
+    Particle *p = &particles;
+
+    while (p->next != NULL) {
+        if (p->next->alpha < 5) {
+            //delete the particle
+            Particle *p_next = p->next->next;
+            free(p->next);
+            p->next = p_next;
+            break;
+        }
+
+        if (should_shift)
+            p->next->y -= shift;
+
+        p->next->alpha -= 2 * dt;
+        
+        Particle particle = *p->next;
+        Color color = { .r = 255, .g = 255, .b = 255, .a = p->next->alpha };
+        DRAW_PRO(particle, 1, 1, particle.rotation, MIDDLE_X(particle), MIDDLE_Y(particle), color);
+
+        p = p->next;
+    }
+}
+
 void update_rl(void) {
     rl.rotation = 270 - atan2((red_soldier.x + MIDDLE_X(red_soldier) - mouse.x), (red_soldier.y + MIDDLE_Y(red_soldier) - mouse.y)) * 180 / PI; 
     if (mouse.x < red_soldier.x + MIDDLE_X(red_soldier)) {
@@ -877,30 +903,7 @@ int main(void) {
         //draw rocket launcher
         DRAW_PRO(rl, 1, red_soldier.flip, rl.rotation, 50, 45, red_soldier.color);
 
-        //update particles
-        {
-            Particle *p = &particles;
-            while (p->next != NULL) {
-                if (p->next->alpha < 5) {
-                    //delete the particle
-                    Particle *p_next = p->next->next;
-                    free(p->next);
-                    p->next = p_next;
-                    break;
-                }
-
-                if (should_shift)
-                    p->next->y -= shift;
-
-                p->next->alpha -= 2 * dt;
-                
-                Particle particle = *p->next;
-                Color color = { .r = 255, .g = 255, .b = 255, .a = p->next->alpha };
-                DRAW_PRO(particle, 1, 1, particle.rotation, MIDDLE_X(particle), MIDDLE_Y(particle), color);
-
-                p = p->next;
-            }
-        }
+        update_particles();
 
         draw_hud();
 
