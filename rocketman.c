@@ -153,6 +153,7 @@ typedef struct {
 
 /* function declarations */
 static void close(void);
+static void draw_hud(void);
 static void draw_text(const char *text, int x, int y, int font_size, Color color); /* TODO: take center as boolean arg */
 static void draw_text_center(const char *text, int y, int font_size, Color color);
 static void game_over(int *gs, Sound *sfx, Music *m);
@@ -207,6 +208,66 @@ static const char *VERSION = "3.0.1";
 void close(void) {
     CloseAudioDevice();
     CloseWindow();
+}
+
+void draw_hud(void) {
+    switch (game_state) {
+        case MENU:
+            UpdateMusicStream(music[0]); /* TODO: music function */
+
+            draw_text_center("ROCKETMAN ADVENTURES", 200, 100, WHITE);
+            draw_text_center(VERSION, 300, 64, WHITE); 
+            draw_text_center("START JUMPING TO BEGIN", 400, 64, WHITE);
+            break;
+        case IN_PROGRESS:
+            if (level < 7) /* TODO: update music function */
+                UpdateMusicStream(music[1]); /* TODO: enums for music access */
+            else
+                UpdateMusicStream(music[2]);
+
+            if (red_soldier.hp < 50)
+                health_hud.text_color = TEXT_COLOR[0];
+            else if (red_soldier.hp > 200)
+                health_hud.text_color = TEXT_COLOR[2];
+            else
+                health_hud.text_color = TEXT_COLOR[1];
+
+            //hp hud
+            sprintf(health_hud.text, "%d", red_soldier.hp);
+            DRAW(health_hud);
+            draw_text(health_hud.text, health_hud.x + 40, health_hud.y + 30, 100, health_hud.text_color); 
+           
+            //pickup hud
+            DRAW_PRO(pickup_hud, -1, 1, 0, 0, 0, WHITE);
+            if (red_soldier.pickup != NONE)
+                DrawTexture(texture_holder.pickup[red_soldier.pickup - 1], pickup_hud.x + 150, pickup_hud.y + 25, WHITE);
+            else
+                draw_text(pickup_hud.text, pickup_hud.x + 65, pickup_hud.y + 40, 64, WHITE);
+
+            //score
+            draw_text("SCORE:", 10, 10, 64, WHITE);
+            draw_text(score_string, 250, 10, 64, WHITE);
+            break;
+        case OVER:
+            //update buttons
+            if (MOUSE_HOVER_BUTTON(try_again_button,mouse)) {
+                try_again_button.state = HOVER;
+                if (IsMouseButtonPressed(SHOOT))
+                    printf("WORK IN PROGRESS"); /* TODO: restart function */
+            }
+            else
+                try_again_button.state = NORMAL;
+
+            DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, (Color){ 0, 0, 0, 150 });
+            draw_text_center("GAME OVER", 200, 100, WHITE);
+            draw_text_center("SCORE:", 300, 64, WHITE);
+            draw_text_center(score_string, 375, 64, WHITE);
+            DrawTexture(try_again_button.tx[try_again_button.state], try_again_button.x, try_again_button.y, WHITE);
+            draw_text(try_again_button.text, try_again_button.x + 12, try_again_button.y + 45, 64, WHITE);
+            break;
+        default:
+            draw_text("ERROR", 100, 100, 120, WHITE);
+    } 
 }
 
 void draw_text(const char *text, int x, int y, int font_size, Color color) {
@@ -837,63 +898,7 @@ int main(void) {
             }
         }
 
-        switch (game_state) {
-            case MENU:
-                UpdateMusicStream(music[0]); /* music function */
-
-                draw_text_center("ROCKETMAN ADVENTURES", 200, 100, WHITE);
-                draw_text_center(VERSION, 300, 64, WHITE); 
-                draw_text_center("START JUMPING TO BEGIN", 400, 64, WHITE);
-                break;
-            case IN_PROGRESS:
-                if (level < 7) /* TODO: update music function */
-                    UpdateMusicStream(music[1]); /* TODO: enums for music access */
-                else
-                    UpdateMusicStream(music[2]);
-
-                if (red_soldier.hp < 50)
-                    health_hud.text_color = TEXT_COLOR[0];
-                else if (red_soldier.hp > 200)
-                    health_hud.text_color = TEXT_COLOR[2];
-                else
-                    health_hud.text_color = TEXT_COLOR[1];
-
-                //hp hud
-                sprintf(health_hud.text, "%d", red_soldier.hp);
-                DRAW(health_hud);
-                draw_text(health_hud.text, health_hud.x + 40, health_hud.y + 30, 100, health_hud.text_color); 
-               
-                //pickup hud
-                DRAW_PRO(pickup_hud, -1, 1, 0, 0, 0, WHITE);
-                if (red_soldier.pickup != NONE)
-                    DrawTexture(texture_holder.pickup[red_soldier.pickup - 1], pickup_hud.x + 150, pickup_hud.y + 25, WHITE);
-                else
-                    draw_text(pickup_hud.text, pickup_hud.x + 65, pickup_hud.y + 40, 64, WHITE);
-
-                //score
-                draw_text("SCORE:", 10, 10, 64, WHITE);
-                draw_text(score_string, 250, 10, 64, WHITE);
-                break;
-            case OVER:
-                //update buttons
-                if (MOUSE_HOVER_BUTTON(try_again_button,mouse)) {
-                    try_again_button.state = HOVER;
-                    if (IsMouseButtonPressed(SHOOT))
-                        printf("WORK IN PROGRESS"); /* TODO: restart function */
-                }
-                else
-                    try_again_button.state = NORMAL;
-
-                DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, (Color){ 0, 0, 0, 150 });
-                draw_text_center("GAME OVER", 200, 100, WHITE);
-                draw_text_center("SCORE:", 300, 64, WHITE);
-                draw_text_center(score_string, 375, 64, WHITE);
-                DrawTexture(try_again_button.tx[try_again_button.state], try_again_button.x, try_again_button.y, WHITE);
-                draw_text(try_again_button.text, try_again_button.x + 12, try_again_button.y + 45, 64, WHITE);
-                break;
-            default:
-                draw_text("ERROR", 100, 100, 120, WHITE);
-        } 
+        draw_hud();
 
         EndDrawing();
     }
