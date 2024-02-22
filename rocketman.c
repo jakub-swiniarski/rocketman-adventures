@@ -167,6 +167,7 @@ static void rocket_border_check(Rocket *r);
 static void soldier_border_check(Soldier *s);
 static void spawn_particles(Rocket *r);
 static void unload_assets(void);
+static void update_bg(void);
 static void update_rl(void);
 static void update_rockets(void);
 static void volume_control(void);
@@ -189,6 +190,7 @@ static HUD pickup_hud;
 static Platform platforms[NUM_PLATFORMS];
 static int score;
 static char score_string[8];
+static bool should_shift;
 static Soldier red_soldier;
 static Launcher rl;
 static Rocket rockets;
@@ -494,6 +496,23 @@ void unload_assets(void) {
         UnloadMusicStream(music[i]);
 }
 
+void update_bg(void) {
+    for (int i = 0; i < 2; i++) {
+        if (bg[i].y > SCREEN_HEIGHT) {
+            bg[i].y = -SCREEN_HEIGHT;
+            bg[1-i].y = 0;
+
+            level++;
+            if (level > NUM_BG - 1) level = 7;
+            bg[i].tx = &texture_holder.bg[level];
+        } 
+        if (should_shift)
+            bg[i].y -= shift / 2;
+
+        DrawTexture(*bg[i].tx, 0, bg[i].y, WHITE);
+    }
+}
+
 void update_rl(void) {
     rl.rotation = 270 - atan2((red_soldier.x + MIDDLE_X(red_soldier) - mouse.x), (red_soldier.y + MIDDLE_Y(red_soldier) - mouse.y)) * 180 / PI; 
     if (mouse.x < red_soldier.x + MIDDLE_X(red_soldier)) {
@@ -663,28 +682,12 @@ int main(void) {
         }  
 
         shift = red_soldier.speed_y * dt;
-        bool should_shift = red_soldier.y == SCREEN_MIDDLE(red_soldier) && red_soldier.speed_y < 0;
+        should_shift = red_soldier.y == SCREEN_MIDDLE(red_soldier) && red_soldier.speed_y < 0;
 
         ClearBackground(BLACK);
         BeginDrawing();
 
-        //update background
-        for (int i = 0; i < 2; i++) {
-            //parallax scrolling
-            if (bg[i].y > SCREEN_HEIGHT) {
-                bg[i].y = -SCREEN_HEIGHT;
-                bg[1-i].y = 0;
-
-                level++;
-                if (level > NUM_BG - 1) level = 7;
-                bg[i].tx = &texture_holder.bg[level];
-            } 
-            if (should_shift)
-                bg[i].y -= shift / 2;
-
-            //draw background
-            DrawTexture(*bg[i].tx, 0, bg[i].y, WHITE);
-        }
+        update_bg();
 
         //update platforms
         for (int i = 0; i < NUM_PLATFORMS; i++) {
