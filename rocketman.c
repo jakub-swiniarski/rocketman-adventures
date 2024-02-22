@@ -233,8 +233,6 @@ void game_over(int *gs, Sound *sfx, Music *m) {
 }
 
 void init(void) {
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Rocketman Adventures");
- 
     display = GetCurrentMonitor();
     SetWindowSize(GetMonitorWidth(display), GetMonitorHeight(display));
     ToggleFullscreen();
@@ -317,6 +315,9 @@ void init(void) {
 
     for (int i = 0; i < NUM_HEALTH_PACKS; i++)
         health_packs[i] = new_health_pack;
+
+    for (int i = 0; i < NUM_MUSIC; i++)
+        PlayMusicStream(music[i]);
 }
 
 void load_assets(void) {
@@ -554,11 +555,9 @@ void volume_control(void) {
 }
 
 int main(void) {
-    init();
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Rocketman Adventures");
     load_assets();
-
-    for (int i = 0; i < NUM_MUSIC; i++) /* this has to be done after loading the assets */
-        PlayMusicStream(music[i]);
+    init();
  
     while (!WindowShouldClose()) {
         dt = GetFrameTime();
