@@ -163,6 +163,7 @@ static void platform_collision_check_rocket(Platform *p, Rocket *r);
 static void platform_collision_check_soldier(Platform *p, Soldier *s);
 static void rocket_border_check(Rocket *r);
 static void soldier_border_check(Soldier *s);
+static void unload_assets(void);
 static void volume_control(void);
 
 /* variables */
@@ -396,6 +397,30 @@ void soldier_border_check(Soldier *s) {
         s->x = 0;
     else if (s->x + s->tx->width > SCREEN_WIDTH)
         s->x = SCREEN_WIDTH - s->tx->width;
+}
+
+void unload_assets(void) {
+    for (int i = 0; i < 6; i++)
+        UnloadTexture(texture_holder.red_soldier[i]);
+    UnloadTexture(texture_holder.rocket);
+    UnloadTexture(texture_holder.launcher);
+    UnloadTexture(texture_holder.parachute);
+    UnloadTexture(texture_holder.platform);
+    for (int i = 0; i < NUM_PICKUP; i++)
+        UnloadTexture(texture_holder.pickup[i]);
+    UnloadTexture(texture_holder.health_pack);
+    UnloadTexture(texture_holder.hud);
+    for (int i = 0; i < 2; i++)
+        UnloadTexture(texture_holder.button[i]);
+    UnloadTexture(texture_holder.particle_smoke);
+    for (int i = 0; i < NUM_BG; i++)
+        UnloadTexture(texture_holder.bg[i]);
+
+    for (int i = 0; i < NUM_SFX; i++)
+        UnloadSound(sfx[i]);
+
+    for (int i = 0; i < NUM_MUSIC; i++)
+        UnloadMusicStream(music[i]);
 }
 
 void volume_control(void) {
@@ -842,32 +867,9 @@ int main(void) {
 
         EndDrawing();
     }
+
+    unload_assets();
    
-    //unload textures
-    for (int i = 0; i < 6; i++)
-        UnloadTexture(texture_holder.red_soldier[i]);
-    UnloadTexture(texture_holder.rocket);
-    UnloadTexture(texture_holder.launcher);
-    UnloadTexture(texture_holder.parachute);
-    UnloadTexture(texture_holder.platform);
-    for (int i = 0; i < NUM_PICKUP; i++)
-        UnloadTexture(texture_holder.pickup[i]);
-    UnloadTexture(texture_holder.health_pack);
-    UnloadTexture(texture_holder.hud);
-    for (int i = 0; i < 2; i++)
-        UnloadTexture(texture_holder.button[i]);
-    UnloadTexture(texture_holder.particle_smoke);
-    for (int i = 0; i < NUM_BG; i++)
-        UnloadTexture(texture_holder.bg[i]);
-
-    //unload sfx
-    for (int i = 0; i < NUM_SFX; i++)
-        UnloadSound(sfx[i]);
-
-    //unload music
-    for (int i = 0; i < NUM_MUSIC; i++)
-        UnloadMusicStream(music[i]);
-
     CloseAudioDevice();
     CloseWindow();
 
