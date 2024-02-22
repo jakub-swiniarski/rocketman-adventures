@@ -152,6 +152,7 @@ typedef struct {
 } TextureHolder;
 
 /* function declarations */
+static void close(void);
 static void draw_text(const char *text, int x, int y, int font_size, Color color); /* TODO: take center as boolean arg */
 static void draw_text_center(const char *text, int y, int font_size, Color color);
 static void game_over(int *gs, Sound *sfx, Music *m);
@@ -197,6 +198,11 @@ static const char *DIRECTORY = "res/";
 static const char *VERSION = "3.0.1";
 
 /* function implementations */
+void close(void) {
+    CloseAudioDevice();
+    CloseWindow();
+}
+
 void draw_text(const char *text, int x, int y, int font_size, Color color) {
     DrawText(text, x, y, font_size, BLACK);
     DrawText(text, x+7, y+7, font_size,color);
@@ -806,7 +812,6 @@ int main(void) {
             }
         }
    
-        //text and hud
         switch (game_state) {
             case MENU:
                 UpdateMusicStream(music[0]);
@@ -869,9 +874,7 @@ int main(void) {
     }
 
     unload_assets();
-   
-    CloseAudioDevice();
-    CloseWindow();
+    close();   
 
     return 0;
 }
