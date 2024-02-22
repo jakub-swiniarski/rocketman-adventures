@@ -165,7 +165,7 @@ static void platform_collision_check_rocket(Platform *p, Rocket *r);
 static void platform_collision_check_soldier(Platform *p, Soldier *s);
 static void rocket_border_check(Rocket *r);
 static void soldier_border_check(Soldier *s);
-static void spawn_particles(Rocket *r);
+static void spawn_particle(Rocket *r);
 static void unload_assets(void);
 static void update_bg(void);
 static void update_rl(void);
@@ -366,7 +366,7 @@ void manage_rockets(void) {
             if (r->next->should_explode) {
                 PlaySound(sfx[SFX_EXPLOSION]);
 
-                spawn_particles(r->next);
+                spawn_particle(r->next);
 
                 Rocket rocket = *r->next;
                 if (abs(red_soldier.x + MIDDLE_X(red_soldier) - r->next->x - MIDDLE_X(rocket)) < 200
@@ -461,7 +461,7 @@ void soldier_border_check(Soldier *s) {
         s->x = SCREEN_WIDTH - s->tx->width;
 }
 
-void spawn_particles(Rocket *r) {
+void spawn_particle(Rocket *r) {
     Particle *p = &particles;
 
     while (p->next != NULL)
@@ -475,6 +475,25 @@ void spawn_particles(Rocket *r) {
     p->rotation = rand() % 360;
     p->alpha = 255;
     p->next = NULL;
+}
+
+void spawn_rocket(void) {
+    Rocket *r = &rockets;
+
+    while (r->next != NULL)
+        r = r->next;
+    r->next = malloc(sizeof(Rocket));
+    r = r->next;
+
+    r->tx = &texture_holder.rocket;
+    r->x = red_soldier.x + MIDDLE_X(red_soldier);
+    r->y = red_soldier.y + MIDDLE_Y(red_soldier) / 4;
+    r->rotation = 90 - atan2((red_soldier.x + MIDDLE_X(red_soldier) - mouse.x), (red_soldier.y + MIDDLE_Y(red_soldier) - mouse.y)) * 180 / PI;
+    r->speed_x = -960 * cos(r->rotation *PI / 180);
+    r->speed_y = -960 * sin(r->rotation * PI / 180);
+    r->collided = 0;
+    r->should_explode = 1;
+    r->next = NULL;
 }
 
 void unload_assets(void) {
@@ -639,20 +658,7 @@ int main(void) {
             if ((IsMouseButtonPressed(SHOOT) || IsKeyPressed(SHOOT_ALT)) && red_soldier.rl_cooldown < 0.0f) {
                 red_soldier.rl_cooldown = 0.8f;
 
-                Rocket *r = &rockets;
-                while (r->next != NULL)
-                    r = r->next;
-                r->next = malloc(sizeof(Rocket));
-                r = r->next;
-                r->tx = &texture_holder.rocket;
-                r->x = red_soldier.x + MIDDLE_X(red_soldier);
-                r->y = red_soldier.y + MIDDLE_Y(red_soldier) / 4;
-                r->rotation = 90 - atan2((red_soldier.x + MIDDLE_X(red_soldier) - mouse.x), (red_soldier.y + MIDDLE_Y(red_soldier) - mouse.y)) * 180 / PI;
-                r->speed_x = -960 * cos(r->rotation *PI / 180);
-                r->speed_y = -960 * sin(r->rotation * PI / 180);
-                r->collided = 0;
-                r->should_explode = 1;
-                r->next = NULL;
+                spawn_rocket();
             }
 
             //ACTIVATE PICKUP
