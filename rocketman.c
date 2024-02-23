@@ -157,6 +157,7 @@ static void draw_hud(void);
 static void draw_text(const char *text, int x, int y, int font_size, Color color); /* TODO: take center as boolean arg */
 static void draw_text_center(const char *text, int y, int font_size, Color color);
 static void game_over(int *gs, Sound *sfx, Music *m);
+static void gravity(void);
 static void init(void);
 static void input(void);
 static void load_assets(void);
@@ -294,6 +295,22 @@ void game_over(int *gs, Sound *sfx, Music *m) {
     for (int i = 0; i < NUM_MUSIC; i++) {
         SeekMusicStream(m[i], 0.0f);
     }
+}
+
+void gravity(void) {
+    if (red_soldier.y + red_soldier.tx->height >= SCREEN_HEIGHT) {
+        if (game_state != IN_PROGRESS) {
+            red_soldier.y = SCREEN_HEIGHT - red_soldier.tx->height;
+            red_soldier.speed_y = 0;
+            red_soldier.falling = 0;
+        }
+        else
+            game_over(&game_state, &sfx[SFX_DEATH], music);
+    }
+    else {
+        red_soldier.falling = 1;
+        red_soldier.speed_y += 1000 * dt;
+    } 
 }
 
 void init(void) {
@@ -753,20 +770,7 @@ int main(void) {
                     game_state = IN_PROGRESS;
             } 
         
-            //gravity
-            if (red_soldier.y + red_soldier.tx->height >= SCREEN_HEIGHT) {
-                if (game_state != IN_PROGRESS) {
-                    red_soldier.y = SCREEN_HEIGHT - red_soldier.tx->height;
-                    red_soldier.speed_y = 0;
-                    red_soldier.falling = 0;
-                }
-                else
-                    game_over(&game_state, &sfx[SFX_DEATH], music);
-            }
-            else {
-                red_soldier.falling = 1;
-                red_soldier.speed_y += 1000 * dt;
-            } 
+            gravity();
          
             //horizontal friction
             red_soldier.speed_x += (red_soldier.speed_x > 0) ? -8 : 8;
