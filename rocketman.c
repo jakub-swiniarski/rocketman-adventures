@@ -177,6 +177,7 @@ static void update_pickup(void);
 static void update_platforms(void);
 static void update_rl(void);
 static void update_rockets(void);
+static void update_score(void);
 static void update_soldier(void);
 static void volume_control(void);
 
@@ -189,6 +190,7 @@ static HUD health_hud;
 static HealthPack health_packs[NUM_HEALTH_PACKS];
 static int level;
 static Vector2 mouse;
+static bool movement_allowed;
 static Music music[NUM_MUSIC];
 static HealthPack new_health_pack; /* TODO: manage health packs and pickups like rockets */
 static Parachute parachute;
@@ -301,6 +303,9 @@ void game_over(int *gs, Sound *sfx, Music *m) {
 }
 
 void gravity(void) {
+    if (!movement_allowed)
+        return;
+
     if (red_soldier.y + red_soldier.tx->height >= SCREEN_HEIGHT) {
         if (game_state != IN_PROGRESS) {
             red_soldier.y = SCREEN_HEIGHT - red_soldier.tx->height;
@@ -414,6 +419,9 @@ void init(void) {
 }
 
 void input(void) {
+    if (!movement_allowed)
+        return;
+
     if (IsKeyDown(MOVE_RIGHT) && !IsKeyDown(MOVE_LEFT)) {
         red_soldier.x += 150 * dt;
         red_soldier.state = WALKING;
@@ -757,16 +765,18 @@ void update_platforms(void) {
 }
 
 void update_rl(void) {
-    rl.rotation = 270 - atan2((red_soldier.x + MIDDLE_X(red_soldier) - mouse.x), (red_soldier.y + MIDDLE_Y(red_soldier) - mouse.y)) * 180 / PI; 
-    if (mouse.x < red_soldier.x + MIDDLE_X(red_soldier)) {
-        red_soldier.flip = -1;
-        rl.x = red_soldier.x + 40;
+    if (movement_allowed) {
+        rl.rotation = 270 - atan2((red_soldier.x + MIDDLE_X(red_soldier) - mouse.x), (red_soldier.y + MIDDLE_Y(red_soldier) - mouse.y)) * 180 / PI; 
+        if (mouse.x < red_soldier.x + MIDDLE_X(red_soldier)) {
+            red_soldier.flip = -1;
+            rl.x = red_soldier.x + 40;
+        }
+        else {
+            red_soldier.flip = 1;
+            rl.x = red_soldier.x + 25;
+        }
+        rl.y = red_soldier.y + 45;
     }
-    else {
-        red_soldier.flip = 1;
-        rl.x = red_soldier.x + 25;
-    }
-    rl.y = red_soldier.y + 45;
 }
 
 void update_rockets(void) {
@@ -781,21 +791,37 @@ void update_rockets(void) {
     }
 }
 
+void update_score(void) {
+    if (!movement_allowed)
+        return;
+
+    if (red_soldier.y < SCREEN_MIDDLE(red_soldier)) {
+        score -= red_soldier.speed_y * dt;
+        sprintf(score_string, "%d", score);
+
+        red_soldier.y = SCREEN_MIDDLE(red_soldier); 
+   
+        if (game_state == MENU)
+            game_state = IN_PROGRESS;
+    } 
+}
+
 void update_soldier(void) {
-    red_soldier.x += red_soldier.speed_x * dt;
-    if (red_soldier.speed_y > 0 && red_soldier.falling)
-        red_soldier.y += red_soldier.speed_y * dt * red_soldier.slow_fall; 
-    else
-        red_soldier.y += red_soldier.speed_y * dt; 
+    if (movement_allowed) {
+        red_soldier.x += red_soldier.speed_x * dt;
+        if (red_soldier.speed_y > 0 && red_soldier.falling)
+            red_soldier.y += red_soldier.speed_y * dt * red_soldier.slow_fall; 
+        else
+            red_soldier.y += red_soldier.speed_y * dt; 
 
-    red_soldier.speed_x += (red_soldier.speed_x > 0) ? -8 : 8;
-    if (red_soldier.speed_x > -5 && red_soldier.speed_x < 5)
-        red_soldier.speed_x = 0;
+        red_soldier.speed_x += (red_soldier.speed_x > 0) ? -8 : 8;
+        if (red_soldier.speed_x > -5 && red_soldier.speed_x < 5)
+            red_soldier.speed_x = 0;
 
-    soldier_border_check(&red_soldier);
+        soldier_border_check(&red_soldier);
 
-    red_soldier.rl_cooldown -= dt;  
-
+        red_soldier.rl_cooldown -= dt;  
+    }
 }
 
 void volume_control(void) {
@@ -823,25 +849,16 @@ int main(void) {
         volume_control();
 
         manage_rockets();
- 
-        if (game_state != OVER) {
-            input();
 
-            update_soldier();
-            update_rl();
-            
-            if (red_soldier.y < SCREEN_MIDDLE(red_soldier)) {
-                score -= red_soldier.speed_y * dt;
-                sprintf(score_string, "%d", score);
+        movement_allowed = game_state != OVER;
 
-                red_soldier.y = SCREEN_MIDDLE(red_soldier); 
-           
-                if (game_state == MENU)
-                    game_state = IN_PROGRESS;
-            } 
-        
-            gravity();
-        }  
+        input();
+
+        update_soldier();
+        update_rl();
+        update_score();
+    
+        gravity();
 
         shift = red_soldier.speed_y * dt;
         should_shift = red_soldier.y == SCREEN_MIDDLE(red_soldier) && red_soldier.speed_y < 0;
