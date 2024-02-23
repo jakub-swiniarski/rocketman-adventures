@@ -846,25 +846,23 @@ int main(void) {
         dt = GetFrameTime();
         mouse = GetMousePosition();
 
+        input();
         volume_control();
 
         manage_rockets();
 
+        shift = red_soldier.speed_y * dt;
+        should_shift = red_soldier.y == SCREEN_MIDDLE(red_soldier) && red_soldier.speed_y < 0;
         movement_allowed = game_state != OVER;
 
-        input();
+        ClearBackground(BLACK);
+        BeginDrawing();
 
         update_soldier();
         update_rl();
         update_score();
-    
-        gravity();
 
-        shift = red_soldier.speed_y * dt;
-        should_shift = red_soldier.y == SCREEN_MIDDLE(red_soldier) && red_soldier.speed_y < 0;
-
-        ClearBackground(BLACK);
-        BeginDrawing();
+        gravity(); /* TODO: put this at the end */
 
         update_bg();
         update_pickup();
