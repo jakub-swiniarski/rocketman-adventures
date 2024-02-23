@@ -177,6 +177,7 @@ static void update_pickup(void);
 static void update_platforms(void);
 static void update_rl(void);
 static void update_rockets(void);
+static void update_soldier(void);
 static void volume_control(void);
 
 /* variables */
@@ -780,6 +781,23 @@ void update_rockets(void) {
     }
 }
 
+void update_soldier(void) {
+    red_soldier.x += red_soldier.speed_x * dt;
+    if (red_soldier.speed_y > 0 && red_soldier.falling)
+        red_soldier.y += red_soldier.speed_y * dt * red_soldier.slow_fall; 
+    else
+        red_soldier.y += red_soldier.speed_y * dt; 
+
+    red_soldier.speed_x += (red_soldier.speed_x > 0) ? -8 : 8;
+    if (red_soldier.speed_x > -5 && red_soldier.speed_x < 5)
+        red_soldier.speed_x = 0;
+
+    soldier_border_check(&red_soldier);
+
+    red_soldier.rl_cooldown -= dt;  
+
+}
+
 void volume_control(void) {
     if (IsKeyPressed(VOL_UP) && volume <= 0.9f) {
         volume += 0.1f;
@@ -809,17 +827,10 @@ int main(void) {
         if (game_state != OVER) {
             input();
 
+            update_soldier();
             update_rl();
             
-            //update player position
-            red_soldier.x += red_soldier.speed_x * dt;
-            if (red_soldier.speed_y > 0 && red_soldier.falling)
-                red_soldier.y += red_soldier.speed_y * dt * red_soldier.slow_fall; 
-            else
-                red_soldier.y += red_soldier.speed_y * dt; 
-
             if (red_soldier.y < SCREEN_MIDDLE(red_soldier)) {
-                //score
                 score -= red_soldier.speed_y * dt;
                 sprintf(score_string, "%d", score);
 
@@ -830,16 +841,6 @@ int main(void) {
             } 
         
             gravity();
-         
-            //horizontal friction
-            red_soldier.speed_x += (red_soldier.speed_x > 0) ? -8 : 8;
-            if (red_soldier.speed_x > -5 && red_soldier.speed_x < 5)
-                red_soldier.speed_x = 0;
-
-            soldier_border_check(&red_soldier);
-    
-            //update cooldowns - TODO all cooldowns in one func
-            red_soldier.rl_cooldown -= dt;  
         }  
 
         shift = red_soldier.speed_y * dt;
@@ -849,10 +850,8 @@ int main(void) {
         BeginDrawing();
 
         update_bg();
-
-        update_platforms();
-
         update_pickup();
+        update_platforms();
 
         //update health packs
         for (int i = 0; i < NUM_HEALTH_PACKS; i++) {
