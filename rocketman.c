@@ -173,6 +173,7 @@ static void spawn_rocket(void);
 static void unload_assets(void);
 static void update_bg(void);
 static void update_particles(void);
+static void update_pickup(void);
 static void update_rl(void);
 static void update_rockets(void);
 static void volume_control(void);
@@ -696,6 +697,15 @@ void update_particles(void) {
     }
 }
 
+void update_pickup(void) {
+    if (pickup_collect_check(&pickup, &red_soldier))
+        PlaySound(sfx[SFX_PICKUP]);
+    if (should_shift)
+        pickup.y -= shift; 
+    if (IS_VISIBLE(pickup))
+        DRAW(pickup);
+}
+
 void update_rl(void) {
     rl.rotation = 270 - atan2((red_soldier.x + MIDDLE_X(red_soldier) - mouse.x), (red_soldier.y + MIDDLE_Y(red_soldier) - mouse.y)) * 180 / PI; 
     if (mouse.x < red_soldier.x + MIDDLE_X(red_soldier)) {
@@ -779,7 +789,7 @@ int main(void) {
 
             soldier_border_check(&red_soldier);
     
-            //update cooldowns
+            //update cooldowns - TODO all cooldowns in one func
             red_soldier.rl_cooldown -= dt;  
         }  
 
@@ -836,12 +846,7 @@ int main(void) {
         }
 
         //update pickup
-        if (pickup_collect_check(&pickup, &red_soldier))
-            PlaySound(sfx[SFX_PICKUP]);
-        if (should_shift)
-            pickup.y -= shift; 
-        if (IS_VISIBLE(pickup))
-            DRAW(pickup);
+        update_pickup();
 
         //update health packs
         for (int i = 0; i < NUM_HEALTH_PACKS; i++) {
