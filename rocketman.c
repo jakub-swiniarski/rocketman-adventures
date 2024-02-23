@@ -153,7 +153,6 @@ typedef struct {
 
 /* function declarations */
 static void close(void);
-static void draw_hud(void);
 static void draw_text(const char *text, int x, int y, int font_size, Color color); /* TODO: take center as boolean arg */
 static void draw_text_center(const char *text, int y, int font_size, Color color);
 static void game_over(int *gs, Sound *sfx, Music *m);
@@ -172,6 +171,7 @@ static void spawn_particle(Rocket *r);
 static void spawn_rocket(void);
 static void unload_assets(void);
 static void update_bg(void);
+static void update_hud(void);
 static void update_particles(void);
 static void update_pickup(void);
 static void update_platforms(void);
@@ -219,7 +219,7 @@ void close(void) {
     CloseWindow();
 }
 
-void draw_hud(void) {
+void update_hud(void) {
     switch (game_state) {
         case MENU:
             UpdateMusicStream(music[0]); /* TODO: music function */
@@ -936,7 +936,7 @@ int main(void) {
 
         update_particles();
 
-        draw_hud();
+        update_hud();
 
         EndDrawing();
     }
