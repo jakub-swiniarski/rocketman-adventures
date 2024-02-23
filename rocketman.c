@@ -904,7 +904,7 @@ int main(void) {
         update_rl();
         update_score();
 
-        gravity(); /* TODO: put this at the end */
+        gravity();
 
         update_bg();
         update_pickup();
