@@ -174,6 +174,7 @@ static void unload_assets(void);
 static void update_bg(void);
 static void update_particles(void);
 static void update_pickup(void);
+static void update_platforms(void);
 static void update_rl(void);
 static void update_rockets(void);
 static void volume_control(void);
@@ -706,6 +707,49 @@ void update_pickup(void) {
         DRAW(pickup);
 }
 
+void update_platforms(void) {
+    for (int i = 0; i < NUM_PLATFORMS; i++) {
+        if (red_soldier.speed_y > 0)
+            platform_collision_check_soldier(&platforms[i], &red_soldier);
+
+        if (should_shift)
+            platforms[i].y -= shift;
+
+        {
+            Rocket *r = &rockets;
+            while (r->next != NULL) {
+                r = r->next;
+                platform_collision_check_rocket(&platforms[i], r);
+            }
+        }
+
+        if (platforms[i].y > SCREEN_HEIGHT) {
+            platforms[i].x = rand() % (SCREEN_WIDTH - platforms[i].tx->width - 400) + 200;
+            platforms[i].y = -platforms[i].tx->height;
+            
+            //random pickups and health packs - TODO create funcs for pickup and for healthpack
+            int random = rand() % 10;
+            if (random == 0 && !IS_VISIBLE(pickup)) { 
+                pickup.id = rand() % NUM_PICKUP + 1;
+                pickup.tx = &texture_holder.pickup[pickup.id - 1];
+                pickup.x = platforms[i].x + MIDDLE_X(platforms[i]) -  MIDDLE_X(pickup); 
+                pickup.y = platforms[i].y - pickup.tx->height; 
+            }
+            else if (random > 7) {
+                for (int j = 0; j < NUM_HEALTH_PACKS; j++) {
+                    if (!IS_VISIBLE(health_packs[j])) {
+                        health_packs[j].x = platforms[i].x + MIDDLE_X(platforms[i]) - MIDDLE_X(health_packs[j]);
+                        health_packs[j].y = platforms[i].y - health_packs[j].tx->height;
+                        break;
+                    }
+                }
+            }
+        }
+
+        DRAW(platforms[i]);
+    }
+}
+
 void update_rl(void) {
     rl.rotation = 270 - atan2((red_soldier.x + MIDDLE_X(red_soldier) - mouse.x), (red_soldier.y + MIDDLE_Y(red_soldier) - mouse.y)) * 180 / PI; 
     if (mouse.x < red_soldier.x + MIDDLE_X(red_soldier)) {
@@ -801,51 +845,8 @@ int main(void) {
 
         update_bg();
 
-        //update platforms
-        for (int i = 0; i < NUM_PLATFORMS; i++) {
-            //soldier collisions
-            if (red_soldier.speed_y > 0)
-                platform_collision_check_soldier(&platforms[i], &red_soldier);
+        update_platforms();
 
-            if (should_shift)
-                platforms[i].y -= shift;
-
-            { //rocket collisions
-                Rocket *r = &rockets;
-                while (r->next != NULL) {
-                    r = r->next;
-                    platform_collision_check_rocket(&platforms[i], r);
-                }
-            }
-
-            if (platforms[i].y > SCREEN_HEIGHT) {
-                platforms[i].x = rand() % (SCREEN_WIDTH - platforms[i].tx->width - 400) + 200;
-                platforms[i].y = -platforms[i].tx->height;
-                
-                //random pickups and health packs
-                int random = rand() % 10;
-                if (random == 0 && !IS_VISIBLE(pickup)) { 
-                    pickup.id = rand() % NUM_PICKUP + 1;
-                    pickup.tx = &texture_holder.pickup[pickup.id - 1];
-                    pickup.x = platforms[i].x + MIDDLE_X(platforms[i]) -  MIDDLE_X(pickup); 
-                    pickup.y = platforms[i].y - pickup.tx->height; 
-                }
-                else if (random > 7) {
-                    for (int j = 0; j < NUM_HEALTH_PACKS; j++) {
-                        if (!IS_VISIBLE(health_packs[j])) {
-                            health_packs[j].x = platforms[i].x + MIDDLE_X(platforms[i]) - MIDDLE_X(health_packs[j]);
-                            health_packs[j].y = platforms[i].y - health_packs[j].tx->height;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            //draw platforms
-            DRAW(platforms[i]);
-        }
-
-        //update pickup
         update_pickup();
 
         //update health packs
