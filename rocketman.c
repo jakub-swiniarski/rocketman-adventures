@@ -171,7 +171,9 @@ static void spawn_particle(Rocket *r);
 static void spawn_rocket(void);
 static void unload_assets(void);
 static void update_bg(void);
+static void update_health_packs(void);
 static void update_hud(void);
+static void update_parachute(void);
 static void update_particles(void);
 static void update_pickup(void);
 static void update_platforms(void);
@@ -687,6 +689,46 @@ void update_bg(void) {
     }
 }
 
+void update_health_packs(void) {
+    for (int i = 0; i < NUM_HEALTH_PACKS; i++) {
+        if (IS_VISIBLE(health_packs[i])) {
+            DRAW(health_packs[i]);
+            if (COLLISION(health_packs[i], red_soldier)) {
+                red_soldier.hp += 50;
+                health_packs[i] = new_health_pack;
+            }
+        }
+        if (should_shift)
+            health_packs[i].y -= shift;     
+    }
+}
+
+void update_parachute(void) {
+    if (red_soldier.slow_fall < 1) {
+        DrawTexturePro(
+            *parachute.tx,
+            (Rectangle){ //src
+                .x=0,
+                .y=0,
+                .width = parachute.tx->width,
+                .height = parachute.tx->height
+            },
+            (Rectangle){ //dest
+                .x = red_soldier.x + MIDDLE_X(red_soldier),
+                .y = red_soldier.y + 10,
+                .width = parachute.tx->width,
+                .height = parachute.tx->height
+            },
+            (Vector2){ //origin
+                .x = (int)(parachute.tx->width / 2),
+                .y = parachute.tx->height
+            },
+            parachute.rotation,
+            WHITE
+        ); 
+    }
+}
+
 void update_particles(void) {
     Particle *p = &particles;
 
@@ -867,44 +909,8 @@ int main(void) {
         update_bg();
         update_pickup();
         update_platforms();
-
-        //update health packs
-        for (int i = 0; i < NUM_HEALTH_PACKS; i++) {
-            if (IS_VISIBLE(health_packs[i])) {
-                DRAW(health_packs[i]);
-                if (COLLISION(health_packs[i], red_soldier)) {
-                    red_soldier.hp += 50;
-                    health_packs[i] = new_health_pack;
-                }
-            }
-            if (should_shift)
-                health_packs[i].y -= shift;     
-        }
-
-        //parachute
-        if (red_soldier.slow_fall < 1) {
-            DrawTexturePro(
-                *parachute.tx,
-                (Rectangle){ //src
-                    .x=0,
-                    .y=0,
-                    .width = parachute.tx->width,
-                    .height = parachute.tx->height
-                },
-                (Rectangle){ //dest
-                    .x = red_soldier.x + MIDDLE_X(red_soldier),
-                    .y = red_soldier.y + 10,
-                    .width = parachute.tx->width,
-                    .height = parachute.tx->height
-                },
-                (Vector2){ //origin
-                    .x = (int)(parachute.tx->width / 2),
-                    .y = parachute.tx->height
-                },
-                parachute.rotation,
-                WHITE
-            ); 
-        }
+        update_health_packs();
+        update_parachute();
         
         //draw player
         switch (red_soldier.state) {
@@ -927,13 +933,10 @@ int main(void) {
         }
         DRAW_PRO(red_soldier, red_soldier.flip, 1, 0, 0, 0, red_soldier.color);
 
-        update_rockets();
-
-        //draw rocket launcher
         DRAW_PRO(rl, 1, red_soldier.flip, rl.rotation, 50, 45, red_soldier.color);
 
+        update_rockets();
         update_particles();
-
         update_hud();
 
         EndDrawing();
