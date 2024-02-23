@@ -342,11 +342,16 @@ void init(void) {
     red_soldier.color = WHITE;
     red_soldier.x = (int)(SCREEN_WIDTH / 2) - red_soldier.tx->width;
     red_soldier.y = SCREEN_HEIGHT - red_soldier.tx->height; 
-    red_soldier.speed_x = red_soldier.speed_y = red_soldier.falling = 0;
-    red_soldier.rl_cooldown = red_soldier.anim_cooldown = 0.0f;
-    red_soldier.pickup = red_soldier.pickup_active = NONE;
+    red_soldier.speed_x = 0;
+    red_soldier.speed_y = 0;
+    red_soldier.falling = 0;
+    red_soldier.rl_cooldown = 0.0f;
+    red_soldier.anim_cooldown = 0.0f;
+    red_soldier.pickup = NONE;
+    red_soldier.pickup_active = NONE;
     red_soldier.state = STANDING;
-    red_soldier.slow_fall = red_soldier.crit_boost = 1; /* TODO: rename these to avoid confusing with booleans, boost_rl, slow_fall_multiplier? */
+    red_soldier.slow_fall = 1;
+    red_soldier.crit_boost = 1; /* TODO: rename these to avoid confusing with booleans, boost_rl, slow_fall_multiplier? */
     red_soldier.color = WHITE;
     red_soldier.hp = 200;
 
