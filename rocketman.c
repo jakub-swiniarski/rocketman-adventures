@@ -166,6 +166,7 @@ static bool pickup_collect_check(Pickup *p, Soldier *r);
 static void platform_collision_check_rocket(Platform *p, Rocket *r);
 static void platform_collision_check_soldier(Platform *p, Soldier *s);
 static void rocket_border_check(Rocket *r);
+static void run(void);
 static void soldier_border_check(Soldier *s);
 static void spawn_particle(Rocket *r);
 static void spawn_rocket(void);
@@ -607,6 +608,38 @@ void rocket_border_check(Rocket *r) {
     }
 }
 
+void run(void) {
+    while (!WindowShouldClose()) {
+        dt = GetFrameTime();
+        mouse = GetMousePosition();
+
+        manage_rockets();
+
+        shift = red_soldier.speed_y * dt;
+        should_shift = red_soldier.y == SCREEN_MIDDLE(red_soldier) && red_soldier.speed_y < 0;
+        movement_allowed = game_state != OVER;
+
+        ClearBackground(BLACK);
+        BeginDrawing();
+
+        update_bg();
+        update_pickup();
+        update_health_packs();
+        update_parachute();
+        gravity();
+        update_platforms();
+        input();
+        update_rockets();
+        update_soldier();
+        update_rl();
+        update_score();
+        update_particles();
+        update_hud();
+
+        EndDrawing();
+    }
+}
+
 void soldier_border_check(Soldier *s) {
     //horizontal
     if (s->x < 0)
@@ -907,37 +940,7 @@ void volume_control(void) {
 
 int main(void) {
     init();
- 
-    while (!WindowShouldClose()) {
-        dt = GetFrameTime();
-        mouse = GetMousePosition();
-
-        manage_rockets();
-
-        shift = red_soldier.speed_y * dt;
-        should_shift = red_soldier.y == SCREEN_MIDDLE(red_soldier) && red_soldier.speed_y < 0;
-        movement_allowed = game_state != OVER;
-
-        ClearBackground(BLACK);
-        BeginDrawing();
-
-        update_bg();
-        update_pickup();
-        update_health_packs();
-        update_parachute();
-        gravity();
-        update_platforms();
-        input();
-        update_rockets();
-        update_soldier();
-        update_rl();
-        update_score();
-        update_particles();
-        update_hud();
-
-        EndDrawing();
-    }
-
+    run();
     unload_assets();
     close();   
 
