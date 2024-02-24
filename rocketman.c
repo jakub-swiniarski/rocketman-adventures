@@ -126,28 +126,17 @@ typedef struct {
 } Soldier;
 
 typedef struct {
-    //soldier
     Texture red_soldier[6];
     Texture red_soldier_jumping;
     Texture rocket;
     Texture launcher;
     Texture parachute; 
-    
-    //world
     Texture platform;
-    
-    //pickups
     Texture pickup[NUM_PICKUP];
     Texture health_pack;
-
-    //hud
     Texture hud; 
     Texture button[2];
-
-    //visuals
     Texture particle_smoke;
- 
-    //backgrounds
     Texture bg[NUM_BG];
 } TextureHolder;
 
@@ -238,30 +227,26 @@ void update_hud(void) {
                 UpdateMusicStream(music[2]);
 
             if (red_soldier.hp < 50)
-                health_hud.text_color = TEXT_COLOR[0];
+                health_hud.text_color = TEXT_COLOR[COL_LOW];
             else if (red_soldier.hp > 200)
-                health_hud.text_color = TEXT_COLOR[2];
+                health_hud.text_color = TEXT_COLOR[COL_HIGH];
             else
-                health_hud.text_color = TEXT_COLOR[1];
+                health_hud.text_color = TEXT_COLOR[COL_NORMAL];
 
-            //hp hud
             sprintf(health_hud.text, "%d", red_soldier.hp);
             DRAW(health_hud);
             draw_text(health_hud.text, health_hud.x + 40, health_hud.y + 30, 100, health_hud.text_color); 
            
-            //pickup hud
             DRAW_PRO(pickup_hud, -1, 1, 0, 0, 0, WHITE);
             if (red_soldier.pickup != NONE)
                 DrawTexture(texture_holder.pickup[red_soldier.pickup - 1], pickup_hud.x + 150, pickup_hud.y + 25, WHITE);
             else
                 draw_text(pickup_hud.text, pickup_hud.x + 65, pickup_hud.y + 40, 64, WHITE);
 
-            //score
             draw_text("SCORE:", 10, 10, 64, WHITE);
             draw_text(score_string, 250, 10, 64, WHITE);
             break;
         case OVER:
-            //update buttons
             if (MOUSE_HOVER_BUTTON(try_again_button,mouse)) {
                 try_again_button.state = HOVER;
                 if (IsMouseButtonPressed(BUTTON_SHOOT))
@@ -361,7 +346,6 @@ void init(void) {
     red_soldier.state = STANDING;
     red_soldier.slow_fall = 1;
     red_soldier.crit_boost = 1; /* TODO: rename these to avoid confusing with booleans, boost_rl, slow_fall_multiplier? */
-    red_soldier.color = WHITE;
     red_soldier.hp = 200;
 
     parachute.tx = &texture_holder.parachute;
@@ -527,11 +511,9 @@ void manage_rockets(void) {
                 if (abs(red_soldier.x + MIDDLE_X(red_soldier) - r->next->x - MIDDLE_X(rocket)) < 200
                 && abs(red_soldier.y + MIDDLE_Y(red_soldier) - r->next->y - MIDDLE_Y(rocket)) < 200
                 && game_state != OVER) {
-                    //rocket jump
                     red_soldier.speed_x += red_soldier.crit_boost * -1 * r->next->speed_x;
                     red_soldier.speed_y += red_soldier.crit_boost * -1 * r->next->speed_y; 
                 
-                    //damage
                     if (game_state == IN_PROGRESS) {
                         red_soldier.hp -= 20 * red_soldier.crit_boost;
                         if (red_soldier.hp <= 0)
@@ -546,7 +528,6 @@ void manage_rockets(void) {
                 }
             }
             
-            //delete the rocket
             Rocket *r_next = r->next->next;
             free(r->next);
             r->next = r_next;
@@ -641,7 +622,6 @@ void run(void) {
 }
 
 void soldier_border_check(Soldier *s) {
-    //horizontal
     if (s->x < 0)
         s->x = 0;
     else if (s->x + s->tx->width > SCREEN_WIDTH)
@@ -742,19 +722,19 @@ void update_parachute(void) {
     if (red_soldier.slow_fall < 1) {
         DrawTexturePro(
             *parachute.tx,
-            (Rectangle){ //src
+            (Rectangle){
                 .x=0,
                 .y=0,
                 .width = parachute.tx->width,
                 .height = parachute.tx->height
             },
-            (Rectangle){ //dest
+            (Rectangle){
                 .x = red_soldier.x + MIDDLE_X(red_soldier),
                 .y = red_soldier.y + 10,
                 .width = parachute.tx->width,
                 .height = parachute.tx->height
             },
-            (Vector2){ //origin
+            (Vector2){
                 .x = (int)(parachute.tx->width / 2),
                 .y = parachute.tx->height
             },
@@ -769,7 +749,6 @@ void update_particles(void) {
 
     while (p->next != NULL) {
         if (p->next->alpha < 5) {
-            //delete the particle
             Particle *p_next = p->next->next;
             free(p->next);
             p->next = p_next;
@@ -818,7 +797,7 @@ void update_platforms(void) {
             platforms[i].x = rand() % (SCREEN_WIDTH - platforms[i].tx->width - 400) + 200;
             platforms[i].y = -platforms[i].tx->height;
             
-            //random pickups and health packs - TODO create funcs for pickup and for healthpack
+            /* random pickups and health packs - TODO create funcs for pickup and for healthpack */
             int random = rand() % 10;
             if (random == 0 && !IS_VISIBLE(pickup)) { 
                 pickup.id = rand() % NUM_PICKUP + 1;
