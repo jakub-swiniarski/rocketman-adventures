@@ -421,6 +421,8 @@ void init(void) {
 }
 
 void input(void) {
+    volume_control();
+
     if (!movement_allowed)
         return;
 
@@ -910,9 +912,6 @@ int main(void) {
         dt = GetFrameTime();
         mouse = GetMousePosition();
 
-        input();
-        volume_control();
-
         manage_rockets();
 
         shift = red_soldier.speed_y * dt;
@@ -926,13 +925,12 @@ int main(void) {
         update_pickup();
         update_health_packs();
         update_parachute();
+        gravity();
+        update_platforms();
+        input();
         update_rockets();
         update_soldier();
         update_rl();
-
-        gravity();
-
-        update_platforms(); /* TODO: should be drawn before the soldier, create a draw func. first update then draw all */
         update_score();
         update_particles();
         update_hud();
