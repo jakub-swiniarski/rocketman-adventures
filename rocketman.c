@@ -34,6 +34,7 @@
 
 #define NUM_BG 11
 #define NUM_MUSIC 3
+#define RANDOM_PLATFORM_X (rand() % (SCREEN_WIDTH - texture_holder.platform.width - 400) + 200)
 
 /* enums */
 enum { STANDING, WALKING, JUMPING }; /* player states, used for animations */
@@ -588,7 +589,7 @@ void restart(void) {
     }
 
     for (int i = 0; i < NUM_PLATFORMS; i++) {
-        platforms[i].x = rand() % (SCREEN_WIDTH - texture_holder.platform.width - 400) + 200; /* this is also used for random x when moving platform to the top, TODO create a macro for that */
+        platforms[i].x = RANDOM_PLATFORM_X;
         platforms[i].y = SCREEN_HEIGHT - (i + 1) * 1000 / NUM_PLATFORMS;
     } 
 
@@ -831,7 +832,7 @@ void update_platforms(void) {
         }
 
         if (platforms[i].y > SCREEN_HEIGHT) {
-            platforms[i].x = rand() % (SCREEN_WIDTH - platforms[i].tx->width - 400) + 200;
+            platforms[i].x = RANDOM_PLATFORM_X;
             platforms[i].y = -platforms[i].tx->height;
             
             int random = rand() % 10;
