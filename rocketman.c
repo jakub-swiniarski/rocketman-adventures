@@ -154,6 +154,7 @@ static char *path_to_file(char *name);
 static bool pickup_collect_check(Pickup *p, Soldier *r);
 static void platform_collision_check_rocket(Platform *p, Rocket *r);
 static void platform_collision_check_soldier(Platform *p, Soldier *s);
+static void restart(void);
 static void rocket_border_check(Rocket *r);
 static void run(void);
 static void soldier_border_check(Soldier *s);
@@ -250,7 +251,7 @@ void update_hud(void) {
             if (MOUSE_HOVER_BUTTON(try_again_button,mouse)) {
                 try_again_button.state = HOVER;
                 if (IsMouseButtonPressed(BUTTON_SHOOT))
-                    printf("WORK IN PROGRESS"); /* TODO: restart function */
+                    restart();
             }
             else
                 try_again_button.state = NORMAL;
@@ -282,7 +283,7 @@ void draw_text_center(const char *text, int y, int font_size, Color color) {
     );
 }
 
-void game_over(int *gs, Sound *sfx, Music *m) {
+void game_over(int *gs, Sound *sfx, Music *m) { /* TODO delete all rockets and particles */
     *gs = OVER;
     PlaySound(*sfx);
     for (int i = 0; i < NUM_MUSIC; i++) {
@@ -325,28 +326,12 @@ void init(void) {
 
     load_assets();
 
-    game_state = MENU;
-    level = 1;
-    score = 0;
     dt = 1.0f;
 
-    /* TODO: combine the ones responsible for positition, states, hp, etc into a setup or restart function and call it here*/
     red_soldier.tx = &texture_holder.red_soldier[0];
     red_soldier.flip = 1;
-    red_soldier.color = WHITE;
-    red_soldier.x = (int)(SCREEN_WIDTH / 2) - red_soldier.tx->width;
-    red_soldier.y = SCREEN_HEIGHT - red_soldier.tx->height; 
-    red_soldier.speed_x = 0;
-    red_soldier.speed_y = 0;
-    red_soldier.falling = 0;
     red_soldier.rl_cooldown = 0.0f;
     red_soldier.anim_cooldown = 0.0f;
-    red_soldier.pickup = NONE;
-    red_soldier.pickup_active = NONE;
-    red_soldier.state = STANDING;
-    red_soldier.slow_fall = 1;
-    red_soldier.crit_boost = 1; /* TODO: rename these to avoid confusing with booleans, boost_rl, slow_fall_multiplier? */
-    red_soldier.hp = 200;
 
     parachute.tx = &texture_holder.parachute;
     parachute.rotation = 0;
@@ -361,16 +346,11 @@ void init(void) {
         platforms[i].tx = &texture_holder.platform;
 
     pickup.tx = &texture_holder.pickup[0];
-    pickup.x = -100;
-    pickup.y = -100;
     pickup.id = PARACHUTE;
 
     new_health_pack.tx = &texture_holder.health_pack;
     new_health_pack.x = -100;
     new_health_pack.y = -100;
-
-    for (int i = 0; i<NUM_HEALTH_PACKS; i++)
-        health_packs[i] = new_health_pack;
 
     health_hud.tx = &texture_holder.hud;
     health_hud.x = 5;
@@ -388,21 +368,10 @@ void init(void) {
     try_again_button.state = NORMAL;
     strcpy(try_again_button.text, "TRY AGAIN");
 
-    for (int i = 0; i < 2; i++) {
-        bg[i].y = -i * SCREEN_HEIGHT;
-        bg[i].tx = &texture_holder.bg[i]; 
-    }
-
-    for (int i = 0; i < NUM_PLATFORMS; i++) {
-        platforms[i].x = rand() % (SCREEN_WIDTH - texture_holder.platform.width - 400) + 200; /* this is also used for random x when moving platform to the top */
-        platforms[i].y = SCREEN_HEIGHT - (i + 1) * 1000 / NUM_PLATFORMS;
-    } 
-
-    for (int i = 0; i < NUM_HEALTH_PACKS; i++)
-        health_packs[i] = new_health_pack;
-
     for (int i = 0; i < NUM_MUSIC; i++)
         PlayMusicStream(music[i]);
+
+    restart();
 }
 
 void input(void) {
@@ -576,6 +545,44 @@ void platform_collision_check_soldier(Platform *p, Soldier *s) {
             s->falling = 0;
         }
     }
+}
+
+void restart(void) {
+    game_state = MENU;
+    level = 1;
+    score = 0;
+
+    red_soldier.color = WHITE;
+    red_soldier.x = (int)(SCREEN_WIDTH / 2) - red_soldier.tx->width;
+    red_soldier.y = SCREEN_HEIGHT - red_soldier.tx->height; 
+    red_soldier.speed_x = 0;
+    red_soldier.speed_y = 0;
+    red_soldier.falling = 0;
+    red_soldier.pickup = NONE;
+    red_soldier.pickup_active = NONE;
+    red_soldier.state = STANDING;
+    red_soldier.slow_fall = 1;
+    red_soldier.crit_boost = 1; /* TODO: rename these to avoid confusing with booleans, boost_rl, slow_fall_multiplier? */
+    red_soldier.hp = 200;
+
+    pickup.x = -100;
+    pickup.y = -100;
+
+    for (int i = 0; i<NUM_HEALTH_PACKS; i++)
+        health_packs[i] = new_health_pack;
+
+    for (int i = 0; i < 2; i++) {
+        bg[i].y = -i * SCREEN_HEIGHT;
+        bg[i].tx = &texture_holder.bg[i]; 
+    }
+
+    for (int i = 0; i < NUM_PLATFORMS; i++) {
+        platforms[i].x = rand() % (SCREEN_WIDTH - texture_holder.platform.width - 400) + 200; /* this is also used for random x when moving platform to the top */
+        platforms[i].y = SCREEN_HEIGHT - (i + 1) * 1000 / NUM_PLATFORMS;
+    } 
+
+    for (int i = 0; i < NUM_HEALTH_PACKS; i++)
+        health_packs[i] = new_health_pack;
 }
 
 void rocket_border_check(Rocket *r) {
