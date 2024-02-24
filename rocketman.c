@@ -142,7 +142,7 @@ typedef struct {
 
 /* function declarations */
 static void close(void);
-static void draw_text(const char *text, int x, int y, int font_size, Color color); /* TODO: take center as boolean arg */
+static void draw_text(const char *text, int x, int y, int font_size, Color color);
 static void draw_text_center(const char *text, int y, int font_size, Color color);
 static void game_over(int *gs, Sound *sfx, Music *m);
 static void gravity(void);
@@ -185,7 +185,7 @@ static int level;
 static Vector2 mouse;
 static bool movement_allowed;
 static Music music[NUM_MUSIC];
-static HealthPack new_health_pack; /* TODO: manage health packs and pickups like rockets */
+static HealthPack new_health_pack;
 static Parachute parachute;
 static Particle particles;
 static Pickup pickup;
