@@ -263,7 +263,7 @@ void update_hud(void) {
             //update buttons
             if (MOUSE_HOVER_BUTTON(try_again_button,mouse)) {
                 try_again_button.state = HOVER;
-                if (IsMouseButtonPressed(SHOOT))
+                if (IsMouseButtonPressed(BUTTON_SHOOT))
                     printf("WORK IN PROGRESS"); /* TODO: restart function */
             }
             else
@@ -424,14 +424,14 @@ void input(void) {
     if (!movement_allowed)
         return;
 
-    if (IsKeyDown(MOVE_RIGHT) && !IsKeyDown(MOVE_LEFT)) {
+    if (IsKeyDown(KEY_MOVE_RIGHT) && !IsKeyDown(KEY_MOVE_LEFT)) {
         red_soldier.x += 150 * dt;
         red_soldier.state = WALKING;
 
         if (red_soldier.pickup_active == PARACHUTE && parachute.rotation > -30)
             parachute.rotation -= 60 * dt;
     }
-    else if (IsKeyDown(MOVE_LEFT) && !IsKeyDown(MOVE_RIGHT)) {
+    else if (IsKeyDown(KEY_MOVE_LEFT) && !IsKeyDown(KEY_MOVE_RIGHT)) {
         red_soldier.x -= 150 * dt;
         red_soldier.state = WALKING;
     
@@ -443,9 +443,9 @@ void input(void) {
     if (red_soldier.speed_y < -100 || red_soldier.speed_y > 100)
         red_soldier.state = JUMPING;
 
-    if (!IsKeyDown(MOVE_LEFT) && !IsKeyDown(MOVE_RIGHT)) //if not moving horizontally
+    if (!IsKeyDown(KEY_MOVE_LEFT) && !IsKeyDown(KEY_MOVE_RIGHT))
         parachute.rotation += (parachute.rotation > 0) ? (-100 * dt) : (100 * dt);
-    if (IsKeyDown(JUMP) && !red_soldier.falling) {
+    if (IsKeyDown(KEY_JUMP) && !red_soldier.falling) {
         PlaySound(sfx[SFX_JUMP]);
         if (red_soldier.pickup_active == PARACHUTE) {
             red_soldier.slow_fall = 1;
@@ -454,13 +454,13 @@ void input(void) {
         red_soldier.speed_y = -400;
     }
 
-    if ((IsMouseButtonPressed(SHOOT) || IsKeyPressed(SHOOT_ALT)) && red_soldier.rl_cooldown < 0.0f) {
+    if ((IsMouseButtonPressed(BUTTON_SHOOT) || IsKeyPressed(KEY_SHOOT_ALT)) && red_soldier.rl_cooldown < 0.0f) {
         red_soldier.rl_cooldown = 0.8f;
 
         spawn_rocket();
     }
 
-    if (IsKeyPressed(USE_PICKUP)) {
+    if (IsKeyPressed(KEY_USE_PICKUP)) {
         red_soldier.pickup_active = red_soldier.pickup;
         red_soldier.pickup = NONE;
         switch (red_soldier.pickup_active) {
@@ -889,15 +889,15 @@ void update_soldier(void) {
 }
 
 void volume_control(void) {
-    if (IsKeyPressed(VOL_UP) && volume <= 0.9f) {
+    if (IsKeyPressed(KEY_VOL_UP) && volume <= 0.9f) {
         volume += 0.1f;
         SetMasterVolume(volume);
     }
-    else if (IsKeyPressed(VOL_DOWN) && volume >= 0.1f) {
+    else if (IsKeyPressed(KEY_VOL_DOWN) && volume >= 0.1f) {
         volume -= 0.1f;
         SetMasterVolume(volume);
     }
-    else if (IsKeyPressed(MUTE)) {
+    else if (IsKeyPressed(KEY_MUTE)) {
         muted =! muted;
         SetMasterVolume(muted ? 0 : volume);
     }
