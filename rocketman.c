@@ -309,7 +309,7 @@ void gravity(void) {
         return;
 
     if (red_soldier.y + red_soldier.tx->height >= SCREEN_HEIGHT) {
-        if (game_state != IN_PROGRESS) {
+        if (game_state == MENU) {
             red_soldier.y = SCREEN_HEIGHT - red_soldier.tx->height;
             red_soldier.speed_y = 0;
             red_soldier.falling = 0;
