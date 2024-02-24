@@ -18,17 +18,17 @@ static bool muted = 0;
 static const Color TEXT_COLOR[3] = { RED, WHITE, GREEN }; /* low, normal, high, TODO: create an enum for this in main */
 
 /* keyboard controls */
-static const KeyboardKey MOVE_LEFT = KEY_A; /* TODO rename keys, start with KEY_... */
-static const KeyboardKey MOVE_RIGHT = KEY_D;
-static const KeyboardKey JUMP = KEY_SPACE;
-static const KeyboardKey SHOOT_ALT = KEY_R;
-static const KeyboardKey USE_PICKUP = KEY_Q;
-static const KeyboardKey MUTE = KEY_F1;
-static const KeyboardKey VOL_UP = KEY_F3;
-static const KeyboardKey VOL_DOWN = KEY_F2;
+static const KeyboardKey KEY_MOVE_LEFT = KEY_A;
+static const KeyboardKey KEY_MOVE_RIGHT = KEY_D;
+static const KeyboardKey KEY_JUMP = KEY_SPACE;
+static const KeyboardKey KEY_SHOOT_ALT = KEY_R;
+static const KeyboardKey KEY_USE_PICKUP = KEY_Q;
+static const KeyboardKey KEY_MUTE = KEY_F1;
+static const KeyboardKey KEY_VOL_UP = KEY_F3;
+static const KeyboardKey KEY_VOL_DOWN = KEY_F2;
 
 //mouse controls
-static const MouseButton SHOOT = MOUSE_LEFT_BUTTON;
+static const MouseButton BUTTON_SHOOT = MOUSE_LEFT_BUTTON;
 
 //gameplay
 #define NUM_PLATFORMS 10
