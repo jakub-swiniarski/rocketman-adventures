@@ -113,14 +113,14 @@ struct Rocket {
 typedef struct {
     Texture *tx;
     int x, y;
-    int speed_x, speed_y; /* used for gravity and jumping */
+    int speed_x, speed_y;
     float rl_cooldown;
     bool falling;
     int pickup, pickup_active;
-    float slow_fall; /* 1 means no slow fall */
-    int crit_boost;
+    float gravity_factor;
+    int rl_knockback_factor;
     int hp;
-    int flip; /* 1 means befault, -1 means flipped */
+    int flip;
     Color color;
     int state;
     float anim_cooldown;
@@ -413,7 +413,7 @@ void input(void) {
     if (IsKeyDown(KEY_JUMP) && !red_soldier.falling) {
         PlaySound(sfx[SFX_JUMP]);
         if (red_soldier.pickup_active == PARACHUTE) {
-            red_soldier.slow_fall = 1;
+            red_soldier.gravity_factor = 1;
             red_soldier.pickup_active = NONE;
         }
         red_soldier.speed_y = -400;
@@ -430,11 +430,11 @@ void input(void) {
         red_soldier.pickup = NONE;
         switch (red_soldier.pickup_active) {
             case PARACHUTE:
-                red_soldier.slow_fall = 0.2;
+                red_soldier.gravity_factor = 0.2;
                 break;
 
             case CRIT:
-                red_soldier.crit_boost = 2;
+                red_soldier.rl_knockback_factor = 2;
                 red_soldier.color = RED;    
                 break; 
         }
@@ -489,18 +489,18 @@ void manage_rockets(void) {
                 if (abs(red_soldier.x + MIDDLE_X(red_soldier) - r->next->x - MIDDLE_X(rocket)) < 200
                 && abs(red_soldier.y + MIDDLE_Y(red_soldier) - r->next->y - MIDDLE_Y(rocket)) < 200
                 && game_state != OVER) {
-                    red_soldier.speed_x += red_soldier.crit_boost * -1 * r->next->speed_x;
-                    red_soldier.speed_y += red_soldier.crit_boost * -1 * r->next->speed_y; 
+                    red_soldier.speed_x += red_soldier.rl_knockback_factor * -1 * r->next->speed_x;
+                    red_soldier.speed_y += red_soldier.rl_knockback_factor * -1 * r->next->speed_y; 
                 
                     if (game_state == IN_PROGRESS) {
-                        red_soldier.hp -= 20 * red_soldier.crit_boost;
+                        red_soldier.hp -= 20 * red_soldier.rl_knockback_factor;
                         if (red_soldier.hp <= 0)
                             game_over(&game_state, &sfx[SFX_DEATH], music);
                     }
                 }
                 
                 if (red_soldier.pickup_active == CRIT) {
-                    red_soldier.crit_boost = 1;
+                    red_soldier.rl_knockback_factor = 1;
                     red_soldier.color = WHITE;
                     red_soldier.pickup_active = NONE;
                 }
@@ -570,8 +570,8 @@ void restart(void) {
     red_soldier.pickup = NONE;
     red_soldier.pickup_active = NONE;
     red_soldier.state = STANDING;
-    red_soldier.slow_fall = 1;
-    red_soldier.crit_boost = 1; /* TODO: rename these to avoid confusing with booleans, boost_rl, slow_fall_multiplier? */
+    red_soldier.gravity_factor = 1;
+    red_soldier.rl_knockback_factor = 1;
     red_soldier.hp = 200;
 
     pickup.x = -100;
@@ -737,7 +737,7 @@ void update_health_packs(void) {
 }
 
 void update_parachute(void) {
-    if (red_soldier.slow_fall < 1) {
+    if (red_soldier.gravity_factor < 1) {
         DrawTexturePro(
             *parachute.tx,
             (Rectangle){
@@ -886,7 +886,7 @@ void update_soldier(void) {
     if (movement_allowed) {
         red_soldier.x += red_soldier.speed_x * dt;
         if (red_soldier.speed_y > 0)
-            red_soldier.y += red_soldier.speed_y * dt * red_soldier.slow_fall; 
+            red_soldier.y += red_soldier.speed_y * dt * red_soldier.gravity_factor; 
         else
             red_soldier.y += red_soldier.speed_y * dt; 
 
