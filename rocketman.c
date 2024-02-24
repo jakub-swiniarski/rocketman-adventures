@@ -819,6 +819,8 @@ void update_rl(void) {
         }
         rl.y = red_soldier.y + 45;
     }
+
+    DRAW_PRO(rl, 1, red_soldier.flip, rl.rotation, 50, 45, red_soldier.color);
 }
 
 void update_rockets(void) {
@@ -864,6 +866,26 @@ void update_soldier(void) {
 
         red_soldier.rl_cooldown -= dt;  
     }
+
+    switch (red_soldier.state) {
+        case STANDING:
+            red_soldier.tx = &texture_holder.red_soldier[0];
+            break;
+
+        case WALKING:
+            red_soldier.anim_cooldown -= dt;
+            if (red_soldier.anim_cooldown < 0.0f) {
+                red_soldier.frame++;
+                red_soldier.tx = &texture_holder.red_soldier[red_soldier.frame % 6];
+                red_soldier.anim_cooldown = 0.1;
+            }
+            break;
+
+        case JUMPING:
+            red_soldier.tx = &texture_holder.red_soldier_jumping;
+            break;
+    }
+    DRAW_PRO(red_soldier, red_soldier.flip, 1, 0, 0, 0, red_soldier.color);
 }
 
 void volume_control(void) {
@@ -900,42 +922,18 @@ int main(void) {
         ClearBackground(BLACK);
         BeginDrawing();
 
+        update_bg();
+        update_pickup();
+        update_health_packs();
+        update_parachute();
+        update_rockets();
         update_soldier();
         update_rl();
-        update_score();
 
         gravity();
 
-        update_bg();
-        update_pickup();
-        update_platforms();
-        update_health_packs();
-        update_parachute();
-        
-        //draw player
-        switch (red_soldier.state) {
-            case STANDING:
-                red_soldier.tx = &texture_holder.red_soldier[0];
-                break;
-
-            case WALKING:
-                red_soldier.anim_cooldown -= dt;
-                if (red_soldier.anim_cooldown < 0.0f) {
-                    red_soldier.frame++;
-                    red_soldier.tx = &texture_holder.red_soldier[red_soldier.frame % 6];
-                    red_soldier.anim_cooldown = 0.1;
-                }
-                break;
-
-            case JUMPING:
-                red_soldier.tx = &texture_holder.red_soldier_jumping;
-                break;
-        }
-        DRAW_PRO(red_soldier, red_soldier.flip, 1, 0, 0, 0, red_soldier.color);
-
-        DRAW_PRO(rl, 1, red_soldier.flip, rl.rotation, 50, 45, red_soldier.color);
-
-        update_rockets();
+        update_platforms(); /* TODO: should be drawn before the soldier, create a draw func. first update then draw all */
+        update_score();
         update_particles();
         update_hud();
 
