@@ -160,7 +160,9 @@ static void restart(void);
 static void rocket_border_check(Rocket *r);
 static void run(void);
 static void soldier_border_check(Soldier *s);
+static void spawn_health_pack(int x, int y);
 static void spawn_particle(Rocket *r);
+static void spawn_pickup(int x, int y);
 static void spawn_rocket(void);
 static void unload_assets(void);
 static void update_bg(void);
@@ -586,7 +588,7 @@ void restart(void) {
     }
 
     for (int i = 0; i < NUM_PLATFORMS; i++) {
-        platforms[i].x = rand() % (SCREEN_WIDTH - texture_holder.platform.width - 400) + 200; /* this is also used for random x when moving platform to the top */
+        platforms[i].x = rand() % (SCREEN_WIDTH - texture_holder.platform.width - 400) + 200; /* this is also used for random x when moving platform to the top, TODO create a macro for that */
         platforms[i].y = SCREEN_HEIGHT - (i + 1) * 1000 / NUM_PLATFORMS;
     } 
 
@@ -646,6 +648,16 @@ void soldier_border_check(Soldier *s) {
         s->x = SCREEN_WIDTH - s->tx->width;
 }
 
+void spawn_health_pack(int x, int y) {
+    for (int j = 0; j < NUM_HEALTH_PACKS; j++) {
+        if (!IS_VISIBLE(health_packs[j])) {
+            health_packs[j].x = x - MIDDLE_X(health_packs[j]);
+            health_packs[j].y = y - health_packs[j].tx->height;
+            break;
+        }
+    }
+}
+
 void spawn_particle(Rocket *r) {
     Particle *p = &particles;
 
@@ -660,6 +672,13 @@ void spawn_particle(Rocket *r) {
     p->rotation = rand() % 360;
     p->alpha = 255;
     p->next = NULL;
+}
+
+void spawn_pickup(int x, int y) {
+    pickup.id = rand() % NUM_PICKUP + 1;
+    pickup.tx = &texture_holder.pickup[pickup.id - 1];
+    pickup.x = x - MIDDLE_X(pickup); 
+    pickup.y = y - pickup.tx->height; 
 }
 
 void spawn_rocket(void) {
@@ -815,23 +834,11 @@ void update_platforms(void) {
             platforms[i].x = rand() % (SCREEN_WIDTH - platforms[i].tx->width - 400) + 200;
             platforms[i].y = -platforms[i].tx->height;
             
-            /* random pickups and health packs - TODO create funcs for pickup and for healthpack */
             int random = rand() % 10;
-            if (random == 0 && !IS_VISIBLE(pickup)) { 
-                pickup.id = rand() % NUM_PICKUP + 1;
-                pickup.tx = &texture_holder.pickup[pickup.id - 1];
-                pickup.x = platforms[i].x + MIDDLE_X(platforms[i]) -  MIDDLE_X(pickup); 
-                pickup.y = platforms[i].y - pickup.tx->height; 
-            }
-            else if (random > 7) {
-                for (int j = 0; j < NUM_HEALTH_PACKS; j++) {
-                    if (!IS_VISIBLE(health_packs[j])) {
-                        health_packs[j].x = platforms[i].x + MIDDLE_X(platforms[i]) - MIDDLE_X(health_packs[j]);
-                        health_packs[j].y = platforms[i].y - health_packs[j].tx->height;
-                        break;
-                    }
-                }
-            }
+            if (random == 0 && !IS_VISIBLE(pickup))
+                spawn_pickup(platforms[i].x + MIDDLE_X(platforms[i]), platforms[i].y);
+            else if (random > 7)
+                spawn_health_pack(platforms[i].x + MIDDLE_X(platforms[i]), platforms[i].y);
         }
 
         DRAW(platforms[i]);
