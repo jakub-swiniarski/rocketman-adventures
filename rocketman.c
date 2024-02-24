@@ -41,6 +41,8 @@ enum { MENU, IN_PROGRESS, OVER }; /* game states */
 enum { NONE, PARACHUTE, CRIT, NUM_PICKUP }; /* pickups */
 enum { NORMAL, HOVER }; /* button states */
 enum { SFX_EXPLOSION, SFX_PICKUP, SFX_JUMP, SFX_DEATH, NUM_SFX }; /* sound effects */
+enum { MUSIC_MENU, MUSIC_NORMAL, MUSIC_SPACE  }; /* music */
+enum { COL_LOW, COL_NORMAL, COL_HIGH }; /* hud text color */
 
 /* structs */
 typedef struct {
@@ -164,6 +166,7 @@ static void unload_assets(void);
 static void update_bg(void);
 static void update_health_packs(void);
 static void update_hud(void);
+static void update_music(void);
 static void update_parachute(void);
 static void update_particles(void);
 static void update_pickup(void);
@@ -215,18 +218,11 @@ void close(void) {
 void update_hud(void) {
     switch (game_state) {
         case MENU:
-            UpdateMusicStream(music[0]); /* TODO: music function */
-
             draw_text_center("ROCKETMAN ADVENTURES", 200, 100, WHITE);
             draw_text_center(VERSION, 300, 64, WHITE); 
             draw_text_center("START JUMPING TO BEGIN", 400, 64, WHITE);
             break;
         case IN_PROGRESS:
-            if (level < 7) /* TODO: update music function */
-                UpdateMusicStream(music[1]); /* TODO: enums for music access */
-            else
-                UpdateMusicStream(music[2]);
-
             if (red_soldier.hp < 50)
                 health_hud.text_color = TEXT_COLOR[COL_LOW];
             else if (red_soldier.hp > 200)
@@ -266,6 +262,20 @@ void update_hud(void) {
         default:
             draw_text("ERROR", 100, 100, 120, WHITE);
     } 
+}
+
+void update_music(void) {
+    switch (game_state) {
+        case MENU:
+            UpdateMusicStream(music[MUSIC_MENU]);
+            break;
+        case IN_PROGRESS:
+            if (level < 7)
+                UpdateMusicStream(music[MUSIC_NORMAL]);
+            else
+                UpdateMusicStream(music[MUSIC_SPACE]);
+            break;
+    }
 }
 
 void draw_text(const char *text, int x, int y, int font_size, Color color) {
@@ -603,6 +613,9 @@ void run(void) {
 
         manage_rockets();
 
+        update_score();
+        update_music();
+
         shift = red_soldier.speed_y * dt;
         should_shift = red_soldier.y == SCREEN_MIDDLE(red_soldier) && red_soldier.speed_y < 0;
         movement_allowed = game_state != OVER;
@@ -620,7 +633,6 @@ void run(void) {
         update_rockets();
         update_soldier();
         update_rl();
-        update_score();
         update_particles();
         update_hud();
 
@@ -847,7 +859,7 @@ void update_rl(void) {
 void update_rockets(void) {
     Rocket *r = &rockets;
 
-    while (r->next != NULL) { /* TODO: for loop? */
+    while (r->next != NULL) {
         r = r->next;
         Rocket rocket = *r;
         DRAW_PRO(rocket, 1, 1, rocket.rotation, MIDDLE_X(rocket), MIDDLE_Y(rocket), red_soldier.color);
