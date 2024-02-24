@@ -853,7 +853,7 @@ void update_score(void) {
 void update_soldier(void) {
     if (movement_allowed) {
         red_soldier.x += red_soldier.speed_x * dt;
-        if (red_soldier.speed_y > 0 && red_soldier.falling)
+        if (red_soldier.speed_y > 0)
             red_soldier.y += red_soldier.speed_y * dt * red_soldier.slow_fall; 
         else
             red_soldier.y += red_soldier.speed_y * dt; 
