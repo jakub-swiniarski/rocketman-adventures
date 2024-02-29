@@ -37,7 +37,7 @@
 #define RANDOM_PLATFORM_X (rand() % (SCREEN_WIDTH - texture_holder.platform.width - 400) + 200)
 
 /* enums */
-enum { STANDING, WALKING, JUMPING };
+enum { STATE_STANDING, STATE_WALKING, STATE_JUMPING };
 enum { GAME_MENU, GAME_ACTIVE, GAME_OVER };
 enum { PICKUP_NONE, PICKUP_PARACHUTE, PICKUP_CRIT, NUM_PICKUP };
 enum { BUTTON_NORMAL, BUTTON_HOVER };
@@ -394,22 +394,22 @@ void input(void) {
 
     if (IsKeyDown(KEY_MOVE_RIGHT) && !IsKeyDown(KEY_MOVE_LEFT)) {
         red_soldier.x += 150 * dt;
-        red_soldier.state = WALKING;
+        red_soldier.state = STATE_WALKING;
 
         if (red_soldier.pickup_active == PICKUP_PARACHUTE && parachute.rotation > -30)
             parachute.rotation -= 60 * dt;
     }
     else if (IsKeyDown(KEY_MOVE_LEFT) && !IsKeyDown(KEY_MOVE_RIGHT)) {
         red_soldier.x -= 150 * dt;
-        red_soldier.state = WALKING;
+        red_soldier.state = STATE_WALKING;
     
         if (red_soldier.pickup_active == PICKUP_PARACHUTE && parachute.rotation < 30)
             parachute.rotation += 60 * dt;
     }
     else
-        red_soldier.state = STANDING;
+        red_soldier.state = STATE_STANDING;
     if (red_soldier.speed_y < -100 || red_soldier.speed_y > 100)
-        red_soldier.state = JUMPING;
+        red_soldier.state = STATE_JUMPING;
 
     if (!IsKeyDown(KEY_MOVE_LEFT) && !IsKeyDown(KEY_MOVE_RIGHT))
         parachute.rotation += (parachute.rotation > 0) ? (-100 * dt) : (100 * dt);
@@ -566,7 +566,7 @@ void restart(void) {
     red_soldier.falling = 0;
     red_soldier.pickup = PICKUP_NONE;
     red_soldier.pickup_active = PICKUP_NONE;
-    red_soldier.state = STANDING;
+    red_soldier.state = STATE_STANDING;
     red_soldier.gravity_factor = 1;
     red_soldier.rl_knockback_factor = 1;
     red_soldier.hp = 200;
@@ -890,11 +890,11 @@ void update_soldier(void) {
     }
 
     switch (red_soldier.state) {
-        case STANDING:
+        case STATE_STANDING:
             red_soldier.tx = &texture_holder.red_soldier[0];
             break;
 
-        case WALKING:
+        case STATE_WALKING:
             red_soldier.anim_cooldown -= dt;
             if (red_soldier.anim_cooldown < 0.0f) {
                 red_soldier.frame++;
@@ -903,7 +903,7 @@ void update_soldier(void) {
             }
             break;
 
-        case JUMPING:
+        case STATE_JUMPING:
             red_soldier.tx = &texture_holder.red_soldier_jumping;
             break;
     }
