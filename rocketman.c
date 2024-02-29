@@ -477,9 +477,7 @@ void load_assets(void) {
 }
 
 void manage_rockets(void) {
-    Rocket *r = &rockets;
-
-    while (r->next != NULL) {
+    for (Rocket *r = &rockets; r->next != NULL; r = r->next) {
         rocket_border_check(r->next);
 
         if (r->next->collided) {
@@ -514,7 +512,6 @@ void manage_rockets(void) {
             r->next = r_next;
             break;
         }
-        r = r->next;
     }
 }
 
@@ -783,9 +780,7 @@ void update_parachute(void) {
 }
 
 void update_particles(void) {
-    Particle *p = &particles;
-
-    while (p->next != NULL) {
+    for (Particle *p = &particles; p->next != NULL; p = p->next) {
         if (p->next->alpha < 5) {
             Particle *p_next = p->next->next;
             free(p->next);
@@ -801,8 +796,6 @@ void update_particles(void) {
         Particle particle = *p->next;
         Color color = { .r = 255, .g = 255, .b = 255, .a = p->next->alpha };
         DRAW_PRO(particle, 1, 1, particle.rotation, MIDDLE_X(particle), MIDDLE_Y(particle), color);
-
-        p = p->next;
     }
 }
 
@@ -823,13 +816,8 @@ void update_platforms(void) {
         if (should_shift)
             platforms[i].y -= shift;
 
-        {
-            Rocket *r = &rockets;
-            while (r->next != NULL) {
-                r = r->next;
-                platform_collision_check_rocket(&platforms[i], r);
-            }
-        }
+        for (Rocket *r = &rockets; r->next != NULL; r = r->next)
+            platform_collision_check_rocket(&platforms[i], r->next);
 
         if (platforms[i].y > SCREEN_HEIGHT) {
             platforms[i].x = RANDOM_PLATFORM_X;
@@ -864,14 +852,11 @@ void update_rl(void) {
 }
 
 void update_rockets(void) {
-    Rocket *r = &rockets;
-
-    while (r->next != NULL) {
-        r = r->next;
-        Rocket rocket = *r;
+    for (Rocket *r = &rockets; r->next != NULL; r = r->next) {
+        Rocket rocket = *r->next;
         DRAW_PRO(rocket, 1, 1, rocket.rotation, MIDDLE_X(rocket), MIDDLE_Y(rocket), red_soldier.color);
-        r->x += r->speed_x * dt;
-        r->y += r->speed_y * dt;
+        r->next->x += r->next->speed_x * dt;
+        r->next->y += r->next->speed_y * dt;
     }
 }
 
