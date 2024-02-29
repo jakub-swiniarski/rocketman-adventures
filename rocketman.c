@@ -145,8 +145,8 @@ typedef struct {
 
 /* function declarations */
 static void close(void);
-static void draw_text(const char *text, int x, int y, int font_size, Color color);
-static void draw_text_center(const char *text, int y, int font_size, Color color);
+static void draw_text(const char *TEXT, int x, int y, int font_size, Color color);
+static void draw_text_center(const char *TEXT, int y, int font_size, Color color);
 static void game_over(int *gs, Sound *sfx, Music *m);
 static void gravity(void);
 static void init(void);
@@ -281,15 +281,15 @@ void update_music(void) {
     }
 }
 
-void draw_text(const char *text, int x, int y, int font_size, Color color) {
-    DrawText(text, x, y, font_size, BLACK);
-    DrawText(text, x+7, y+7, font_size,color);
+void draw_text(const char *TEXT, int x, int y, int font_size, Color color) {
+    DrawText(TEXT, x, y, font_size, BLACK);
+    DrawText(TEXT, x+7, y+7, font_size,color);
 }
 
-void draw_text_center(const char *text, int y, int font_size, Color color) {
+void draw_text_center(const char *TEXT, int y, int font_size, Color color) {
     draw_text(
-        text,
-        (int)(SCREEN_WIDTH / 2) - (int)(MeasureTextEx(GetFontDefault(), text, font_size, 10).x / 2),
+        TEXT,
+        (int)(SCREEN_WIDTH / 2) - (int)(MeasureTextEx(GetFontDefault(), TEXT, font_size, 10).x / 2),
         y,
         font_size,
         color
