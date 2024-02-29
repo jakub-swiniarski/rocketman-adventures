@@ -37,13 +37,13 @@
 #define RANDOM_PLATFORM_X (rand() % (SCREEN_WIDTH - texture_holder.platform.width - 400) + 200)
 
 /* enums */
-enum { STANDING, WALKING, JUMPING }; /* player states, used for animations */
-enum { MENU, IN_PROGRESS, OVER }; /* game states */
-enum { NONE, PARACHUTE, CRIT, NUM_PICKUP }; /* pickups */
-enum { BUTTON_NORMAL, BUTTON_HOVER }; /* button states */
-enum { SFX_EXPLOSION, SFX_PICKUP, SFX_JUMP, SFX_DEATH, NUM_SFX }; /* sound effects */
-enum { MUSIC_MENU, MUSIC_NORMAL, MUSIC_SPACE  }; /* music */
-enum { COL_LOW, COL_NORMAL, COL_HIGH }; /* hud text color */
+enum { STANDING, WALKING, JUMPING };
+enum { MENU, IN_PROGRESS, OVER };
+enum { PICKUP_NONE, PICKUP_PARACHUTE, PICKUP_CRIT, NUM_PICKUP };
+enum { BUTTON_NORMAL, BUTTON_HOVER };
+enum { SFX_EXPLOSION, SFX_PICKUP, SFX_JUMP, SFX_DEATH, NUM_SFX };
+enum { MUSIC_MENU, MUSIC_NORMAL, MUSIC_SPACE};
+enum { COL_LOW, COL_NORMAL, COL_HIGH };
 
 /* structs */
 typedef struct {
@@ -238,7 +238,7 @@ void update_hud(void) {
             draw_text(health_hud.text, health_hud.x + 40, health_hud.y + 30, 100, health_hud.text_color); 
            
             DRAW_PRO(pickup_hud, -1, 1, 0, 0, 0, WHITE);
-            if (red_soldier.pickup != NONE)
+            if (red_soldier.pickup != PICKUP_NONE)
                 DrawTexture(texture_holder.pickup[red_soldier.pickup - 1], pickup_hud.x + 150, pickup_hud.y + 25, WHITE);
             else
                 draw_text(pickup_hud.text, pickup_hud.x + 65, pickup_hud.y + 40, 64, WHITE);
@@ -358,7 +358,7 @@ void init(void) {
         platforms[i].tx = &texture_holder.platform;
 
     pickup.tx = &texture_holder.pickup[0];
-    pickup.id = PARACHUTE;
+    pickup.id = PICKUP_PARACHUTE;
 
     new_health_pack.tx = &texture_holder.health_pack;
     new_health_pack.x = -100;
@@ -396,14 +396,14 @@ void input(void) {
         red_soldier.x += 150 * dt;
         red_soldier.state = WALKING;
 
-        if (red_soldier.pickup_active == PARACHUTE && parachute.rotation > -30)
+        if (red_soldier.pickup_active == PICKUP_PARACHUTE && parachute.rotation > -30)
             parachute.rotation -= 60 * dt;
     }
     else if (IsKeyDown(KEY_MOVE_LEFT) && !IsKeyDown(KEY_MOVE_RIGHT)) {
         red_soldier.x -= 150 * dt;
         red_soldier.state = WALKING;
     
-        if (red_soldier.pickup_active == PARACHUTE && parachute.rotation < 30)
+        if (red_soldier.pickup_active == PICKUP_PARACHUTE && parachute.rotation < 30)
             parachute.rotation += 60 * dt;
     }
     else
@@ -415,9 +415,9 @@ void input(void) {
         parachute.rotation += (parachute.rotation > 0) ? (-100 * dt) : (100 * dt);
     if (IsKeyDown(KEY_JUMP) && !red_soldier.falling) {
         PlaySound(sfx[SFX_JUMP]);
-        if (red_soldier.pickup_active == PARACHUTE) {
+        if (red_soldier.pickup_active == PICKUP_PARACHUTE) {
             red_soldier.gravity_factor = 1;
-            red_soldier.pickup_active = NONE;
+            red_soldier.pickup_active = PICKUP_NONE;
         }
         red_soldier.speed_y = -400;
     }
@@ -430,13 +430,13 @@ void input(void) {
 
     if (IsKeyPressed(KEY_USE_PICKUP)) {
         red_soldier.pickup_active = red_soldier.pickup;
-        red_soldier.pickup = NONE;
+        red_soldier.pickup = PICKUP_NONE;
         switch (red_soldier.pickup_active) {
-            case PARACHUTE:
+            case PICKUP_PARACHUTE:
                 red_soldier.gravity_factor = 0.2;
                 break;
 
-            case CRIT:
+            case PICKUP_CRIT:
                 red_soldier.rl_knockback_factor = 2;
                 red_soldier.color = RED;    
                 break; 
@@ -500,10 +500,10 @@ void manage_rockets(void) {
                     }
                 }
                 
-                if (red_soldier.pickup_active == CRIT) {
+                if (red_soldier.pickup_active == PICKUP_CRIT) {
                     red_soldier.rl_knockback_factor = 1;
                     red_soldier.color = WHITE;
-                    red_soldier.pickup_active = NONE;
+                    red_soldier.pickup_active = PICKUP_NONE;
                 }
             }
             
@@ -518,7 +518,6 @@ void manage_rockets(void) {
 char *path_to_file(char *name) {
     char *path = malloc(sizeof(char) * strlen(DIRECTORY) + strlen(name) + 1);
     sprintf(path, "%s%s", DIRECTORY,name);
-    
     return path;
 }
 
@@ -529,12 +528,10 @@ bool pickup_collect_check(Pickup *p, Soldier *r) {
                 r->pickup = p->id;
                 p->x = -100;
                 p->y = -100;
-
                 return 1;
             }
         }
     }
-
     return 0;
 }
 
@@ -567,8 +564,8 @@ void restart(void) {
     red_soldier.speed_x = 0;
     red_soldier.speed_y = 0;
     red_soldier.falling = 0;
-    red_soldier.pickup = NONE;
-    red_soldier.pickup_active = NONE;
+    red_soldier.pickup = PICKUP_NONE;
+    red_soldier.pickup_active = PICKUP_NONE;
     red_soldier.state = STANDING;
     red_soldier.gravity_factor = 1;
     red_soldier.rl_knockback_factor = 1;
