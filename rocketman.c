@@ -40,7 +40,7 @@
 enum { STANDING, WALKING, JUMPING }; /* player states, used for animations */
 enum { MENU, IN_PROGRESS, OVER }; /* game states */
 enum { NONE, PARACHUTE, CRIT, NUM_PICKUP }; /* pickups */
-enum { NORMAL, HOVER }; /* button states */
+enum { BUTTON_NORMAL, BUTTON_HOVER }; /* button states */
 enum { SFX_EXPLOSION, SFX_PICKUP, SFX_JUMP, SFX_DEATH, NUM_SFX }; /* sound effects */
 enum { MUSIC_MENU, MUSIC_NORMAL, MUSIC_SPACE  }; /* music */
 enum { COL_LOW, COL_NORMAL, COL_HIGH }; /* hud text color */
@@ -248,12 +248,12 @@ void update_hud(void) {
             break;
         case OVER:
             if (MOUSE_HOVER_BUTTON(try_again_button,mouse)) {
-                try_again_button.state = HOVER;
+                try_again_button.state = BUTTON_HOVER;
                 if (IsMouseButtonPressed(BUTTON_SHOOT))
                     restart();
             }
             else
-                try_again_button.state = NORMAL;
+                try_again_button.state = BUTTON_NORMAL;
 
             DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, (Color){ 0, 0, 0, 150 });
             draw_text_center("GAME OVER", 200, 100, WHITE);
@@ -377,7 +377,7 @@ void init(void) {
     try_again_button.tx = &texture_holder.button[0];
     try_again_button.x = SCREEN_WIDTH / 2 - texture_holder.button[0].width / 2;
     try_again_button.y = 500;
-    try_again_button.state = NORMAL;
+    try_again_button.state = BUTTON_NORMAL;
     strcpy(try_again_button.text, "TRY AGAIN");
 
     for (int i = 0; i < NUM_MUSIC; i++)
