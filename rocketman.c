@@ -38,7 +38,7 @@
 
 /* enums */
 enum { STANDING, WALKING, JUMPING };
-enum { MENU, IN_PROGRESS, OVER };
+enum { GAME_MENU, GAME_ACTIVE, GAME_OVER };
 enum { PICKUP_NONE, PICKUP_PARACHUTE, PICKUP_CRIT, NUM_PICKUP };
 enum { BUTTON_NORMAL, BUTTON_HOVER };
 enum { SFX_EXPLOSION, SFX_PICKUP, SFX_JUMP, SFX_DEATH, NUM_SFX };
@@ -220,12 +220,12 @@ void close(void) {
 
 void update_hud(void) {
     switch (game_state) {
-        case MENU:
+        case GAME_MENU:
             draw_text_center("ROCKETMAN ADVENTURES", 200, 100, WHITE);
             draw_text_center(VERSION, 300, 64, WHITE); 
             draw_text_center("START JUMPING TO BEGIN", 400, 64, WHITE);
             break;
-        case IN_PROGRESS:
+        case GAME_ACTIVE:
             if (red_soldier.hp < 50)
                 health_hud.text_color = TEXT_COLOR[COL_LOW];
             else if (red_soldier.hp > 200)
@@ -246,7 +246,7 @@ void update_hud(void) {
             draw_text("SCORE:", 10, 10, 64, WHITE);
             draw_text(score_string, 250, 10, 64, WHITE);
             break;
-        case OVER:
+        case GAME_OVER:
             if (MOUSE_HOVER_BUTTON(try_again_button,mouse)) {
                 try_again_button.state = BUTTON_HOVER;
                 if (IsMouseButtonPressed(BUTTON_SHOOT))
@@ -269,10 +269,10 @@ void update_hud(void) {
 
 void update_music(void) {
     switch (game_state) {
-        case MENU:
+        case GAME_MENU:
             UpdateMusicStream(music[MUSIC_MENU]);
             break;
-        case IN_PROGRESS:
+        case GAME_ACTIVE:
             if (level < 7)
                 UpdateMusicStream(music[MUSIC_NORMAL]);
             else
@@ -297,7 +297,7 @@ void draw_text_center(const char *TEXT, int y, int font_size, Color color) {
 }
 
 void game_over(int *gs, Sound *sfx, Music *m) {
-    *gs = OVER;
+    *gs = GAME_OVER;
     PlaySound(*sfx);
     for (int i = 0; i < NUM_MUSIC; i++)
         SeekMusicStream(m[i], 0.0f);
@@ -308,7 +308,7 @@ void gravity(void) {
         return;
 
     if (red_soldier.y + red_soldier.tx->height >= SCREEN_HEIGHT) {
-        if (game_state == MENU) {
+        if (game_state == GAME_MENU) {
             red_soldier.y = SCREEN_HEIGHT - red_soldier.tx->height;
             red_soldier.speed_y = 0;
             red_soldier.falling = 0;
@@ -489,11 +489,11 @@ void manage_rockets(void) {
                 Rocket rocket = *r->next;
                 if (abs(red_soldier.x + MIDDLE_X(red_soldier) - r->next->x - MIDDLE_X(rocket)) < 200
                 && abs(red_soldier.y + MIDDLE_Y(red_soldier) - r->next->y - MIDDLE_Y(rocket)) < 200
-                && game_state != OVER) {
+                && game_state != GAME_OVER) {
                     red_soldier.speed_x += red_soldier.rl_knockback_factor * -1 * r->next->speed_x;
                     red_soldier.speed_y += red_soldier.rl_knockback_factor * -1 * r->next->speed_y; 
                 
-                    if (game_state == IN_PROGRESS) {
+                    if (game_state == GAME_ACTIVE) {
                         red_soldier.hp -= 20 * red_soldier.rl_knockback_factor;
                         if (red_soldier.hp <= 0)
                             game_over(&game_state, &sfx[SFX_DEATH], music);
@@ -554,7 +554,7 @@ void platform_collision_check_soldier(Platform *p, Soldier *s) {
 }
 
 void restart(void) {
-    game_state = MENU;
+    game_state = GAME_MENU;
     level = 1;
     score = 0;
 
@@ -614,7 +614,7 @@ void run(void) {
 
         shift = red_soldier.speed_y * dt;
         should_shift = red_soldier.y == SCREEN_MIDDLE(red_soldier) && red_soldier.speed_y < 0;
-        movement_allowed = game_state != OVER;
+        movement_allowed = game_state != GAME_OVER;
 
         ClearBackground(BLACK);
         BeginDrawing();
@@ -867,8 +867,8 @@ void update_score(void) {
 
         red_soldier.y = SCREEN_MIDDLE(red_soldier); 
    
-        if (game_state == MENU)
-            game_state = IN_PROGRESS;
+        if (game_state == GAME_MENU)
+            game_state = GAME_ACTIVE;
     } 
 }
 
