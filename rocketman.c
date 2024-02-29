@@ -37,13 +37,13 @@
 #define RANDOM_PLATFORM_X (rand() % (SCREEN_WIDTH - texture_holder.platform.width - 400) + 200)
 
 /* enums */
-enum { STANDING, WALKING, JUMPING }; /* player states, used for animations */
-enum { MENU, IN_PROGRESS, OVER }; /* game states */
-enum { NONE, PARACHUTE, CRIT, NUM_PICKUP }; /* pickups */
-enum { NORMAL, HOVER }; /* button states */
-enum { SFX_EXPLOSION, SFX_PICKUP, SFX_JUMP, SFX_DEATH, NUM_SFX }; /* sound effects */
-enum { MUSIC_MENU, MUSIC_NORMAL, MUSIC_SPACE  }; /* music */
-enum { COL_LOW, COL_NORMAL, COL_HIGH }; /* hud text color */
+enum { STATE_STANDING, STATE_WALKING, STATE_JUMPING };
+enum { GAME_MENU, GAME_ACTIVE, GAME_OVER };
+enum { PICKUP_NONE, PICKUP_PARACHUTE, PICKUP_CRIT, NUM_PICKUP };
+enum { BUTTON_NORMAL, BUTTON_HOVER };
+enum { SFX_EXPLOSION, SFX_PICKUP, SFX_JUMP, SFX_DEATH, NUM_SFX };
+enum { MUSIC_MENU, MUSIC_NORMAL, MUSIC_SPACE};
+enum { COL_LOW, COL_NORMAL, COL_HIGH };
 
 /* structs */
 typedef struct {
@@ -145,8 +145,8 @@ typedef struct {
 
 /* function declarations */
 static void close(void);
-static void draw_text(const char *text, int x, int y, int font_size, Color color);
-static void draw_text_center(const char *text, int y, int font_size, Color color);
+static void draw_text(const char *TEXT, int x, int y, int font_size, Color color);
+static void draw_text_center(const char *TEXT, int y, int font_size, Color color);
 static void game_over(int *gs, Sound *sfx, Music *m);
 static void gravity(void);
 static void init(void);
@@ -210,7 +210,7 @@ static Button try_again_button;
 
 /* constants */
 static const char *DIRECTORY = "/usr/local/share/rocketman/";
-static const char *VERSION = "3.1.0";
+static const char *VERSION = "3.1.1";
 
 /* function implementations */
 void close(void) {
@@ -220,12 +220,12 @@ void close(void) {
 
 void update_hud(void) {
     switch (game_state) {
-        case MENU:
+        case GAME_MENU:
             draw_text_center("ROCKETMAN ADVENTURES", 200, 100, WHITE);
             draw_text_center(VERSION, 300, 64, WHITE); 
             draw_text_center("START JUMPING TO BEGIN", 400, 64, WHITE);
             break;
-        case IN_PROGRESS:
+        case GAME_ACTIVE:
             if (red_soldier.hp < 50)
                 health_hud.text_color = TEXT_COLOR[COL_LOW];
             else if (red_soldier.hp > 200)
@@ -238,7 +238,7 @@ void update_hud(void) {
             draw_text(health_hud.text, health_hud.x + 40, health_hud.y + 30, 100, health_hud.text_color); 
            
             DRAW_PRO(pickup_hud, -1, 1, 0, 0, 0, WHITE);
-            if (red_soldier.pickup != NONE)
+            if (red_soldier.pickup != PICKUP_NONE)
                 DrawTexture(texture_holder.pickup[red_soldier.pickup - 1], pickup_hud.x + 150, pickup_hud.y + 25, WHITE);
             else
                 draw_text(pickup_hud.text, pickup_hud.x + 65, pickup_hud.y + 40, 64, WHITE);
@@ -246,14 +246,14 @@ void update_hud(void) {
             draw_text("SCORE:", 10, 10, 64, WHITE);
             draw_text(score_string, 250, 10, 64, WHITE);
             break;
-        case OVER:
+        case GAME_OVER:
             if (MOUSE_HOVER_BUTTON(try_again_button,mouse)) {
-                try_again_button.state = HOVER;
+                try_again_button.state = BUTTON_HOVER;
                 if (IsMouseButtonPressed(BUTTON_SHOOT))
                     restart();
             }
             else
-                try_again_button.state = NORMAL;
+                try_again_button.state = BUTTON_NORMAL;
 
             DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, (Color){ 0, 0, 0, 150 });
             draw_text_center("GAME OVER", 200, 100, WHITE);
@@ -269,10 +269,10 @@ void update_hud(void) {
 
 void update_music(void) {
     switch (game_state) {
-        case MENU:
+        case GAME_MENU:
             UpdateMusicStream(music[MUSIC_MENU]);
             break;
-        case IN_PROGRESS:
+        case GAME_ACTIVE:
             if (level < 7)
                 UpdateMusicStream(music[MUSIC_NORMAL]);
             else
@@ -281,15 +281,15 @@ void update_music(void) {
     }
 }
 
-void draw_text(const char *text, int x, int y, int font_size, Color color) {
-    DrawText(text, x, y, font_size, BLACK);
-    DrawText(text, x+7, y+7, font_size,color);
+void draw_text(const char *TEXT, int x, int y, int font_size, Color color) {
+    DrawText(TEXT, x, y, font_size, BLACK);
+    DrawText(TEXT, x+7, y+7, font_size,color);
 }
 
-void draw_text_center(const char *text, int y, int font_size, Color color) {
+void draw_text_center(const char *TEXT, int y, int font_size, Color color) {
     draw_text(
-        text,
-        (int)(SCREEN_WIDTH / 2) - (int)(MeasureTextEx(GetFontDefault(), text, font_size, 10).x / 2),
+        TEXT,
+        (int)(SCREEN_WIDTH / 2) - (int)(MeasureTextEx(GetFontDefault(), TEXT, font_size, 10).x / 2),
         y,
         font_size,
         color
@@ -297,7 +297,7 @@ void draw_text_center(const char *text, int y, int font_size, Color color) {
 }
 
 void game_over(int *gs, Sound *sfx, Music *m) {
-    *gs = OVER;
+    *gs = GAME_OVER;
     PlaySound(*sfx);
     for (int i = 0; i < NUM_MUSIC; i++)
         SeekMusicStream(m[i], 0.0f);
@@ -308,7 +308,7 @@ void gravity(void) {
         return;
 
     if (red_soldier.y + red_soldier.tx->height >= SCREEN_HEIGHT) {
-        if (game_state == MENU) {
+        if (game_state == GAME_MENU) {
             red_soldier.y = SCREEN_HEIGHT - red_soldier.tx->height;
             red_soldier.speed_y = 0;
             red_soldier.falling = 0;
@@ -358,7 +358,7 @@ void init(void) {
         platforms[i].tx = &texture_holder.platform;
 
     pickup.tx = &texture_holder.pickup[0];
-    pickup.id = PARACHUTE;
+    pickup.id = PICKUP_PARACHUTE;
 
     new_health_pack.tx = &texture_holder.health_pack;
     new_health_pack.x = -100;
@@ -377,7 +377,7 @@ void init(void) {
     try_again_button.tx = &texture_holder.button[0];
     try_again_button.x = SCREEN_WIDTH / 2 - texture_holder.button[0].width / 2;
     try_again_button.y = 500;
-    try_again_button.state = NORMAL;
+    try_again_button.state = BUTTON_NORMAL;
     strcpy(try_again_button.text, "TRY AGAIN");
 
     for (int i = 0; i < NUM_MUSIC; i++)
@@ -394,30 +394,30 @@ void input(void) {
 
     if (IsKeyDown(KEY_MOVE_RIGHT) && !IsKeyDown(KEY_MOVE_LEFT)) {
         red_soldier.x += 150 * dt;
-        red_soldier.state = WALKING;
+        red_soldier.state = STATE_WALKING;
 
-        if (red_soldier.pickup_active == PARACHUTE && parachute.rotation > -30)
+        if (red_soldier.pickup_active == PICKUP_PARACHUTE && parachute.rotation > -30)
             parachute.rotation -= 60 * dt;
     }
     else if (IsKeyDown(KEY_MOVE_LEFT) && !IsKeyDown(KEY_MOVE_RIGHT)) {
         red_soldier.x -= 150 * dt;
-        red_soldier.state = WALKING;
+        red_soldier.state = STATE_WALKING;
     
-        if (red_soldier.pickup_active == PARACHUTE && parachute.rotation < 30)
+        if (red_soldier.pickup_active == PICKUP_PARACHUTE && parachute.rotation < 30)
             parachute.rotation += 60 * dt;
     }
     else
-        red_soldier.state = STANDING;
+        red_soldier.state = STATE_STANDING;
     if (red_soldier.speed_y < -100 || red_soldier.speed_y > 100)
-        red_soldier.state = JUMPING;
+        red_soldier.state = STATE_JUMPING;
 
     if (!IsKeyDown(KEY_MOVE_LEFT) && !IsKeyDown(KEY_MOVE_RIGHT))
         parachute.rotation += (parachute.rotation > 0) ? (-100 * dt) : (100 * dt);
     if (IsKeyDown(KEY_JUMP) && !red_soldier.falling) {
         PlaySound(sfx[SFX_JUMP]);
-        if (red_soldier.pickup_active == PARACHUTE) {
+        if (red_soldier.pickup_active == PICKUP_PARACHUTE) {
             red_soldier.gravity_factor = 1;
-            red_soldier.pickup_active = NONE;
+            red_soldier.pickup_active = PICKUP_NONE;
         }
         red_soldier.speed_y = -400;
     }
@@ -430,13 +430,13 @@ void input(void) {
 
     if (IsKeyPressed(KEY_USE_PICKUP)) {
         red_soldier.pickup_active = red_soldier.pickup;
-        red_soldier.pickup = NONE;
+        red_soldier.pickup = PICKUP_NONE;
         switch (red_soldier.pickup_active) {
-            case PARACHUTE:
+            case PICKUP_PARACHUTE:
                 red_soldier.gravity_factor = 0.2;
                 break;
 
-            case CRIT:
+            case PICKUP_CRIT:
                 red_soldier.rl_knockback_factor = 2;
                 red_soldier.color = RED;    
                 break; 
@@ -477,9 +477,7 @@ void load_assets(void) {
 }
 
 void manage_rockets(void) {
-    Rocket *r = &rockets;
-
-    while (r->next != NULL) {
+    for (Rocket *r = &rockets; r->next != NULL; r = r->next) {
         rocket_border_check(r->next);
 
         if (r->next->collided) {
@@ -491,21 +489,21 @@ void manage_rockets(void) {
                 Rocket rocket = *r->next;
                 if (abs(red_soldier.x + MIDDLE_X(red_soldier) - r->next->x - MIDDLE_X(rocket)) < 200
                 && abs(red_soldier.y + MIDDLE_Y(red_soldier) - r->next->y - MIDDLE_Y(rocket)) < 200
-                && game_state != OVER) {
+                && game_state != GAME_OVER) {
                     red_soldier.speed_x += red_soldier.rl_knockback_factor * -1 * r->next->speed_x;
                     red_soldier.speed_y += red_soldier.rl_knockback_factor * -1 * r->next->speed_y; 
                 
-                    if (game_state == IN_PROGRESS) {
+                    if (game_state == GAME_ACTIVE) {
                         red_soldier.hp -= 20 * red_soldier.rl_knockback_factor;
                         if (red_soldier.hp <= 0)
                             game_over(&game_state, &sfx[SFX_DEATH], music);
                     }
                 }
                 
-                if (red_soldier.pickup_active == CRIT) {
+                if (red_soldier.pickup_active == PICKUP_CRIT) {
                     red_soldier.rl_knockback_factor = 1;
                     red_soldier.color = WHITE;
-                    red_soldier.pickup_active = NONE;
+                    red_soldier.pickup_active = PICKUP_NONE;
                 }
             }
             
@@ -514,14 +512,12 @@ void manage_rockets(void) {
             r->next = r_next;
             break;
         }
-        r = r->next;
     }
 }
 
 char *path_to_file(char *name) {
     char *path = malloc(sizeof(char) * strlen(DIRECTORY) + strlen(name) + 1);
     sprintf(path, "%s%s", DIRECTORY,name);
-    
     return path;
 }
 
@@ -532,12 +528,10 @@ bool pickup_collect_check(Pickup *p, Soldier *r) {
                 r->pickup = p->id;
                 p->x = -100;
                 p->y = -100;
-
                 return 1;
             }
         }
     }
-
     return 0;
 }
 
@@ -560,7 +554,7 @@ void platform_collision_check_soldier(Platform *p, Soldier *s) {
 }
 
 void restart(void) {
-    game_state = MENU;
+    game_state = GAME_MENU;
     level = 1;
     score = 0;
 
@@ -570,9 +564,9 @@ void restart(void) {
     red_soldier.speed_x = 0;
     red_soldier.speed_y = 0;
     red_soldier.falling = 0;
-    red_soldier.pickup = NONE;
-    red_soldier.pickup_active = NONE;
-    red_soldier.state = STANDING;
+    red_soldier.pickup = PICKUP_NONE;
+    red_soldier.pickup_active = PICKUP_NONE;
+    red_soldier.state = STATE_STANDING;
     red_soldier.gravity_factor = 1;
     red_soldier.rl_knockback_factor = 1;
     red_soldier.hp = 200;
@@ -620,7 +614,7 @@ void run(void) {
 
         shift = red_soldier.speed_y * dt;
         should_shift = red_soldier.y == SCREEN_MIDDLE(red_soldier) && red_soldier.speed_y < 0;
-        movement_allowed = game_state != OVER;
+        movement_allowed = game_state != GAME_OVER;
 
         ClearBackground(BLACK);
         BeginDrawing();
@@ -783,9 +777,7 @@ void update_parachute(void) {
 }
 
 void update_particles(void) {
-    Particle *p = &particles;
-
-    while (p->next != NULL) {
+    for (Particle *p = &particles; p->next != NULL; p = p->next) {
         if (p->next->alpha < 5) {
             Particle *p_next = p->next->next;
             free(p->next);
@@ -801,8 +793,6 @@ void update_particles(void) {
         Particle particle = *p->next;
         Color color = { .r = 255, .g = 255, .b = 255, .a = p->next->alpha };
         DRAW_PRO(particle, 1, 1, particle.rotation, MIDDLE_X(particle), MIDDLE_Y(particle), color);
-
-        p = p->next;
     }
 }
 
@@ -823,13 +813,8 @@ void update_platforms(void) {
         if (should_shift)
             platforms[i].y -= shift;
 
-        {
-            Rocket *r = &rockets;
-            while (r->next != NULL) {
-                r = r->next;
-                platform_collision_check_rocket(&platforms[i], r);
-            }
-        }
+        for (Rocket *r = &rockets; r->next != NULL; r = r->next)
+            platform_collision_check_rocket(&platforms[i], r->next);
 
         if (platforms[i].y > SCREEN_HEIGHT) {
             platforms[i].x = RANDOM_PLATFORM_X;
@@ -864,14 +849,11 @@ void update_rl(void) {
 }
 
 void update_rockets(void) {
-    Rocket *r = &rockets;
-
-    while (r->next != NULL) {
-        r = r->next;
-        Rocket rocket = *r;
+    for (Rocket *r = &rockets; r->next != NULL; r = r->next) {
+        Rocket rocket = *r->next;
         DRAW_PRO(rocket, 1, 1, rocket.rotation, MIDDLE_X(rocket), MIDDLE_Y(rocket), red_soldier.color);
-        r->x += r->speed_x * dt;
-        r->y += r->speed_y * dt;
+        r->next->x += r->next->speed_x * dt;
+        r->next->y += r->next->speed_y * dt;
     }
 }
 
@@ -885,8 +867,8 @@ void update_score(void) {
 
         red_soldier.y = SCREEN_MIDDLE(red_soldier); 
    
-        if (game_state == MENU)
-            game_state = IN_PROGRESS;
+        if (game_state == GAME_MENU)
+            game_state = GAME_ACTIVE;
     } 
 }
 
@@ -908,11 +890,11 @@ void update_soldier(void) {
     }
 
     switch (red_soldier.state) {
-        case STANDING:
+        case STATE_STANDING:
             red_soldier.tx = &texture_holder.red_soldier[0];
             break;
 
-        case WALKING:
+        case STATE_WALKING:
             red_soldier.anim_cooldown -= dt;
             if (red_soldier.anim_cooldown < 0.0f) {
                 red_soldier.frame++;
@@ -921,7 +903,7 @@ void update_soldier(void) {
             }
             break;
 
-        case JUMPING:
+        case STATE_JUMPING:
             red_soldier.tx = &texture_holder.red_soldier_jumping;
             break;
     }
