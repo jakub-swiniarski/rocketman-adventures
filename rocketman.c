@@ -251,8 +251,7 @@ void update_hud(void) {
                 try_again_button.state = BUTTON_HOVER;
                 if (IsMouseButtonPressed(BUTTON_SHOOT))
                     restart();
-            }
-            else
+            } else
                 try_again_button.state = BUTTON_NORMAL;
 
             DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, (Color){ 0, 0, 0, 150 });
@@ -312,11 +311,9 @@ void gravity(void) {
             red_soldier.y = SCREEN_HEIGHT - red_soldier.tx->height;
             red_soldier.speed_y = 0;
             red_soldier.falling = 0;
-        }
-        else
+        } else
             game_over(&game_state, &sfx[SFX_DEATH], music);
-    }
-    else {
+    } else {
         red_soldier.falling = 1;
         red_soldier.speed_y += 1000 * dt;
     } 
@@ -398,15 +395,13 @@ void input(void) {
 
         if (red_soldier.pickup_active == PICKUP_PARACHUTE && parachute.rotation > -30)
             parachute.rotation -= 60 * dt;
-    }
-    else if (IsKeyDown(KEY_MOVE_LEFT) && !IsKeyDown(KEY_MOVE_RIGHT)) {
+    } else if (IsKeyDown(KEY_MOVE_LEFT) && !IsKeyDown(KEY_MOVE_RIGHT)) {
         red_soldier.x -= 150 * dt;
         red_soldier.state = STATE_WALKING;
     
         if (red_soldier.pickup_active == PICKUP_PARACHUTE && parachute.rotation < 30)
             parachute.rotation += 60 * dt;
-    }
-    else
+    } else
         red_soldier.state = STATE_STANDING;
     if (red_soldier.speed_y < -100 || red_soldier.speed_y > 100)
         red_soldier.state = STATE_JUMPING;
@@ -837,8 +832,7 @@ void update_rl(void) {
         if (mouse.x < red_soldier.x + MIDDLE_X(red_soldier)) {
             red_soldier.flip = -1;
             rl.x = red_soldier.x + 40;
-        }
-        else {
+        } else {
             red_soldier.flip = 1;
             rl.x = red_soldier.x + 25;
         }
@@ -914,12 +908,10 @@ void volume_control(void) {
     if (IsKeyPressed(KEY_VOL_UP) && volume <= 0.9f) {
         volume += 0.1f;
         SetMasterVolume(volume);
-    }
-    else if (IsKeyPressed(KEY_VOL_DOWN) && volume >= 0.1f) {
+    } else if (IsKeyPressed(KEY_VOL_DOWN) && volume >= 0.1f) {
         volume -= 0.1f;
         SetMasterVolume(volume);
-    }
-    else if (IsKeyPressed(KEY_MUTE)) {
+    } else if (IsKeyPressed(KEY_MUTE)) {
         muted =! muted;
         SetMasterVolume(muted ? 0 : volume);
     }
