@@ -1,6 +1,6 @@
-SOURCES=$(wildcard *.c)
-HEADERS=$(wildcard *.h)
-OBJECTS=$(SOURCES:.c=.o)
+SOURCES = $(wildcard *.c)
+HEADERS = $(wildcard *.h)
+OBJECTS = $(SOURCES:.c=.o)
 
 rocketman: $(OBJECTS)
 	gcc -o $@ $(OBJECTS) -lraylib -lm
