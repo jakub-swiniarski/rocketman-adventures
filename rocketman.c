@@ -750,8 +750,8 @@ void update_parachute(void) {
         DrawTexturePro(
             *parachute.tx,
             (Rectangle){
-                .x=0,
-                .y=0,
+                .x = 0,
+                .y = 0,
                 .width = parachute.tx->width,
                 .height = parachute.tx->height
             },
