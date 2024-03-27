@@ -1,8 +1,6 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include <raylib.h>
-
 /* screen resolution */
 static const int SCREEN_WIDTH = 1920;
 static const int SCREEN_HEIGHT = 1080;
