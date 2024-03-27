@@ -2,8 +2,8 @@
 #define CONFIG_H
 
 /* screen resolution */
-static const int SCREEN_WIDTH = 1920;
-static const int SCREEN_HEIGHT = 1080;
+static const int SCREEN_WIDTH = 1280;
+static const int SCREEN_HEIGHT = 720;
 
 /* frames per second */
 static const int FPS = 60;
