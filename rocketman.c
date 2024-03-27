@@ -383,7 +383,7 @@ void load_assets(void) {
     LOAD_TEXTURE_ARRAY(red_soldier, 6, 5);
     LOAD_TEXTURE_ARRAY(pickup, NUM_PICKUP, 8);
     LOAD_TEXTURE_ARRAY(button, 2, 8);
-    LOAD_TEXTURE_ARRAY(bg, NUM_BG, 5);
+    LOAD_TEXTURE_ARRAY(bg, NUM_BG, 5 * (float)SCREEN_WIDTH / 1920.f);
 
     LOAD_TEXTURE(red_soldier_jumping, 5);
     LOAD_TEXTURE(rocket, 3);
