@@ -218,71 +218,9 @@ void close(void) {
     CloseWindow();
 }
 
-void update_hud(void) {
-    switch (game_state) {
-        case GAME_MENU:
-            draw_text_center("ROCKETMAN ADVENTURES", 200, 100, WHITE);
-            draw_text_center(VERSION, 300, 64, WHITE); 
-            draw_text_center("START JUMPING TO BEGIN", 400, 64, WHITE);
-            break;
-        case GAME_ACTIVE:
-            if (red_soldier.hp < 50)
-                health_hud.text_color = TEXT_COLOR[COL_LOW];
-            else if (red_soldier.hp > 200)
-                health_hud.text_color = TEXT_COLOR[COL_HIGH];
-            else
-                health_hud.text_color = TEXT_COLOR[COL_NORMAL];
-
-            sprintf(health_hud.text, "%d", red_soldier.hp);
-            DRAW(health_hud);
-            draw_text(health_hud.text, health_hud.x + 40, health_hud.y + 30, 100, health_hud.text_color); 
-           
-            DRAW_PRO(pickup_hud, -1, 1, 0, 0, 0, WHITE);
-            if (red_soldier.pickup != PICKUP_NONE)
-                DrawTexture(texture_holder.pickup[red_soldier.pickup - 1], pickup_hud.x + 150, pickup_hud.y + 25, WHITE);
-            else
-                draw_text(pickup_hud.text, pickup_hud.x + 65, pickup_hud.y + 40, 64, WHITE);
-
-            draw_text("SCORE:", 10, 10, 64, WHITE);
-            draw_text(score_string, 250, 10, 64, WHITE);
-            break;
-        case GAME_OVER:
-            if (MOUSE_HOVER_BUTTON(try_again_button,mouse)) {
-                try_again_button.state = BUTTON_HOVER;
-                if (IsMouseButtonPressed(BUTTON_SHOOT))
-                    restart();
-            } else
-                try_again_button.state = BUTTON_NORMAL;
-
-            DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, (Color){ 0, 0, 0, 150 });
-            draw_text_center("GAME OVER", 200, 100, WHITE);
-            draw_text_center("SCORE:", 300, 64, WHITE);
-            draw_text_center(score_string, 375, 64, WHITE);
-            DrawTexture(try_again_button.tx[try_again_button.state], try_again_button.x, try_again_button.y, WHITE);
-            draw_text(try_again_button.text, try_again_button.x + 12, try_again_button.y + 45, 64, WHITE);
-            break;
-        default:
-            draw_text("ERROR", 100, 100, 120, WHITE);
-    } 
-}
-
-void update_music(void) {
-    switch (game_state) {
-        case GAME_MENU:
-            UpdateMusicStream(music[MUSIC_MENU]);
-            break;
-        case GAME_ACTIVE:
-            if (level < 7)
-                UpdateMusicStream(music[MUSIC_NORMAL]);
-            else
-                UpdateMusicStream(music[MUSIC_SPACE]);
-            break;
-    }
-}
-
 void draw_text(const char *TEXT, int x, int y, int font_size, Color color) {
     DrawText(TEXT, x, y, font_size, BLACK);
-    DrawText(TEXT, x+7, y+7, font_size,color);
+    DrawText(TEXT, x + 7, y + 7, font_size, color);
 }
 
 void draw_text_center(const char *TEXT, int y, int font_size, Color color) {
@@ -742,6 +680,68 @@ void update_health_packs(void) {
         }
         if (should_shift)
             health_packs[i].y -= shift;     
+    }
+}
+
+void update_hud(void) {
+    switch (game_state) {
+        case GAME_MENU:
+            draw_text_center("ROCKETMAN ADVENTURES", 200, 100, WHITE);
+            draw_text_center(VERSION, 300, 64, WHITE); 
+            draw_text_center("START JUMPING TO BEGIN", 400, 64, WHITE);
+            break;
+        case GAME_ACTIVE:
+            if (red_soldier.hp < 50)
+                health_hud.text_color = TEXT_COLOR[COL_LOW];
+            else if (red_soldier.hp > 200)
+                health_hud.text_color = TEXT_COLOR[COL_HIGH];
+            else
+                health_hud.text_color = TEXT_COLOR[COL_NORMAL];
+
+            sprintf(health_hud.text, "%d", red_soldier.hp);
+            DRAW(health_hud);
+            draw_text(health_hud.text, health_hud.x + 40, health_hud.y + 30, 100, health_hud.text_color); 
+           
+            DRAW_PRO(pickup_hud, -1, 1, 0, 0, 0, WHITE);
+            if (red_soldier.pickup != PICKUP_NONE)
+                DrawTexture(texture_holder.pickup[red_soldier.pickup - 1], pickup_hud.x + 150, pickup_hud.y + 25, WHITE);
+            else
+                draw_text(pickup_hud.text, pickup_hud.x + 65, pickup_hud.y + 40, 64, WHITE);
+
+            draw_text("SCORE:", 10, 10, 64, WHITE);
+            draw_text(score_string, 250, 10, 64, WHITE);
+            break;
+        case GAME_OVER:
+            if (MOUSE_HOVER_BUTTON(try_again_button,mouse)) {
+                try_again_button.state = BUTTON_HOVER;
+                if (IsMouseButtonPressed(BUTTON_SHOOT))
+                    restart();
+            } else
+                try_again_button.state = BUTTON_NORMAL;
+
+            DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, (Color){ 0, 0, 0, 150 });
+            draw_text_center("GAME OVER", 200, 100, WHITE);
+            draw_text_center("SCORE:", 300, 64, WHITE);
+            draw_text_center(score_string, 375, 64, WHITE);
+            DrawTexture(try_again_button.tx[try_again_button.state], try_again_button.x, try_again_button.y, WHITE);
+            draw_text(try_again_button.text, try_again_button.x + 12, try_again_button.y + 45, 64, WHITE);
+            break;
+        default:
+            draw_text("ERROR", 100, 100, 120, WHITE);
+    } 
+}
+
+void update_music(void) {
+    switch (game_state) {
+        case GAME_MENU:
+            UpdateMusicStream(music[MUSIC_MENU]);
+            break;
+        case GAME_ACTIVE:
+            if (level < 7)
+                UpdateMusicStream(music[MUSIC_NORMAL]);
+            else
+                UpdateMusicStream(music[MUSIC_SPACE]);
+            break;
     }
 }
 
