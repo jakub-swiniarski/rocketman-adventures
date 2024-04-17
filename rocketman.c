@@ -352,7 +352,7 @@ void input(void) {
             red_soldier.gravity_factor = 1;
             red_soldier.pickup_active = pickup_none;
         }
-        red_soldier.speed_y = accel_jump;
+        red_soldier.speed_y = -accel_jump;
     }
 
     if ((IsMouseButtonPressed(button_shoot) || IsKeyPressed(key_shoot_alt)) && red_soldier.rl_cooldown < 0.0f) {
