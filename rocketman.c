@@ -136,7 +136,7 @@ typedef struct {
     Texture parachute; 
     Texture platform;
     Texture pickup[num_pickup];
-    Texture health_pack;
+    Texture healthpack;
     Texture hud; 
     Texture button[2];
     Texture particle_smoke;
@@ -161,13 +161,13 @@ static void restart(void);
 static void rocket_border_check(Rocket *r);
 static void run(void);
 static void soldier_border_check(Soldier *s);
-static void spawn_health_pack(int x, int y);
+static void spawn_healthpack(int x, int y);
 static void spawn_particle(Rocket *r);
 static void spawn_pickup(int x, int y);
 static void spawn_rocket(void);
 static void unload_assets(void);
 static void update_bg(void);
-static void update_health_packs(void);
+static void update_healthpacks(void);
 static void update_hud(void);
 static void update_music(void);
 static void update_parachute(void);
@@ -186,12 +186,12 @@ static int display;
 static float dt;
 static int game_state;
 static HUD health_hud;
-static HealthPack health_packs[NUM_HEALTH_PACKS];
+static HealthPack healthpacks[NUM_HEALTHPACKS];
 static int level;
 static Vector2 mouse;
 static bool movement_allowed;
 static Music music[NUM_MUSIC];
-static HealthPack new_health_pack;
+static HealthPack new_healthpack;
 static Parachute parachute;
 static Particle particles;
 static Pickup pickup;
@@ -295,9 +295,9 @@ void init(void) {
     pickup.tx = &texture_holder.pickup[0];
     pickup.id = pickup_parachute;
 
-    new_health_pack.tx = &texture_holder.health_pack;
-    new_health_pack.x = -100;
-    new_health_pack.y = -100;
+    new_healthpack.tx = &texture_holder.healthpack;
+    new_healthpack.x = -100;
+    new_healthpack.y = -100;
 
     health_hud.tx = &texture_holder.hud;
     health_hud.x = 5;
@@ -392,7 +392,7 @@ void load_assets(void) {
     LOAD_TEXTURE(platform, 5);
     LOAD_TEXTURE(parachute, 5);
     LOAD_TEXTURE(hud, 5);
-    LOAD_TEXTURE(health_pack, 6);
+    LOAD_TEXTURE(healthpack, 6);
 
     UnloadImage(image);
 
@@ -507,8 +507,8 @@ void restart(void) {
     pickup.x = -100;
     pickup.y = -100;
 
-    for (int i = 0; i<NUM_HEALTH_PACKS; i++)
-        health_packs[i] = new_health_pack;
+    for (int i = 0; i<NUM_HEALTHPACKS; i++)
+        healthpacks[i] = new_healthpack;
 
     for (int i = 0; i < 2; i++) {
         bg[i].y = -i * screen_height;
@@ -520,8 +520,8 @@ void restart(void) {
         platforms[i].y = screen_height - (i + 1) * 1000 / NUM_PLATFORMS;
     } 
 
-    for (int i = 0; i < NUM_HEALTH_PACKS; i++)
-        health_packs[i] = new_health_pack;
+    for (int i = 0; i < NUM_HEALTHPACKS; i++)
+        healthpacks[i] = new_healthpack;
 }
 
 void rocket_border_check(Rocket *r) {
@@ -554,7 +554,7 @@ void run(void) {
 
         update_bg();
         update_pickup();
-        update_health_packs();
+        update_healthpacks();
         update_parachute();
         gravity();
         update_platforms();
@@ -576,11 +576,11 @@ void soldier_border_check(Soldier *s) {
         s->x = screen_width - s->tx->width;
 }
 
-void spawn_health_pack(int x, int y) {
-    for (int j = 0; j < NUM_HEALTH_PACKS; j++) {
-        if (!IS_VISIBLE(health_packs[j])) {
-            health_packs[j].x = x - MIDDLE_X(health_packs[j]);
-            health_packs[j].y = y - health_packs[j].tx->height;
+void spawn_healthpack(int x, int y) {
+    for (int j = 0; j < NUM_HEALTHPACKS; j++) {
+        if (!IS_VISIBLE(healthpacks[j])) {
+            healthpacks[j].x = x - MIDDLE_X(healthpacks[j]);
+            healthpacks[j].y = y - healthpacks[j].tx->height;
             break;
         }
     }
@@ -637,7 +637,7 @@ void unload_assets(void) {
     UnloadTexture(texture_holder.platform);
     for (int i = 0; i < num_pickup; i++)
         UnloadTexture(texture_holder.pickup[i]);
-    UnloadTexture(texture_holder.health_pack);
+    UnloadTexture(texture_holder.healthpack);
     UnloadTexture(texture_holder.hud);
     for (int i = 0; i < 2; i++)
         UnloadTexture(texture_holder.button[i]);
@@ -669,17 +669,17 @@ void update_bg(void) {
     }
 }
 
-void update_health_packs(void) {
-    for (int i = 0; i < NUM_HEALTH_PACKS; i++) {
-        if (IS_VISIBLE(health_packs[i])) {
-            DRAW(health_packs[i]);
-            if (COLLISION(health_packs[i], red_soldier)) {
-                red_soldier.hp += 50;
-                health_packs[i] = new_health_pack;
+void update_healthpacks(void) {
+    for (int i = 0; i < NUM_HEALTHPACKS; i++) {
+        if (IS_VISIBLE(healthpacks[i])) {
+            DRAW(healthpacks[i]);
+            if (COLLISION(healthpacks[i], red_soldier)) {
+                red_soldier.hp += heal_amount;
+                healthpacks[i] = new_healthpack;
             }
         }
         if (should_shift)
-            health_packs[i].y -= shift;     
+            healthpacks[i].y -= shift;     
     }
 }
 
@@ -820,7 +820,7 @@ void update_platforms(void) {
             if (random == 0 && !IS_VISIBLE(pickup))
                 spawn_pickup(platforms[i].x + MIDDLE_X(platforms[i]), platforms[i].y);
             else if (random > 7)
-                spawn_health_pack(platforms[i].x + MIDDLE_X(platforms[i]), platforms[i].y);
+                spawn_healthpack(platforms[i].x + MIDDLE_X(platforms[i]), platforms[i].y);
         }
 
         DRAW(platforms[i]);
