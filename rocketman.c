@@ -253,7 +253,7 @@ void gravity(void) {
             end_game(&game_state, &sfx[sfx_death], music);
     } else {
         red_soldier.falling = 1;
-        red_soldier.speed_y += gravity_accel * dt;
+        red_soldier.speed_y += accel_gravity * dt;
     } 
 }
 
@@ -302,7 +302,7 @@ void init(void) {
     health_hud.tx = &texture_holder.hud;
     health_hud.x = 5;
     health_hud.y = screen_height - texture_holder.hud.height - 5;
-    strcpy(health_hud.text, "200");
+    sprintf(health_hud.text, "%d", health_base);
 
     pickup_hud.tx = &texture_holder.hud;
     pickup_hud.x = screen_width - texture_holder.hud.width - 5;
@@ -352,7 +352,7 @@ void input(void) {
             red_soldier.gravity_factor = 1;
             red_soldier.pickup_active = pickup_none;
         }
-        red_soldier.speed_y = jump_accel;
+        red_soldier.speed_y = accel_jump;
     }
 
     if ((IsMouseButtonPressed(button_shoot) || IsKeyPressed(key_shoot_alt)) && red_soldier.rl_cooldown < 0.0f) {
@@ -502,7 +502,7 @@ void restart(void) {
     red_soldier.state = state_standing;
     red_soldier.gravity_factor = 1;
     red_soldier.rl_knockback_factor = 1;
-    red_soldier.hp = 200;
+    red_soldier.hp = health_base;
 
     pickup.x = -100;
     pickup.y = -100;
@@ -621,8 +621,8 @@ void spawn_rocket(void) {
     r->x = red_soldier.x + MIDDLE_X(red_soldier);
     r->y = red_soldier.y + MIDDLE_Y(red_soldier) / 4;
     r->rotation = 90 - atan2((red_soldier.x + MIDDLE_X(red_soldier) - mouse.x), (red_soldier.y + MIDDLE_Y(red_soldier) - mouse.y)) * 180 / PI;
-    r->speed_x = -max_rocket_speed * cos(r->rotation * PI / 180);
-    r->speed_y = -max_rocket_speed * sin(r->rotation * PI / 180);
+    r->speed_x = -rocket_max_speed * cos(r->rotation * PI / 180);
+    r->speed_y = -rocket_max_speed * sin(r->rotation * PI / 180);
     r->collided = 0;
     r->should_explode = 1;
     r->next = NULL;
@@ -691,9 +691,9 @@ void update_hud(void) {
             draw_text_center("START JUMPING TO BEGIN", 400, 64, WHITE);
             break;
         case game_active:
-            if (red_soldier.hp < 50)
+            if (red_soldier.hp < health_base / 4)
                 health_hud.text_color = text_color[col_low];
-            else if (red_soldier.hp > 200)
+            else if (red_soldier.hp > health_base)
                 health_hud.text_color = text_color[col_high];
             else
                 health_hud.text_color = text_color[col_normal];
