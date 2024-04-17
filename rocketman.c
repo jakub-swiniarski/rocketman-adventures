@@ -210,7 +210,7 @@ static Button try_again_button;
 
 /* constants */
 static const char *directory = "/usr/local/share/rocketman/";
-static const char *version = "3.1.2";
+static const char *version = "3.1.3";
 
 /* function implementations */
 void close(void) {
