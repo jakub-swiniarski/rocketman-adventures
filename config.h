@@ -31,5 +31,6 @@ static const MouseButton button_shoot = MOUSE_LEFT_BUTTON;
 /* gameplay */
 #define NUM_PLATFORMS 10
 #define NUM_HEALTH_PACKS 2
+static const int max_rocket_speed = 960;
 
 #endif 
