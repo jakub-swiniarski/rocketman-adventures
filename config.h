@@ -12,7 +12,7 @@ static const int fps = 60;
 static float volume = 1.0f;
 static bool muted = 0;
 
-/* HUD */
+/* appearance */
 static const Color text_color[3] = { RED, WHITE, GREEN }; /* low, normal, high */
 
 /* keyboard controls */
@@ -31,6 +31,8 @@ static const MouseButton button_shoot = MOUSE_LEFT_BUTTON;
 /* gameplay */
 #define NUM_PLATFORMS 10
 #define NUM_HEALTH_PACKS 2
+static const int gravity_accel = 1000;
+static const int jump_accel = -400;
 static const int max_rocket_speed = 960;
 
 #endif 
