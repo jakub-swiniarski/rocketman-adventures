@@ -31,9 +31,10 @@ static const MouseButton button_shoot = MOUSE_LEFT_BUTTON;
 /* gameplay */
 #define NUM_PLATFORMS 10
 #define NUM_HEALTHPACKS 2
-static const int gravity_accel = 1000;
+static const int accel_gravity = 1000;
+static const int accel_jump = -400;
 static const int heal_amount = 50;
-static const int jump_accel = -400;
-static const int max_rocket_speed = 960;
+static const int health_base = 200;
+static const int rocket_max_speed = 960;
 
 #endif 
