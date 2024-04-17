@@ -621,7 +621,7 @@ void spawn_rocket(void) {
     r->x = red_soldier.x + MIDDLE_X(red_soldier);
     r->y = red_soldier.y + MIDDLE_Y(red_soldier) / 4;
     r->rotation = 90 - atan2((red_soldier.x + MIDDLE_X(red_soldier) - mouse.x), (red_soldier.y + MIDDLE_Y(red_soldier) - mouse.y)) * 180 / PI;
-    r->speed_x = -960 * cos(r->rotation *PI / 180);
+    r->speed_x = -960 * cos(r->rotation * PI / 180);
     r->speed_y = -960 * sin(r->rotation * PI / 180);
     r->collided = 0;
     r->should_explode = 1;
