@@ -253,7 +253,7 @@ void gravity(void) {
             end_game(&game_state, &sfx[sfx_death], music);
     } else {
         red_soldier.falling = 1;
-        red_soldier.speed_y += 1000 * dt;
+        red_soldier.speed_y += gravity_accel * dt;
     } 
 }
 
@@ -352,7 +352,7 @@ void input(void) {
             red_soldier.gravity_factor = 1;
             red_soldier.pickup_active = pickup_none;
         }
-        red_soldier.speed_y = -400;
+        red_soldier.speed_y = jump_accel;
     }
 
     if ((IsMouseButtonPressed(button_shoot) || IsKeyPressed(key_shoot_alt)) && red_soldier.rl_cooldown < 0.0f) {
@@ -383,7 +383,7 @@ void load_assets(void) {
     LOAD_TEXTURE_ARRAY(red_soldier, 6, 5);
     LOAD_TEXTURE_ARRAY(pickup, num_pickup, 8);
     LOAD_TEXTURE_ARRAY(button, 2, 8);
-    LOAD_TEXTURE_ARRAY(bg, NUM_BG, 5 * (float)screen_height / 1080.f);
+    LOAD_TEXTURE_ARRAY(bg, NUM_BG, 5.f * (float)screen_height / 1080.f);
 
     LOAD_TEXTURE(red_soldier_jumping, 5);
     LOAD_TEXTURE(rocket, 3);
