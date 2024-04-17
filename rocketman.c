@@ -119,7 +119,7 @@ typedef struct {
     bool falling;
     int pickup, pickup_active;
     float gravity_factor;
-    int rl_knockback_factor;
+    float rl_knockback_factor;
     int hp;
     int flip;
     Color color;
@@ -366,11 +366,11 @@ void input(void) {
         red_soldier.pickup = pickup_none;
         switch (red_soldier.pickup_active) {
             case pickup_parachute:
-                red_soldier.gravity_factor = 0.2;
+                red_soldier.gravity_factor = pickup_gravity_factor;
                 break;
 
             case pickup_crit:
-                red_soldier.rl_knockback_factor = 2;
+                red_soldier.rl_knockback_factor = pickup_rl_knockback_factor;
                 red_soldier.color = RED;    
                 break; 
         }
