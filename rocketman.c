@@ -773,7 +773,9 @@ void update_parachute(void) {
 
 void update_particles(void) {
     for (Particle *p = &particles; p->next != NULL; p = p->next) {
-        if (p->next->alpha < 5) {
+        Particle particle = *p->next;
+
+        if (p->next->alpha < 5 || !IS_VISIBLE(particle)) {
             Particle *p_next = p->next->next;
             free(p->next);
             p->next = p_next;
@@ -785,7 +787,6 @@ void update_particles(void) {
 
         p->next->alpha -= 2 * dt;
         
-        Particle particle = *p->next;
         Color color = { .r = 255, .g = 255, .b = 255, .a = p->next->alpha };
         DRAW_PRO(particle, 1, 1, particle.rotation, MIDDLE_X(particle), MIDDLE_Y(particle), color);
     }
