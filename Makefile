@@ -1,12 +1,12 @@
-SOURCES = $(wildcard *.c)
-HEADERS = $(wildcard *.h)
-OBJECTS = $(SOURCES:.c=.o)
+SRC = $(wildcard *.c)
+HDR = $(wildcard *.h)
+OBJ = $(SRC:.c=.o)
 
-rocketman: $(OBJECTS)
-	gcc -o $@ $(OBJECTS) -lraylib -lm
+rocketman: $(OBJ)
+	gcc -o $@ $(OBJ) -lraylib -lm
 
-$(OBJECTS): $(SOURCES) $(HEADERS)
-	gcc -c $(SOURCES) -O2
+$(OBJ): $(SRC) $(HDR)
+	gcc -c $(SRC) -std=c99 -O2
 
 .PHONY: clean run install uninstall
 

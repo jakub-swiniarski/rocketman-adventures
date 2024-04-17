@@ -2,34 +2,39 @@
 #define CONFIG_H
 
 /* screen resolution */
-static const int SCREEN_WIDTH = 1920;
-static const int SCREEN_HEIGHT = 1080;
+static const int screen_width = 1920;
+static const int screen_height = 1080;
 
 /* frames per second */
-static const int FPS = 60;
+static const int fps = 60;
 
 /* sound */
 static float volume = 1.0f;
 static bool muted = 0;
 
-/* HUD */
-static const Color TEXT_COLOR[3] = { RED, WHITE, GREEN }; /* low, normal, high */
+/* appearance */
+static const Color text_color[3] = { RED, WHITE, GREEN }; /* low, normal, high */
 
 /* keyboard controls */
-static const KeyboardKey KEY_MOVE_LEFT = KEY_A;
-static const KeyboardKey KEY_MOVE_RIGHT = KEY_D;
-static const KeyboardKey KEY_JUMP = KEY_SPACE;
-static const KeyboardKey KEY_SHOOT_ALT = KEY_R;
-static const KeyboardKey KEY_USE_PICKUP = KEY_Q;
-static const KeyboardKey KEY_MUTE = KEY_F1;
-static const KeyboardKey KEY_VOL_UP = KEY_F3;
-static const KeyboardKey KEY_VOL_DOWN = KEY_F2;
+static const KeyboardKey key_move_left = KEY_A;
+static const KeyboardKey key_move_right = KEY_D;
+static const KeyboardKey key_jump = KEY_SPACE;
+static const KeyboardKey key_shoot_alt = KEY_R;
+static const KeyboardKey key_use_pickup = KEY_Q;
+static const KeyboardKey key_mute = KEY_F1;
+static const KeyboardKey key_vol_up = KEY_F3;
+static const KeyboardKey key_vol_down = KEY_F2;
 
-//mouse controls
-static const MouseButton BUTTON_SHOOT = MOUSE_LEFT_BUTTON;
+/* mouse controls */
+static const MouseButton button_shoot = MOUSE_LEFT_BUTTON;
 
-//gameplay
+/* gameplay */
 #define NUM_PLATFORMS 10
-#define NUM_HEALTH_PACKS 2
+#define NUM_HEALTHPACKS 2
+static const int accel_gravity = 1000;
+static const int accel_jump = 400;
+static const int heal_amount = 50;
+static const int health_base = 200;
+static const int rocket_max_speed = 960;
 
 #endif 
