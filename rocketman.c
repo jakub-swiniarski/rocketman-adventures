@@ -599,7 +599,6 @@ void spawn_particle(Rocket *r) {
     p->y = r->y;
     p->rotation = rand() % 360;
     p->alpha = 255;
-    p->next = NULL;
 }
 
 void spawn_pickup(int x, int y) {
@@ -625,7 +624,6 @@ void spawn_rocket(void) {
     r->speed_y = -rocket_max_speed * sin(r->rotation * PI / 180);
     r->collided = 0;
     r->should_explode = 1;
-    r->next = NULL;
 }
 
 void unload_assets(void) {
