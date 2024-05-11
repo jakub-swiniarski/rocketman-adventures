@@ -588,11 +588,11 @@ void spawn_healthpack(int x, int y) {
 
 void spawn_particle(Rocket *r) {
     Particle *p = &particles;
+    Particle *p_next = particles.next;
 
-    while (p->next != NULL)
-        p = p->next;
     p->next = malloc(sizeof(Particle));
     p = p->next;
+    p->next = p_next;
 
     p->tx = &texture_holder.particle_smoke;
     p->x = r->x;
@@ -611,11 +611,11 @@ void spawn_pickup(int x, int y) {
 
 void spawn_rocket(void) {
     Rocket *r = &rockets;
+    Rocket *r_next = rockets.next;
 
-    while (r->next != NULL)
-        r = r->next;
     r->next = malloc(sizeof(Rocket));
     r = r->next;
+    r->next = r_next;
 
     r->tx = &texture_holder.rocket;
     r->x = red_soldier.x + MIDDLE_X(red_soldier);
