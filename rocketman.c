@@ -328,13 +328,13 @@ void input(void) {
         return;
 
     if (IsKeyDown(key_move_right) && !IsKeyDown(key_move_left)) {
-        red_soldier.x += 150 * dt;
+        red_soldier.x += speed_walking * dt;
         red_soldier.state = state_walking;
 
         if (red_soldier.pickup_active == pickup_parachute && parachute.rotation > -30)
             parachute.rotation -= 60 * dt;
     } else if (IsKeyDown(key_move_left) && !IsKeyDown(key_move_right)) {
-        red_soldier.x -= 150 * dt;
+        red_soldier.x -= speed_walking * dt;
         red_soldier.state = state_walking;
     
         if (red_soldier.pickup_active == pickup_parachute && parachute.rotation < 30)
