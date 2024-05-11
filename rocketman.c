@@ -209,7 +209,7 @@ static TextureHolder texture_holder;
 static Button try_again_button;
 
 /* constants */
-static const char *directory = "/usr/local/share/rocketman/";
+static const char *directory = "res/";
 static const char *version = "3.1.4";
 
 /* function implementations */
