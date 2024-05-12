@@ -181,7 +181,6 @@ static void volume_control(void);
 
 /* variables */
 static Background bg[2];
-static int display;
 static float dt;
 static int game_state;
 static HUD health_hud;
@@ -259,9 +258,11 @@ void gravity(void) {
 void init(void) {
     InitWindow(screen_width, screen_height, "Rocketman Adventures");
 
-    display = GetCurrentMonitor();
+#ifdef FULLSCREEN
+    int display = GetCurrentMonitor();
     SetWindowSize(GetMonitorWidth(display), GetMonitorHeight(display));
     ToggleFullscreen();
+#endif
 
     InitAudioDevice();
 

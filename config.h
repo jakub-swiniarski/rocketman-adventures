@@ -4,6 +4,7 @@
 /* screen resolution */
 static const int screen_width = 1920;
 static const int screen_height = 1080;
+#define FULLSCREEN /* comment this out for windowed mode */
 
 /* frames per second */
 static const int fps = 60;
