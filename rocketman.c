@@ -354,11 +354,11 @@ void input(void) {
         soldier.speed_y = -accel_jump;
     }
 
-    if ((IsMouseButtonPressed(button_shoot) || IsKeyPressed(key_shoot_alt)) && soldier.rl_cooldown < 0.0f) {
+    //if ((IsMouseButtonPressed(button_shoot) || IsKeyPressed(key_shoot_alt)) && soldier.rl_cooldown < 0.0f) {
         soldier.rl_cooldown = 0.8f;
 
         spawn_rocket();
-    }
+    //}
 
     if (IsKeyPressed(key_use_pickup)) {
         soldier.pickup_active = soldier.pickup;
@@ -800,7 +800,8 @@ void update_rl(void) {
 }
 
 void update_rockets(void) {
-    for (Rocket *r = &rockets; r->next != NULL; r = r->next) {
+    Rocket *r = &rockets;
+    while (r->next != NULL) {
         Rocket rocket = *r->next;
         DRAW_PRO(rocket, 1, 1, rocket.rotation, MIDDLE_X(rocket), MIDDLE_Y(rocket), soldier.color);
         r->next->x += r->next->speed_x * dt;
@@ -838,8 +839,8 @@ void update_rockets(void) {
             Rocket *r_next = r->next->next;
             free(r->next);
             r->next = r_next;
-            break;
-        }
+        } else
+            r = r->next;
     }
 }
 
