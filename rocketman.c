@@ -152,7 +152,6 @@ static void gravity(void);
 static void init(void);
 static void input(void);
 static void load_assets(void);
-static void manage_rockets(void);
 static char *path_to_file(const char *name);
 static bool pickup_collect_check(Pickup *p, Soldier *r);
 static void platform_collision_check_rocket(Platform *p, Rocket *r);
@@ -409,45 +408,6 @@ void load_assets(void) {
     }
 }
 
-void manage_rockets(void) {
-    for (Rocket *r = &rockets; r->next != NULL; r = r->next) {
-        rocket_border_check(r->next);
-
-        if (r->next->collided) {
-            if (r->next->should_explode) {
-                PlaySound(sfx[sfx_explosion]);
-
-                spawn_particle(r->next);
-
-                Rocket rocket = *r->next;
-                if (abs(soldier.x + MIDDLE_X(soldier) - r->next->x - MIDDLE_X(rocket)) < 200
-                && abs(soldier.y + MIDDLE_Y(soldier) - r->next->y - MIDDLE_Y(rocket)) < 200
-                && game_state != game_over) {
-                    soldier.speed_x += soldier.rl_knockback_factor * -1 * r->next->speed_x;
-                    soldier.speed_y += soldier.rl_knockback_factor * -1 * r->next->speed_y; 
-                
-                    if (game_state == game_active) {
-                        soldier.hp -= 20 * soldier.rl_knockback_factor;
-                        if (soldier.hp <= 0)
-                            end_game(&game_state, &sfx[sfx_death], music);
-                    }
-                }
-                
-                if (soldier.pickup_active == pickup_crit) {
-                    soldier.rl_knockback_factor = 1;
-                    soldier.color = WHITE;
-                    soldier.pickup_active = pickup_none;
-                }
-            }
-            
-            Rocket *r_next = r->next->next;
-            free(r->next);
-            r->next = r_next;
-            break;
-        }
-    }
-}
-
 char *path_to_file(const char *name) {
     char *path = malloc(sizeof(char) * strlen(directory) + strlen(name) + 1);
     sprintf(path, "%s%s", directory, name);
@@ -539,8 +499,6 @@ void run(void) {
     while (!WindowShouldClose()) {
         dt = GetFrameTime();
         mouse = GetMousePosition();
-
-        manage_rockets();
 
         update_score();
         update_music();
@@ -773,13 +731,6 @@ void update_particles(void) {
     for (Particle *p = &particles; p->next != NULL; p = p->next) {
         Particle particle = *p->next;
 
-        if (p->next->alpha < 5 || !IS_VISIBLE(particle)) {
-            Particle *p_next = p->next->next;
-            free(p->next);
-            p->next = p_next;
-            break;
-        }
-
         if (should_shift)
             p->next->y -= shift;
 
@@ -787,6 +738,13 @@ void update_particles(void) {
         
         Color color = { .r = 255, .g = 255, .b = 255, .a = p->next->alpha };
         DRAW_PRO(particle, 1, 1, particle.rotation, MIDDLE_X(particle), MIDDLE_Y(particle), color);
+
+        if (p->next->alpha < 5 || !IS_VISIBLE(particle)) {
+            Particle *p_next = p->next->next;
+            free(p->next);
+            p->next = p_next;
+            break;
+        }
     }
 }
 
@@ -847,6 +805,41 @@ void update_rockets(void) {
         DRAW_PRO(rocket, 1, 1, rocket.rotation, MIDDLE_X(rocket), MIDDLE_Y(rocket), soldier.color);
         r->next->x += r->next->speed_x * dt;
         r->next->y += r->next->speed_y * dt;
+
+        rocket_border_check(r->next);
+
+        if (r->next->collided) {
+            if (r->next->should_explode) {
+                PlaySound(sfx[sfx_explosion]);
+
+                spawn_particle(r->next);
+
+                Rocket rocket = *r->next;
+                if (abs(soldier.x + MIDDLE_X(soldier) - r->next->x - MIDDLE_X(rocket)) < 200
+                && abs(soldier.y + MIDDLE_Y(soldier) - r->next->y - MIDDLE_Y(rocket)) < 200
+                && game_state != game_over) {
+                    soldier.speed_x += soldier.rl_knockback_factor * -1 * r->next->speed_x;
+                    soldier.speed_y += soldier.rl_knockback_factor * -1 * r->next->speed_y; 
+                
+                    if (game_state == game_active) {
+                        soldier.hp -= 20 * soldier.rl_knockback_factor;
+                        if (soldier.hp <= 0)
+                            end_game(&game_state, &sfx[sfx_death], music);
+                    }
+                }
+                
+                if (soldier.pickup_active == pickup_crit) {
+                    soldier.rl_knockback_factor = 1;
+                    soldier.color = WHITE;
+                    soldier.pickup_active = pickup_none;
+                }
+            }
+            
+            Rocket *r_next = r->next->next;
+            free(r->next);
+            r->next = r_next;
+            break;
+        }
     }
 }
 
