@@ -354,11 +354,11 @@ void input(void) {
         soldier.speed_y = -accel_jump;
     }
 
-    //if ((IsMouseButtonPressed(button_shoot) || IsKeyPressed(key_shoot_alt)) && soldier.rl_cooldown < 0.0f) {
+    if ((IsMouseButtonPressed(button_shoot) || IsKeyPressed(key_shoot_alt)) && soldier.rl_cooldown < 0.0f) {
         soldier.rl_cooldown = 0.8f;
 
         spawn_rocket();
-    //}
+    }
 
     if (IsKeyPressed(key_use_pickup)) {
         soldier.pickup_active = soldier.pickup;
