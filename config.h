@@ -39,5 +39,6 @@ static const int rocket_max_speed = 960;
 static const int speed_walking = 150;
 static const float pickup_gravity_factor = 0.2;
 static const float pickup_rl_knockback_factor = 2.f;
+static const float rl_cooldown = 0.8f;
 
 #endif 

@@ -355,7 +355,7 @@ void input(void) {
     }
 
     if ((IsMouseButtonPressed(button_shoot) || IsKeyPressed(key_shoot_alt)) && soldier.rl_cooldown < 0.0f) {
-        soldier.rl_cooldown = 0.8f;
+        soldier.rl_cooldown = rl_cooldown;
 
         spawn_rocket();
     }
