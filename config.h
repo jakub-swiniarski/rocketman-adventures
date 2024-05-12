@@ -4,6 +4,7 @@
 /* screen resolution */
 static const int screen_width = 1920;
 static const int screen_height = 1080;
+#define FULLSCREEN /* comment this out for windowed mode */
 
 /* frames per second */
 static const int fps = 60;
@@ -36,7 +37,9 @@ static const int accel_jump = 400;
 static const int heal_amount = 50;
 static const int health_base = 200;
 static const int rocket_max_speed = 960;
+static const int speed_walking = 150;
 static const float pickup_gravity_factor = 0.2;
 static const float pickup_rl_knockback_factor = 2.f;
+static const float rl_cooldown = 0.8f;
 
 #endif 
