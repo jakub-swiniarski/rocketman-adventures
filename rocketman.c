@@ -728,7 +728,8 @@ void update_parachute(void) {
 }
 
 void update_particles(void) {
-    for (Particle *p = &particles; p->next != NULL; p = p->next) {
+    Particle *p = &particles;
+    while (p->next != NULL) {
         Particle particle = *p->next;
 
         if (should_shift)
@@ -743,8 +744,8 @@ void update_particles(void) {
             Particle *p_next = p->next->next;
             free(p->next);
             p->next = p_next;
-            break;
-        }
+        } else
+            p = p->next;
     }
 }
 
