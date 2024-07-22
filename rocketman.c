@@ -882,7 +882,7 @@ void update_soldier(void) {
             if (soldier.anim_cooldown < 0.0f) {
                 soldier.frame++;
                 soldier.tx = &texture_holder.soldier[soldier.frame % 6];
-                soldier.anim_cooldown = 0.1;
+                soldier.anim_cooldown = 0.1f;
             }
             break;
 
