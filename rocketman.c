@@ -207,7 +207,7 @@ static const char *directory =
 "/usr/local/share/rocketman/"
 #endif /* DEBUG */
 ;
-static const char *version = "3.1.5";
+static const char *version = "3.1.6";
 
 void close(void) {
     CloseAudioDevice();

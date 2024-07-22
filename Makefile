@@ -5,7 +5,7 @@ OBJ = $(SRC:.c=.o)
 all: rocketman
 
 %.o: %.c
-	gcc -c -std=c99 -O2 -DDEBUG $<
+	gcc -c -std=c99 -O2 $<
 
 $(OBJ): $(HDR)
 
