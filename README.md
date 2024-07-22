@@ -16,17 +16,15 @@ This project is just for fun, so there are no big updates planned. <br>
 ![image](https://github.com/jakub-swiniarski/rocketman-adventures/assets/77209709/f0596104-8796-4737-95c3-acda63d164f7)
 
 ## How to install?
-### Prerequisites:
-- gcc,
-- raylib,
-- git,
-- make.
+### Prerequisites
+- gcc
+- make
+- raylib
 
 ### Compile & install
+Run this with root privileges:
 ```shell
-git clone https://github.com/jakub-swiniarski/rocketman-adventures.git
-cd rocketman-adventures
-sudo make install
+make install
 ```
 
 ### How to run?
@@ -36,9 +34,9 @@ rocketman
 ```
 
 ## How to uninstall?
-Go inside the cloned repository and run: <br/>
+Go inside the cloned repository and run this with root privileges: <br/>
 ```shell
-sudo make clean uninstall
+make uninstall
 ```
 
 ## Default Controls
