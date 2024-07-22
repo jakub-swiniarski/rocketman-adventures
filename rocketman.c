@@ -8,7 +8,6 @@
 
 #include "config.h"
 
-/* macros */
 #define COLLISION(X, Y) ((X.x + X.tx->width > Y.x && X.x < Y.x + Y.tx->width) && (X.y + X.tx->height > Y.y && X.y < Y.y + Y.tx->height))
 #define DRAW(X) DrawTexture(*X.tx, X.x, X.y, WHITE)
 #define DRAW_PRO(X, FH, FV, R, OX, OY, C) (DrawTexturePro(*X.tx, (Rectangle){ .x = 0, .y = 0, .width = X.tx->width * FH, .height = X.tx->height * FV }, (Rectangle){ .x = X.x, .y = X.y, .width = X.tx->width, .height = X.tx->height }, (Vector2){ .x = OX, .y = OY }, R, C)) /* X, flip horizontal, flip vertical, rotation, origin x, origin y, color */
@@ -36,16 +35,14 @@
 #define NUM_MUSIC 3
 #define RANDOM_PLATFORM_X (rand() % (screen_width - texture_holder.platform.width - 400) + 200)
 
-/* enums */
 enum { state_standing, state_walking, state_jumping };
 enum { game_menu, game_active, game_over };
-enum { pickup_none, pickup_parachute, pickup_crit, num_pickup };
+enum { pickup_none = -1, pickup_parachute, pickup_crit, num_pickup };
 enum { button_normal, button_hover };
 enum { sfx_explosion, sfx_pickup, sfx_jump, sfx_death, num_sfx };
 enum { music_menu, music_normal, music_space};
 enum { col_low, col_normal, col_high };
 
-/* structs */
 typedef struct {
     Texture *tx;
     int y;
@@ -143,7 +140,6 @@ typedef struct {
     Texture bg[NUM_BG];
 } TextureHolder;
 
-/* function declarations */
 static void close(void);
 static void draw_text(const char *text, int x, int y, int font_size, Color color);
 static void draw_text_center(const char *text, int y, int font_size, Color color);
@@ -179,7 +175,6 @@ static void update_score(void);
 static void update_soldier(void);
 static void volume_control(void);
 
-/* variables */
 static Background bg[2];
 static float dt;
 static int game_state;
@@ -206,11 +201,15 @@ static Sound sfx[num_sfx];
 static TextureHolder texture_holder;
 static Button try_again_button;
 
-/* constants */
-static const char *directory = "/usr/local/share/rocketman/";
+static const char *directory =
+#ifdef DEBUG
+"res/"
+#else
+"/usr/local/share/rocketman/"
+#endif /* DEBUG */
+;
 static const char *version = "3.1.5";
 
-/* function implementations */
 void close(void) {
     CloseAudioDevice();
     CloseWindow();
@@ -292,7 +291,7 @@ void init(void) {
     for (int i = 0; i < NUM_PLATFORMS; i++)
         platforms[i].tx = &texture_holder.platform;
 
-    pickup.tx = &texture_holder.pickup[0];
+    pickup.tx = &texture_holder.pickup[pickup_parachute];
     pickup.id = pickup_parachute;
 
     new_healthpack.tx = &texture_holder.healthpack;
@@ -418,7 +417,7 @@ char *path_to_file(const char *name) {
 bool pickup_collect_check(Pickup *p, Soldier *r) {
     if (r->x + r->tx->width > p->x && r->x < p->x + p->tx->width) {
         if (r->y + r->tx->height > p->y && r->y < p->y + p->tx->height) {
-            if (r->pickup == 0) {
+            if (r->pickup == pickup_none) {
                 r->pickup = p->id;
                 p->x = -100;
                 p->y = -100;
@@ -561,8 +560,8 @@ void spawn_particle(Rocket *r) {
 }
 
 void spawn_pickup(int x, int y) {
-    pickup.id = rand() % num_pickup + 1;
-    pickup.tx = &texture_holder.pickup[pickup.id - 1];
+    pickup.id = rand() % num_pickup;
+    pickup.tx = &texture_holder.pickup[pickup.id];
     pickup.x = x - MIDDLE_X(pickup); 
     pickup.y = y - pickup.tx->height; 
 }
@@ -661,7 +660,7 @@ void update_hud(void) {
            
             DRAW_PRO(pickup_hud, -1, 1, 0, 0, 0, WHITE);
             if (soldier.pickup != pickup_none)
-                DrawTexture(texture_holder.pickup[soldier.pickup - 1], pickup_hud.x + 150, pickup_hud.y + 25, WHITE);
+                DrawTexture(texture_holder.pickup[soldier.pickup], pickup_hud.x + 150, pickup_hud.y + 25, WHITE);
             else
                 draw_text(pickup_hud.text, pickup_hud.x + 65, pickup_hud.y + 40, 64, WHITE);
 
