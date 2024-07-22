@@ -415,34 +415,29 @@ char *path_to_file(const char *name) {
 }
 
 bool pickup_collect_check(Pickup *p, Soldier *r) {
-    if (r->x + r->tx->width > p->x && r->x < p->x + p->tx->width) {
-        if (r->y + r->tx->height > p->y && r->y < p->y + p->tx->height) {
-            if (r->pickup == pickup_none) {
-                r->pickup = p->id;
-                p->x = -100;
-                p->y = -100;
-                return 1;
-            }
-        }
+    if (r->x + r->tx->width > p->x && r->x < p->x + p->tx->width &&
+        r->y + r->tx->height > p->y && r->y < p->y + p->tx->height &&
+        r->pickup == pickup_none) {
+        r->pickup = p->id;
+        p->x = -100;
+        p->y = -100;
+        return 1;
     }
     return 0;
 }
 
 void platform_collision_check_rocket(Platform *p, Rocket *r) {
-    if (r->x + r->tx->width > p->x && r->x < p->x + p->tx->width) {
-        if (r->y + r->tx->height > p->y 
-        && r->y < p->y + p->tx->height)
-            r->collided = 1;
-    } 
+    if (r->x + r->tx->width > p->x && r->x < p->x + p->tx->width &&
+        r->y + r->tx->height > p->y && r->y < p->y + p->tx->height)
+        r->collided = 1;
 }
 
 void platform_collision_check_soldier(Platform *p, Soldier *s) {
-    if (s->x + s->tx->width > p->x && s->x < p->x + p->tx->width) {
-        if (s->y + s->tx->height > p->y && s->y + s->tx->height < p->y + p->tx->height) {
-            s->y = p->y - s->tx->height;
-            s->speed_y = 0;
-            s->falling = 0;
-        }
+    if (s->x + s->tx->width > p->x && s->x < p->x + p->tx->width &&
+        s->y + s->tx->height > p->y && s->y + s->tx->height < p->y + p->tx->height) {
+        s->y = p->y - s->tx->height;
+        s->speed_y = 0;
+        s->falling = 0;
     }
 }
 
@@ -487,9 +482,9 @@ void restart(void) {
 void rocket_border_check(Rocket *r) {
     if (r->y + r->tx->height >= screen_height)
         r->collided = 1;
-    else if (r->x <= 0
-    || r->x >= screen_width
-    || r->y <= 0) {
+    else if (r->x <= 0 ||
+             r->x >= screen_width ||
+             r->y <= 0) {
         r->collided = 1;
         r->should_explode = 0;
     }
@@ -817,9 +812,9 @@ void update_rockets(void) {
                 spawn_particle(r->next);
 
                 Rocket rocket = *r->next;
-                if (abs(soldier.x + MIDDLE_X(soldier) - r->next->x - MIDDLE_X(rocket)) < 200
-                && abs(soldier.y + MIDDLE_Y(soldier) - r->next->y - MIDDLE_Y(rocket)) < 200
-                && game_state != game_over) {
+                if (abs(soldier.x + MIDDLE_X(soldier) - r->next->x - MIDDLE_X(rocket)) < 200 &&
+                    abs(soldier.y + MIDDLE_Y(soldier) - r->next->y - MIDDLE_Y(rocket)) < 200 &&
+                    game_state != game_over) {
                     soldier.speed_x += soldier.rl_knockback_factor * -1 * r->next->speed_x;
                     soldier.speed_y += soldier.rl_knockback_factor * -1 * r->next->speed_y; 
                 
