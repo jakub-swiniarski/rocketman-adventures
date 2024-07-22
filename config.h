@@ -14,7 +14,8 @@ static float volume = 1.0f;
 static bool muted = 0;
 
 /* appearance */
-static const Color text_color[3] = { RED, WHITE, GREEN }; /* low, normal, high */
+enum { col_low, col_normal, col_high, num_col };
+static const Color text_color[num_col] = { RED, WHITE, GREEN };
 
 /* keyboard controls */
 static const KeyboardKey key_move_left = KEY_A;

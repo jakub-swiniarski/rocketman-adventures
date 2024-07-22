@@ -41,7 +41,6 @@ enum { pickup_none = -1, pickup_parachute, pickup_crit, num_pickup };
 enum { button_normal, button_hover };
 enum { sfx_explosion, sfx_pickup, sfx_jump, sfx_death, num_sfx };
 enum { music_menu, music_normal, music_space};
-enum { col_low, col_normal, col_high };
 
 typedef struct {
     Texture *tx;
