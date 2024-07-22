@@ -143,7 +143,7 @@ typedef struct {
 static void close(void);
 static void draw_text(const char *text, int x, int y, int font_size, Color color);
 static void draw_text_center(const char *text, int y, int font_size, Color color);
-static void end_game(int *gs, Sound *sfx, Music *m);
+static void game_stop(int *gs, Sound *sfx, Music *m);
 static void gravity(void);
 static void init(void);
 static void input(void);
@@ -230,7 +230,7 @@ void draw_text_center(const char *text, int y, int font_size, Color color) {
     );
 }
 
-void end_game(int *gs, Sound *sfx, Music *m) {
+void game_stop(int *gs, Sound *sfx, Music *m) {
     *gs = game_over;
     PlaySound(*sfx);
     for (int i = 0; i < NUM_MUSIC; i++)
@@ -247,7 +247,7 @@ void gravity(void) {
             soldier.speed_y = 0;
             soldier.falling = 0;
         } else
-            end_game(&game_state, &sfx[sfx_death], music);
+            game_stop(&game_state, &sfx[sfx_death], music);
     } else {
         soldier.falling = 1;
         soldier.speed_y += accel_gravity * dt;
@@ -826,7 +826,7 @@ void update_rockets(void) {
                     if (game_state == game_active) {
                         soldier.hp -= 20 * soldier.rl_knockback_factor;
                         if (soldier.hp <= 0)
-                            end_game(&game_state, &sfx[sfx_death], music);
+                            game_stop(&game_state, &sfx[sfx_death], music);
                     }
                 }
                 
