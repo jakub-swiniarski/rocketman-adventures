@@ -13,7 +13,9 @@
 #define DRAW_PRO(X, FH, FV, R, OX, OY, C) (DrawTexturePro(*X.tx, (Rectangle){ .x = 0, .y = 0, .width = X.tx->width * FH, .height = X.tx->height * FV }, (Rectangle){ .x = X.x, .y = X.y, .width = X.tx->width, .height = X.tx->height }, (Vector2){ .x = OX, .y = OY }, R, C)) /* X, flip horizontal, flip vertical, rotation, origin x, origin y, color */
 #define IS_VISIBLE(X) ((X.x + X.tx->width > 0 && X.x < screen_width) && (X.y + X.tx->height > 0 && X.y < screen_width))
 #define LOAD_TEXTURE(X, S) {\
-    image = LoadImage(path_to_file(#X ".png"));\
+    char *path = path_to_file(#X ".png");\
+    image = LoadImage(path);\
+    free(path);\
     ImageResizeNN(&image, image.width * S, image.height * S);\
     texture_holder.X = LoadTextureFromImage(image);\
 }
@@ -21,7 +23,9 @@
     for (int i = 0; i < N; i++) {\
         char name[20];\
         sprintf(name, #X "%d.png", i);\
-        image = LoadImage(path_to_file(name));\
+        char *path = path_to_file(name);\
+        image = LoadImage(path);\
+        free(path);\
         ImageResizeNN(&image, image.width * S, image.height * S);\
         texture_holder.X[i] = LoadTextureFromImage(image);\
     }\
@@ -40,7 +44,7 @@ enum { game_menu, game_active, game_over };
 enum { pickup_none = -1, pickup_parachute, pickup_crit, num_pickup };
 enum { button_normal, button_hover };
 enum { sfx_explosion, sfx_pickup, sfx_jump, sfx_death, num_sfx };
-enum { music_menu, music_normal, music_space};
+enum { music_menu, music_normal, music_space };
 
 typedef struct {
     Texture *tx;
@@ -207,7 +211,7 @@ static const char *directory =
 "/usr/local/share/rocketman/"
 #endif /* DEBUG */
 ;
-static const char *version = "3.2.0";
+static const char *version = "3.2.1";
 
 void close(void) {
     CloseAudioDevice();
@@ -355,7 +359,6 @@ void input(void) {
 
     if ((IsMouseButtonPressed(button_shoot) || IsKeyPressed(key_shoot_alt)) && soldier.rl_cooldown < 0.0f) {
         soldier.rl_cooldown = rl_cooldown;
-
         spawn_rocket();
     }
 
@@ -397,18 +400,22 @@ void load_assets(void) {
     for (int i = 0; i < num_sfx; i++) {
         char name[16];
         sprintf(name, "sfx%d.ogg", i);
-        sfx[i] = LoadSound(path_to_file(name));
+        char *path = path_to_file(name); 
+        sfx[i] = LoadSound(path);
+        free(path);
     }
 
     for (int i = 0; i < NUM_MUSIC; i++) {
         char name[16];
         sprintf(name, "music%d.ogg", i);
-        music[i] = LoadMusicStream(path_to_file(name));
+        char *path = path_to_file(name); 
+        music[i] = LoadMusicStream(path);
+        free(path);
     }
 }
 
 char *path_to_file(const char *name) {
-    char *path = malloc(sizeof(char) * strlen(directory) + strlen(name) + 1);
+    char *path = malloc(sizeof(char) * (strlen(directory) + strlen(name) + 1));
     sprintf(path, "%s%s", directory, name);
     return path;
 }
